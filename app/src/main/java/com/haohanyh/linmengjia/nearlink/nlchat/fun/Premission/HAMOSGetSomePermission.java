@@ -1,4 +1,4 @@
-/* 受Haohanyh Computer Software Products Open Source LICENSE保护 https://git.haohanyh.top:3001/Haohanyh/LICENSE */
+/* 受Haohanyh Computer Software Products Open Source LICENSE保护 https://github.com/Hny0305Lin/LICENSE/blob/main/LICENSE */
 package com.haohanyh.linmengjia.nearlink.nlchat.fun.Premission;
 
 import android.Manifest;

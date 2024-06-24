@@ -1,3 +1,4 @@
+/* 受Haohanyh Computer Software Products Open Source LICENSE保护 https://github.com/Hny0305Lin/LICENSE/blob/main/LICENSE */
 package com.haohanyh.linmengjia.nearlink.nlchat.fun;
 
 import android.annotation.SuppressLint;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.MainUI), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(id.MainUI), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -381,6 +382,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void close() {
+        SnackBarToastForDebug("检测到USB已接入，请完成初始化后使用!","推荐初始化操作",1,Snackbar.LENGTH_SHORT);
         MainAPP.CH34X.closeDevice();
     }
 
