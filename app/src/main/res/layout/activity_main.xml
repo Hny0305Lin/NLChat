@@ -234,7 +234,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/CardII"
                 android:layout_width="360dp"
-                android:layout_height="150dp"
+                android:layout_height="200dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="35dp"
                 android:layout_marginRight="15dp"
@@ -242,6 +242,8 @@
                 android:visibility="visible"
                 app:cardCornerRadius="4dp"
                 app:cardElevation="18dp">
+
+                
 
 
             </androidx.cardview.widget.CardView>
