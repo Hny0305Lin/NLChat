@@ -38,7 +38,7 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.haohanyh.linmengjia.nearlink.nlchat.ch34x.CH34xUARTDriver;
-import com.haohanyh.linmengjia.nearlink.nlchat.fun.Premission.HAMOSGetSomePermission;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.Premission.NearLinkChatGetSomePermission;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.color;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.drawable;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.id;
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView NearLinkServerText,NearLinkClientText;
     private EditText EditChatSend;
     //动态获取权限
-    public HAMOSGetSomePermission hamosGetSomePermission;
+    public NearLinkChatGetSomePermission hamosGetSomePermission;
     //手机常量，代码里设置
     private boolean MobileKeepScreenOn = false;
     //CH34X相关
@@ -98,11 +98,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @SuppressLint("UseCompatLoadingForDrawables")
     private void Init() {
         //获取所有权限    Android10以下存储读写、确切位置、大概位置
-        hamosGetSomePermission = HAMOSGetSomePermission
+        hamosGetSomePermission = NearLinkChatGetSomePermission
                 .with(this)
                 .requestCode(0)
-                .permissions(HAMOSGetSomePermission.Permission.Storage.READ_EXTERNAL_STORAGE, HAMOSGetSomePermission.Permission.Storage.WRITE_EXTERNAL_STORAGE,
-                        HAMOSGetSomePermission.Permission.Location.ACCESS_FINE_LOCATION, HAMOSGetSomePermission.Permission.Location.ACCESS_COARSE_LOCATION)
+                .permissions(NearLinkChatGetSomePermission.Permission.Storage.READ_EXTERNAL_STORAGE, NearLinkChatGetSomePermission.Permission.Storage.WRITE_EXTERNAL_STORAGE,
+                        NearLinkChatGetSomePermission.Permission.Location.ACCESS_FINE_LOCATION, NearLinkChatGetSomePermission.Permission.Location.ACCESS_COARSE_LOCATION)
                 .request();
         //获取所有权限    Android10以上存储读写
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
