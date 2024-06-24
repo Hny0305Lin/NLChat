@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#000000FF</color>
+
+    <color name="Pink_is_justice">#FFFEC0CB</color>
+    <color name="Pink_is_fancy">#FFFFB6C1</color>
+
+    <color name="blue_biaozhun">#1296db</color>
+    <color name="blue_biaozhun_logowai">#00CEFC</color>
+    <color name="blue_biaozhun_logowai_transparent">#4500CEFC</color>
+
+    <color name="nearlinkgreen">#00C08B</color>
+
+    <color name="snackbar_log_v">#330033</color>
+    <color name="snackbar_log_d">#0099FF</color>
+    <color name="snackbar_log_i">#00CC66</color>
+    <color name="snackbar_log_w">#CC9966</color>
+    <color name="snackbar_log_e">#CC0066</color>
+</resources>

@@ -1,0 +1,68 @@
+<resources>
+    <string name="app_name">NLChat</string>
+    <string name="app_package">com.haohanyh.linmengjia.nearlink.nlchat.fun</string>
+    <string name="app_version">0.1.1.2024.0620</string>
+
+    <string name="appwarn">NLChat，浩瀚银河宗旨为用爱和魔法创造Android APP。</string>
+    <string name="thanks3q">友情感谢</string>
+    <string name="nearlinkI">星闪软件情况: </string>
+    <string name="nearlinkII">USB接入情况: </string>
+    <string name="nearlinkIII">串口情况: </string>
+
+
+    <string name="nearlinkChatSend">发送消息</string>
+
+    <string-array name="listBaud">
+        <item>4800</item>
+        <item>9600</item>
+        <item>19200</item>
+        <item>38400</item>
+        <item>57600</item>
+        <item>115200</item>
+        <item>921600</item>
+    </string-array>
+    <string-array name="listData">
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+    <string-array name="listStop">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="listParity">
+        <item>无</item>
+        <item>奇校验</item>
+        <item>偶校验</item>
+        <item>标志位</item>
+        <item>空白位</item>
+    </string-array>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <string name="egg">
+        感谢您点开了这个彩蛋！时光银河里的粒粒细沙，让你我共同选择了最好看的华为星闪，给国产一次机会，也是在给我们自己一次机会。
+        祝屏幕前的你，开发者，写下的每一行代码，都是一颗改变世界的星星。打上的每一句注释，都是您踏足这里的足迹。
+        \n
+        我们建议您，在使用本款软件时，请打开存储权限、弹窗时的USB权限请确认等等操作。
+        \n
+        本款软件需要配合我们的开源仓库魔改方案使用，详情请见Github搜索Hny0305Lin，可找到\"BearPi_Hi2821_Pico_NLChat\"仓库
+        \n
+        目前仅为SLE_UART透传方案，仅支持互传文本，需要后续功能可以敬请期待。
+        \n
+        该软件开源，二次创作等请署名\"浩瀚银河\"四字，请遵守我们公开的开源协议！
+    </string>
+</resources>

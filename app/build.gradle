@@ -1,0 +1,53 @@
+plugins {
+    alias(libs.plugins.android.application)
+}
+
+android {
+    namespace 'com.haohanyh.linmengjia.nearlink.nlchat.fun'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.haohanyh.linmengjia.nearlink.nlchat.fun"
+        minSdk 28
+        //noinspection ExpiredTargetSdkVersion
+        targetSdk 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    implementation libs.appcompat
+    implementation libs.material
+    implementation libs.activity
+    implementation libs.constraintlayout
+
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0' //设计 帧布局进化
+
+    implementation 'com.github.clans:fab:1.6.4' //设计UI Fab
+
+    implementation 'androidx.work:work-runtime:2.7.1'
+    implementation project(':CH34x')
+
+    testImplementation libs.junit
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
