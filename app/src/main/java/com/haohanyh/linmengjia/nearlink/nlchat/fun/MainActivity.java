@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int clickCountButton_btnNearLinkSettings = 0;   //按钮计数
     private int clickCountButton_btnNearLinkUart = 0;   //按钮计数
     private int clickCountButton_btnNearLinkDev = 0;   //按钮计数
-    private CardView CNearLinkStatus,CNearLinkSettings,CNearlinkUart,CNearlinkDev,CTHANKS;
+    private CardView CNearLinkStatus,CNearlinkUart,CNearLinkSettings,CNearlinkDev,CTHANKS;
     private CardView CNearLinkChat;
 
     private Message MessageTV_Text;
@@ -150,21 +150,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         clickCountButton_btnNearLinkStatus = 0;
         btnNearLinkStatus.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_done_all_24));
         btnNearLinkStatus.setImageResource(drawable.ic_baseline_done_all_24);
-        clickCountButton_btnNearLinkSettings = 1;
-        btnNearLinkSettings.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_close_24));
-        btnNearLinkSettings.setImageResource(drawable.ic_baseline_close_24);
         clickCountButton_btnNearLinkUart = 1;
         btnNearlinkUart.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_close_24));
         btnNearlinkUart.setImageResource(drawable.ic_baseline_close_24);
+        clickCountButton_btnNearLinkSettings = 1;
+        btnNearLinkSettings.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_close_24));
+        btnNearLinkSettings.setImageResource(drawable.ic_baseline_close_24);
         clickCountButton_btnNearLinkDev = 1;
         btnNearlinkDev.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_close_24));
         btnNearlinkDev.setImageResource(drawable.ic_baseline_close_24);
         CNearLinkStatus = findViewById(id.CardI);
         CNearLinkStatus.setVisibility(View.VISIBLE);
-        CNearLinkSettings = findViewById(id.CardII);
-        CNearLinkSettings.setVisibility(View.GONE);
-        CNearlinkUart = findViewById(id.CardIII);
+        CNearlinkUart = findViewById(id.CardII);
         CNearlinkUart.setVisibility(View.GONE);
+        CNearLinkSettings = findViewById(id.CardIII);
+        CNearLinkSettings.setVisibility(View.GONE);
         CNearlinkDev = findViewById(id.CardIV);
         CNearlinkDev.setVisibility(View.GONE);
         CTHANKS = findViewById(id.CardAPP);
@@ -428,7 +428,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void InitToOpen() {
         //启动了就得把串口设置给关掉无法设置，否则会影响程序（调整就重启软件再启动即可）
-        wchUartSettings.setNearLinkUartSet(false);
         RadioButtonBaud4800.setEnabled(false);
         RadioButtonBaud9600.setEnabled(false);
         RadioButtonBaud19200.setEnabled(false);
@@ -509,9 +508,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //    }
     public String TextOfServer = "";
     private void CH34xReadData() {
+        //先播报星闪软件情况，已经UART接入星闪网络，再好好的处理字符
         HhandlerI.sendEmptyMessage(10);
+        StringBuffer stringBuffer = new StringBuffer();
         MainAPP.CH34X.setReadListener(bytes -> {
+            //字节转文本
             String string = StringUtils.needProcess().bytesToString(bytes);
+            Log.v(TAG, "长度：bytes.length="+ bytes.length + "\t内容：" + string);
+
 //            new Thread(new Runnable() {
 //                @Override
 //                public void run() {
@@ -520,9 +524,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                }
 //            }).start();
 
-            Log.v("长度：", "bytes.length="+ bytes.length + "\t内容：" + string);
+            //进行文本处理
+            String processedString = CH34xProcessingData(string);
+            stringBuffer.append(processedString);
+            //处理完再打印到UI上
             runOnUiThread(() -> {
-                NearLinkServerText.append(string);
+                NearLinkServerText.append(processedString);
                 if (NearLinkServerText.length() > 2048) {
                     String str = NearLinkServerText.getText().toString().substring(NearLinkServerText.getText().length() - 1024, NearLinkServerText.getText().length());
                     NearLinkServerText.setText("");
@@ -530,6 +537,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
         });
+    }
+
+    private StringBuilder buffer = new StringBuilder();
+    private static final String PREFIX_SERVER = " Let's start chatting, This is the content of the server:";
+    private static final String PREFIX_CLIENT = " Let's start chatting, This is the content of the client:";
+    private String CH34xProcessingData(String string) {
+        buffer.append(string);
+        String result = buffer.toString();
+
+        int endIndex = result.indexOf("\n");
+        if (endIndex != -1) {
+            String completeFirstData = result.substring(0, endIndex + 1);
+            String completeSecondData = "";
+            Log.v(TAG, "长度：completeFirstData.length="+ completeFirstData.length() + "\t内容：" + completeFirstData);
+            buffer.delete(0, endIndex + 1);
+
+            if (completeFirstData.startsWith(PREFIX_SERVER)) {
+                completeSecondData = completeFirstData.replace(PREFIX_SERVER, "").trim();
+                Log.v(TAG, "长度：completeSecondData.length="+ completeSecondData.length() + "\t内容：" + completeSecondData);
+            } else if (completeFirstData.startsWith(PREFIX_CLIENT)) {
+                completeSecondData = completeFirstData.replace(PREFIX_CLIENT, "").trim();
+                Log.v(TAG, "长度：completeSecondData.length="+ completeSecondData.length() + "\t内容：" + completeSecondData);
+            }
+            return completeSecondData;
+        } else
+            return string;
     }
 
     private void CH34xNearLinkChatDataProcessing(Message message, int SorC) {
@@ -719,6 +752,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //没有人能够熄灭满天的星光，每一个开发者都是华为要汇聚的星星之火。星星之火，可以燎原。
+    @SuppressLint("SetTextI18n")
     public void thanks3q(View view) {
         TextView textView = new TextView(this);
         textView.setText("Egg~");
