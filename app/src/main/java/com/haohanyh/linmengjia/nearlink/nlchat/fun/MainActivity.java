@@ -518,7 +518,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String string = StringUtils.needProcess().bytesToString(bytes);
             Log.v(TAG, "长度：bytes.length="+ bytes.length + "\t内容：" + string);
             //进行文本处理
-            String processedString = CH34xProcessingData(string);
+            String processedString = CH34xProcessingForReadData(string);
             stringBuffer.append(processedString);
             //处理完再打印到UI上
             runOnUiThread(() -> {
@@ -535,7 +535,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private StringBuilder buffer = new StringBuilder();
     @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
-    private String CH34xProcessingData(String string) {
+    private String CH34xProcessingForReadData(String string) {
         buffer.append(string);
         String result = buffer.toString();
 
@@ -571,14 +571,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return "";
     }
 
-//    private void CH34xNearLinkChatDataProcessing(Message message, int SorC) {
-//        //先获取串口所有文本数据，保存到缓存区。直到获取到真正的文本段的文字，分割前面的内容再提取剩余相关，即为服务端客户端接收内容
-//        if (SorC == 1) { } else if (SorC == 0) { } else { }
-//
-//
-//
-//    }
+    public String TextOfClient = "";
+    public void nearlinkChatSend(View view) {
+        HhandlerI.sendEmptyMessage(10);
+        byte[] to_send = StringUtils.needProcess().toByteArray(String.valueOf(EditChatSend.getText()));		//以字符串方式发送
+        int retval = MainAPP.CH34X.writeData(to_send, to_send.length);//写数据，第一个参数为需要发送的字节数组，第二个参数为需要发送的字节长度，返回实际发送的字节长度
+        if (retval < 0) {
+            SnackBarToastForDebug("向对方发送数据失败!","推荐重新配置",3,Snackbar.LENGTH_SHORT);
+        } else {
+            Toast.makeText(MainActivity.this, "发送成功!", Toast.LENGTH_SHORT).show();
+            String processedString = CH34xProcessingForSendData(EditChatSend.getText().toString());
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    NearLinkClientText.append(processedString);
+                    if (NearLinkClientText.length() > 2048) {
+                        String str = NearLinkClientText.getText().toString().substring(NearLinkClientText.getText().length() - 1024, NearLinkClientText.getText().length());
+                        NearLinkClientText.setText("");
+                        NearLinkClientText.append(str);
+                    }
+                }
+            });
+        }
+    }
 
+    private String CH34xProcessingForSendData(String string) {
+        //添加时间戳
+        String timestamp = dateFormat.format(new java.util.Date());
+        string = timestamp + " - " + string;
+
+        //确保消息以换行符结尾
+        if (!string.endsWith("\n")) {
+            string += "\n";
+        }
+        return string;
+    }
 
     /*
      * Hhandler用于数据交互和UI修改
@@ -586,13 +613,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final Handler HhandlerI = new Handler(msg -> {
         TextInformation(msg);
         return true;
-    });
-    private Handler HhandlerII = new Handler(msg -> {
-        NearLinkServerText.setText((String) msg.obj);
-        return false;
-    });
-    private Handler HhandlerIII = new Handler(msg -> {
-        return false;
     });
 
     /**
@@ -611,9 +631,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case 31: UARTResult.setText("您的设备第一次启动，请链接!");break;
             case 32: UARTResult.setText("您的设备已移除串口，请检查!");break;
             case 33: UARTResult.setText("您的设备串口配置出问题，请检查!");break;
-
-            case 990: NearLinkClientText.setText(" Let's start chatting, This is the content of the client:" + EditChatSend.getText());break;
-            case 991: NearLinkServerText.setText(TextOfServer);break;
         }
     }
 
@@ -685,18 +702,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 clickCountButton_btnNearLinkDev = 0;
             }
 
-        }
-    }
-
-    public void nearlinkChatSend(View view) {
-        HhandlerI.sendEmptyMessage(10);
-        byte[] to_send = StringUtils.needProcess().toByteArray(String.valueOf(EditChatSend.getText()));		//以字符串方式发送
-        int retval = MainAPP.CH34X.writeData(to_send, to_send.length);//写数据，第一个参数为需要发送的字节数组，第二个参数为需要发送的字节长度，返回实际发送的字节长度
-        if (retval < 0) {
-            SnackBarToastForDebug("向对方发送数据失败!","推荐重新配置",3,Snackbar.LENGTH_SHORT);
-        } else {
-            Toast.makeText(MainActivity.this, "发送成功!", Toast.LENGTH_SHORT).show();
-            HhandlerI.sendEmptyMessage(990);
         }
     }
 
