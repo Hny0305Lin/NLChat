@@ -42,6 +42,7 @@ dependencies {
     implementation 'androidx.work:work-runtime:2.7.1'
     implementation project(':CH34x')
 
+    implementation 'com.github.requery:sqlite-android:3.45.0'
     implementation 'androidx.sqlite:sqlite:2.2.0'    //轻量数据库 SQLite
 
     testImplementation libs.junit

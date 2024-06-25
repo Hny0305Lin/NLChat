@@ -47,6 +47,7 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.Premission.NearLinkChatGetSom
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.color;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.drawable;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.id;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.SQLite.SQLiteDataBaseAPP;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.String.StringUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.WCHUart.WCHUartSettings;
 
@@ -126,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()) {
                 Log.v(TAG,"Android 10以上设备是否获取最高读写文件权限?:" + Environment.isExternalStorageManager());
+                SQLiteDataBaseAPP.SQLiteData().CreateSql(getApplicationContext().getFilesDir().getAbsolutePath());
             } else {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);intent.setData(Uri.parse("package:" + this.getPackageName()));startActivityForResult(intent, 1024);
             }
@@ -485,29 +487,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    //读数据
-//    public int totalrecv;
-//    private void CH34xReadData(){
-//        //创建一个新的线程来读取数据，将读取的数据通过handler发送出去进行处理
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                super.run();
-//                byte[] buffer = new byte[4096];
-//                while (true) {
-//                    Message msg = Message.obtain();
-//                    int length = MainAPP.CH34X.readData(buffer, buffer.length);
-//                    if (length > 0) {
-//                        totalrecv += length;
-//                        String content = StringUtils.needProcess().bytesToString(buffer);
-//                        msg.obj += content+"";
-//                        HhandlerI.sendEmptyMessage(10);
-//                        HhandlerII.sendMessage(msg);
-//                    }
-//                }
-//            }
-//        }.start();
-//    }
     public String TextOfServer = "";
     private void CH34xReadData() {
         //先播报星闪软件情况，已经UART接入星闪网络，再好好的处理字符

@@ -16,6 +16,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url("https://jitpack.io")
+            uri("https://maven.aliyun.com/repository/gradle-plugin")
+        }
     }
 }
 
