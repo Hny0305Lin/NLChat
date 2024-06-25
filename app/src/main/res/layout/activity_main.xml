@@ -621,7 +621,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/CardIII"
                 android:layout_width="360dp"
-                android:layout_height="150dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="35dp"
                 android:layout_marginRight="15dp"
@@ -629,6 +629,397 @@
                 android:visibility="visible"
                 app:cardCornerRadius="4dp"
                 app:cardElevation="18dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="5dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_margin="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForShowLog"
+                            android:textColor="@color/teal_700"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/cbSettingsForShowLog"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="false"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForWord"
+                            android:textColor="@color/Pink_is_fancy"
+                            android:textSize="16sp"
+                            android:theme="@style/MyCheckBox" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="5dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_margin="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForSaveSQL"
+                            android:textColor="@color/teal_700"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/cbSettingsForSaveSQL"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="false"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForWord"
+                            android:textColor="@color/Pink_is_fancy"
+                            android:textSize="16sp"
+                            android:theme="@style/MyCheckBox" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="5dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_margin="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForDelSQL"
+                            android:textColor="@color/teal_700"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/cbSettingsForDelSQL"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="false"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForWord"
+                            android:textColor="@color/Pink_is_fancy"
+                            android:textSize="16sp"
+                            android:theme="@style/MyCheckBox" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="5dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_margin="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForHistory"
+                            android:textColor="@color/teal_700"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/cbSettingsForHistory"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="false"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForWord"
+                            android:textColor="@color/Pink_is_fancy"
+                            android:textSize="16sp"
+                            android:theme="@style/MyCheckBox" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="5dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_margin="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForClearSCR"
+                            android:textColor="@color/teal_700"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/cbSettingsForClearSCR"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="false"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForWord"
+                            android:textColor="@color/Pink_is_fancy"
+                            android:textSize="16sp"
+                            android:theme="@style/MyCheckBox" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="5dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_margin="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForEncryption"
+                            android:textColor="@color/teal_700"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/cbSettingsForEncryption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="false"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForWord"
+                            android:textColor="@color/Pink_is_fancy"
+                            android:textSize="16sp"
+                            android:theme="@style/MyCheckBox" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="5dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_margin="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForClip"
+                            android:textColor="@color/teal_700"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/cbSettingsForClip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="false"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForWord"
+                            android:textColor="@color/Pink_is_fancy"
+                            android:textSize="16sp"
+                            android:theme="@style/MyCheckBox" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="5dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_margin="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForPlus1"
+                            android:textColor="@color/teal_700"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/cbSettingsForPlus1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="false"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForWord"
+                            android:textColor="@color/Pink_is_fancy"
+                            android:textSize="16sp"
+                            android:theme="@style/MyCheckBox" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="5dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_margin="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForPush"
+                            android:textColor="@color/teal_700"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/cbSettingsForPush"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="false"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForWord"
+                            android:textColor="@color/Pink_is_fancy"
+                            android:textSize="16sp"
+                            android:theme="@style/MyCheckBox" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="5dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_margin="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForBackground"
+                            android:textColor="@color/teal_700"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/cbSettingsForBackground"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="false"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForWord"
+                            android:textColor="@color/Pink_is_fancy"
+                            android:textSize="16sp"
+                            android:theme="@style/MyCheckBox" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="5dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_margin="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForBackup"
+                            android:textColor="@color/teal_700"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/cbSettingsForBackup"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="false"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForWord"
+                            android:textColor="@color/Pink_is_fancy"
+                            android:textSize="16sp"
+                            android:theme="@style/MyCheckBox" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="5dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_margin="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForNFC"
+                            android:textColor="@color/teal_700"
+                            android:textSize="14sp" />
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/cbSettingsForNFC"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="false"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/uiNearLinkSettingsForWord"
+                            android:textColor="@color/Pink_is_fancy"
+                            android:textSize="16sp"
+                            android:theme="@style/MyCheckBox" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 

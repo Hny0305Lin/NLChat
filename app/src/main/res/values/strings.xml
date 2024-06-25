@@ -52,6 +52,21 @@
     </string-array>
     <string name="uiParity">设置校验位: </string>
 
+    <string name="uiNearLinkSettingsForShowLog">Log输出(影响聊天框) </string>
+    <string name="uiNearLinkSettingsForSaveSQL">聊天保存(SQLite) </string>
+    <string name="uiNearLinkSettingsForDelSQL">聊天删除(SQLite) </string>
+    <string name="uiNearLinkSettingsForHistory">历史设备记录(SQLite)</string>
+    <string name="uiNearLinkSettingsForClearSCR">阅后即焚(默认2分钟清) </string>
+    <string name="uiNearLinkSettingsForEncryption">通讯加密(Dev) </string>
+    <string name="uiNearLinkSettingsForClip">聊天文本进入剪贴板 </string>
+    <string name="uiNearLinkSettingsForPlus1">聊天消息自动+1 </string>
+    <string name="uiNearLinkSettingsForPush">消息通知(手动开启) </string>
+    <string name="uiNearLinkSettingsForBackground">背景运行(Daemon) </string>
+    <string name="uiNearLinkSettingsForBackup">自动备份设置(JSON) </string>
+    <string name="uiNearLinkSettingsForNFC">备用近场通讯(NFC) </string>
+
+    <string name="uiNearLinkSettingsForWord">勾选视为开启</string>
+
 
 
 
