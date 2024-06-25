@@ -22,6 +22,13 @@ NLChat是专门为[小熊派BearPi的星闪代码](https://github.com/Hny0305Lin
 
 # 项目使用到的开源协议
 
+### Copyright (c) @CompanyNameMagicTag 2023-2023. All rights reserved.
+使用开源协议：未知
+介绍：NLChat的成功，离不开小熊派开源社区的支持和公开的SLE_UART整套Demo代码支持。
+Description: SLE UART Sample Source.
+作者: @CompanyNameTag
+代码开源地址: [点我进入](https://gitee.com/bearpi/bearpi-h2821_pico)
+
 ### Copyright (c) Nanjing Xiaoxiongpai Intelligent Technology Co., Ltd.
 使用开源协议：未知
 介绍: 南京小熊派智能科技有限公司，致力于鸿蒙生态的硬件开发，提供硬件和软件的解决方案。
