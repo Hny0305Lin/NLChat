@@ -2,23 +2,16 @@
 package com.haohanyh.linmengjia.nearlink.nlchat.fun.WCHUart;
 
 public class WCHUartSettings {
-    private boolean NearLinkUartSet = true;
     //小熊派的星闪开发板，如果没有主动手动修改的话，默认都是115200波特率、8数据位、1停止位、0校验和0流控，故这里代码锁死，当然可以通过UI修改（但不推荐
     private int baudRate = 115200;      //波特率，华为星闪板一般为115200
     private byte dataBit = 8;           //数据位，一般为8
     private byte stopBit = 1;           //停止位，一般为1
     private byte parity = 0;            //校验，一般为0
-    private byte flowControl = 0;       //流控，一般为0
+    private byte flowControl = 0;       //流控，一般为0，流控不参与UI设置，请代码里直接修改
 
     public WCHUartSettings() {}
     public static WCHUartSettings needGetData() { return getData.thing; }
     protected static class getData { private static final WCHUartSettings thing = new WCHUartSettings(); }
-
-    public boolean isNearLinkUartSet() { return NearLinkUartSet; }
-
-    public void setNearLinkUartSet(boolean nearLinkUartSet) {
-        NearLinkUartSet = nearLinkUartSet;
-    }
 
     public int getBaudRate() {
         return baudRate;
@@ -56,7 +49,7 @@ public class WCHUartSettings {
         return flowControl;
     }
 
-    public void setFlowControl(byte flowControl) {
-        this.flowControl = flowControl;
-    }
+//    public void setFlowControl(byte flowControl) {
+//        this.flowControl = flowControl;
+//    }
 }

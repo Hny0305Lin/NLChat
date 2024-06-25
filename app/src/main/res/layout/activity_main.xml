@@ -739,17 +739,6 @@
             app:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/menu_labels_right_btn_nearlink_settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_done_all_24"
-            app:fab_colorNormal="@color/blue_biaozhun_logowai_transparent"
-            app:fab_colorPressed="@color/blue_biaozhun_logowai"
-            app:fab_label="Settings 星闪网络设置"
-            app:fab_shadowColor="@color/Pink_is_fancy"
-            app:fab_size="mini" />
-
-        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/menu_labels_right_btn_nearlink_uart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -757,6 +746,17 @@
             app:fab_colorNormal="@color/blue_biaozhun_logowai_transparent"
             app:fab_colorPressed="@color/blue_biaozhun_logowai"
             app:fab_label="UartManager 串口管理"
+            app:fab_shadowColor="@color/Pink_is_fancy"
+            app:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_labels_right_btn_nearlink_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_done_all_24"
+            app:fab_colorNormal="@color/blue_biaozhun_logowai_transparent"
+            app:fab_colorPressed="@color/blue_biaozhun_logowai"
+            app:fab_label="Settings 星闪网络设置"
             app:fab_shadowColor="@color/Pink_is_fancy"
             app:fab_size="mini" />
 

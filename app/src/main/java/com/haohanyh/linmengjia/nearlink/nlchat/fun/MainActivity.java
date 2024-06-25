@@ -42,6 +42,7 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.haohanyh.linmengjia.nearlink.nlchat.ch34x.CH34xUARTDriver;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.Premission.NearLinkChatGetSomePermission;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.color;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.drawable;
@@ -49,6 +50,7 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.id;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.String.StringUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.WCHUart.WCHUartSettings;
 
+import java.text.SimpleDateFormat;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -515,15 +517,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //字节转文本
             String string = StringUtils.needProcess().bytesToString(bytes);
             Log.v(TAG, "长度：bytes.length="+ bytes.length + "\t内容：" + string);
-
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    TextOfServer = string;
-//                    HhandlerI.sendEmptyMessage(991);
-//                }
-//            }).start();
-
             //进行文本处理
             String processedString = CH34xProcessingData(string);
             stringBuffer.append(processedString);
@@ -540,8 +533,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private StringBuilder buffer = new StringBuilder();
-    private static final String PREFIX_SERVER = " Let's start chatting, This is the content of the server:";
-    private static final String PREFIX_CLIENT = " Let's start chatting, This is the content of the client:";
+    @SuppressLint("SimpleDateFormat")
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
     private String CH34xProcessingData(String string) {
         buffer.append(string);
         String result = buffer.toString();
@@ -553,25 +546,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.v(TAG, "长度：completeFirstData.length="+ completeFirstData.length() + "\t内容：" + completeFirstData);
             buffer.delete(0, endIndex + 1);
 
-            if (completeFirstData.startsWith(PREFIX_SERVER)) {
-                completeSecondData = completeFirstData.replace(PREFIX_SERVER, "").trim();
-                Log.v(TAG, "长度：completeSecondData.length="+ completeSecondData.length() + "\t内容：" + completeSecondData);
-            } else if (completeFirstData.startsWith(PREFIX_CLIENT)) {
-                completeSecondData = completeFirstData.replace(PREFIX_CLIENT, "").trim();
-                Log.v(TAG, "长度：completeSecondData.length="+ completeSecondData.length() + "\t内容：" + completeSecondData);
+            //去掉特定的前缀字符串，然后返回（聊天内容），只有当消息包含特定的前缀时才处理
+            if (completeFirstData.contains(ChatUtils.getPrefixServer()) || completeFirstData.contains(ChatUtils.getPrefixClient())) {
+                if (completeFirstData.startsWith(ChatUtils.getPrefixServer())) {
+                    completeSecondData = completeFirstData.replace(ChatUtils.getPrefixServer(), "").trim();
+                    Log.v(TAG, "长度：completeSecondData.length="+ completeSecondData.length() + "\t内容：" + completeSecondData);
+                } else if (completeFirstData.startsWith(ChatUtils.getPrefixClient())) {
+                    completeSecondData = completeFirstData.replace(ChatUtils.getPrefixClient(), "").trim();
+                    Log.v(TAG, "长度：completeSecondData.length="+ completeSecondData.length() + "\t内容：" + completeSecondData);
+                }
+                //添加时间戳
+                String timestamp = dateFormat.format(new java.util.Date());
+                completeSecondData = timestamp + " - " + completeSecondData;
+
+                //确保消息以换行符结尾
+                if (!completeSecondData.endsWith("\n")) {
+                    completeSecondData += "\n";
+                }
+                return completeSecondData;
             }
-            return completeSecondData;
-        } else
-            return string;
+        } else {
+            return "";
+        }
+        return "";
     }
 
-    private void CH34xNearLinkChatDataProcessing(Message message, int SorC) {
-        //先获取串口所有文本数据，保存到缓存区。直到获取到真正的文本段的文字，分割前面的内容再提取剩余相关，即为服务端客户端接收内容
-        if (SorC == 1) { } else if (SorC == 0) { } else { }
-
-
-
-    }
+//    private void CH34xNearLinkChatDataProcessing(Message message, int SorC) {
+//        //先获取串口所有文本数据，保存到缓存区。直到获取到真正的文本段的文字，分割前面的内容再提取剩余相关，即为服务端客户端接收内容
+//        if (SorC == 1) { } else if (SorC == 0) { } else { }
+//
+//
+//
+//    }
 
 
     /*
