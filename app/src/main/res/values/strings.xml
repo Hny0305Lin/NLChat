@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">NLChat</string>
     <string name="app_package">com.haohanyh.linmengjia.nearlink.nlchat.fun</string>
-    <string name="app_version">0.1.1.2024.0620</string>
+    <string name="app_version">1.0.12.2024.0625</string>
 
     <string name="appwarn">NLChat，浩瀚银河宗旨为用爱和魔法创造Android APP。</string>
     <string name="thanks3q">友情感谢</string>
@@ -12,6 +12,8 @@
 
     <string name="nearlinkChatSend">发送消息</string>
 
+    <string name="uiNearLinkUartSettingWarn">星闪串口设置提示 </string>
+    <string name="uiNearLinkUartSettingWord">确认开启</string>
     <string-array name="listBaud">
         <item>4800</item>
         <item>9600</item>
@@ -21,15 +23,25 @@
         <item>115200</item>
         <item>921600</item>
     </string-array>
+    <string name="uiBaud">设置波特率: </string>
     <string-array name="listData">
         <item>5</item>
         <item>6</item>
         <item>7</item>
         <item>8</item>
     </string-array>
+    <string name="uiData">设置数据位: </string>
     <string-array name="listStop">
         <item>1</item>
         <item>2</item>
+    </string-array>
+    <string name="uiStop">设置停止位: </string>
+    <string-array name="listParityNum">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
     </string-array>
     <string-array name="listParity">
         <item>无</item>
@@ -38,7 +50,7 @@
         <item>标志位</item>
         <item>空白位</item>
     </string-array>
-
+    <string name="uiParity">设置校验位: </string>
 
 
 

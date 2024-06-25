@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.hardware.usb.UsbManager;
 import android.net.Uri;
 import android.os.Build;
@@ -20,13 +21,16 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.cardview.widget.CardView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
@@ -50,6 +54,10 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     //Log需要的TAG
     private static final String TAG = "MainActivity & 浩瀚银河 & NLChat";
+    //动态获取权限
+    public NearLinkChatGetSomePermission hamosGetSomePermission;
+    //CH34X相关
+    private static final String ACTION_USB_PERMISSION = "cn.wch.wchusbdriver.USB_PERMISSION";
     //主要控件
     private FloatingActionButton btnGO;
     private FloatingActionMenu btnMenu;
@@ -60,16 +68,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int clickCountButton_btnNearLinkDev = 0;   //按钮计数
     private CardView CNearLinkStatus,CNearLinkSettings,CNearlinkUart,CNearlinkDev,CTHANKS;
     private CardView CNearLinkChat;
+
     private Message MessageTV_Text;
     private TextView APPRunResult,MobileUSBResult,UARTResult;
     private TextView NearLinkServerText,NearLinkClientText;
     private EditText EditChatSend;
-    //动态获取权限
-    public NearLinkChatGetSomePermission hamosGetSomePermission;
+
+    private Resources resources;
+    private String[] UartSettingsBaud,UartSettingsData,UartSettingsStop,UartSettingsParity,UartSettingsParityII;
+    private WCHUartSettings wchUartSettings = new WCHUartSettings();
+    private AppCompatCheckBox CheckBoxUartWarn;
+    private boolean NearLinkUartWarnToast = false;
+    private RadioButton RadioButtonBaud4800,RadioButtonBaud9600,RadioButtonBaud19200,RadioButtonBaud38400,RadioButtonBaud57600,RadioButtonBaud115200,RadioButtonBaud921600;
+    private RadioButton RadioButtonData5,RadioButtonData6,RadioButtonData7,RadioButtonData8;
+    private RadioButton RadioButtonStop1,RadioButtonStop2;
+    private RadioButton RadioButtonParityNone,RadioButtonParityOdd,RadioButtonParityEven,RadioButtonParityMark,RadioButtonParitySpace;
     //手机常量，代码里设置
-    private boolean MobileKeepScreenOn = false;
-    //CH34X相关
-    private static final String ACTION_USB_PERMISSION = "cn.wch.wchusbdriver.USB_PERMISSION";
+    private final boolean MobileKeepScreenOn = false;
+
 
 
     /**
@@ -162,11 +178,275 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         NearLinkClientText = findViewById(id.writeText);
         EditChatSend = findViewById(id.editChatSend);
 
+        CheckBoxUartWarn = findViewById(id.cbUartWarn);
+        NearLinkUartWarnToast = CheckBoxUartWarn.isChecked();
+
+        resources = getApplicationContext().getResources();
+        UartSettingsBaud = resources.getStringArray(R.array.listBaud);
+        UartSettingsData = resources.getStringArray(R.array.listData);
+        UartSettingsStop = resources.getStringArray(R.array.listStop);
+        UartSettingsParity = resources.getStringArray(R.array.listParity);
+        UartSettingsParityII = resources.getStringArray(R.array.listParityNum);
+
+        RadioButtonBaud4800 = findViewById(id.rbBaud4800);
+        RadioButtonBaud4800.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    wchUartSettings.setBaudRate(Integer.parseInt(UartSettingsBaud[0]));
+                    SnackBarToastForDebug("已设置波特率" + wchUartSettings.getBaudRate() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
+                } else {
+                    if (CheckBoxUartWarn.isChecked())
+                        Toast.makeText(MainActivity.this,"更改波特率中",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        RadioButtonBaud9600 = findViewById(id.rbBaud9600);
+        RadioButtonBaud9600.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    wchUartSettings.setBaudRate(Integer.parseInt(UartSettingsBaud[1]));
+                    SnackBarToastForDebug("已设置波特率" + wchUartSettings.getBaudRate() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
+                } else {
+                    if (CheckBoxUartWarn.isChecked())
+                        Toast.makeText(MainActivity.this,"更改波特率中",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        RadioButtonBaud19200 = findViewById(id.rbBaud19200);
+        RadioButtonBaud19200.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    wchUartSettings.setBaudRate(Integer.parseInt(UartSettingsBaud[2]));
+                    SnackBarToastForDebug("已设置波特率" + wchUartSettings.getBaudRate() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
+                } else {
+                    if (CheckBoxUartWarn.isChecked())
+                        Toast.makeText(MainActivity.this,"更改波特率中",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        RadioButtonBaud38400 = findViewById(id.rbBaud38400);
+        RadioButtonBaud38400.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    wchUartSettings.setBaudRate(Integer.parseInt(UartSettingsBaud[3]));
+                    SnackBarToastForDebug("已设置波特率" + wchUartSettings.getBaudRate() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
+                } else {
+                    if (CheckBoxUartWarn.isChecked())
+                        Toast.makeText(MainActivity.this,"更改波特率中",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        RadioButtonBaud57600 = findViewById(id.rbBaud57600);
+        RadioButtonBaud57600.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    wchUartSettings.setBaudRate(Integer.parseInt(UartSettingsBaud[4]));
+                    SnackBarToastForDebug("已设置波特率" + wchUartSettings.getBaudRate() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
+                } else {
+                    if (CheckBoxUartWarn.isChecked())
+                        Toast.makeText(MainActivity.this,"更改波特率中",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        RadioButtonBaud115200 = findViewById(id.rbBaud115200);
+        RadioButtonBaud115200.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    wchUartSettings.setBaudRate(Integer.parseInt(UartSettingsBaud[5]));
+                    SnackBarToastForDebug("已设置波特率" + wchUartSettings.getBaudRate() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
+                } else {
+                    if (CheckBoxUartWarn.isChecked())
+                        Toast.makeText(MainActivity.this,"更改波特率中",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        RadioButtonBaud921600 = findViewById(id.rbBaud921600);
+        RadioButtonBaud921600.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    wchUartSettings.setBaudRate(Integer.parseInt(UartSettingsBaud[6]));
+                    SnackBarToastForDebug("已设置波特率" + wchUartSettings.getBaudRate() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
+                } else {
+                    if (CheckBoxUartWarn.isChecked())
+                        Toast.makeText(MainActivity.this,"更改波特率中",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        RadioButtonData5 = findViewById(id.rbData5);
+        RadioButtonData5.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    wchUartSettings.setDataBit(Byte.parseByte(UartSettingsData[0]));
+                    SnackBarToastForDebug("已设置数据位" + wchUartSettings.getDataBit() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
+                } else {
+                    if (CheckBoxUartWarn.isChecked())
+                        Toast.makeText(MainActivity.this,"更改数据位中",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        RadioButtonData6 = findViewById(id.rbData6);
+        RadioButtonData6.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    wchUartSettings.setDataBit(Byte.parseByte(UartSettingsData[1]));
+                    SnackBarToastForDebug("已设置数据位" + wchUartSettings.getDataBit() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
+                } else {
+                    if (CheckBoxUartWarn.isChecked())
+                        Toast.makeText(MainActivity.this,"更改数据位中",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        RadioButtonData7 = findViewById(id.rbData7);
+        RadioButtonData7.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    wchUartSettings.setDataBit(Byte.parseByte(UartSettingsData[2]));
+                    SnackBarToastForDebug("已设置数据位" + wchUartSettings.getDataBit() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
+                } else {
+                    if (CheckBoxUartWarn.isChecked())
+                        Toast.makeText(MainActivity.this,"更改数据位中",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        RadioButtonData8 = findViewById(id.rbData8);
+        RadioButtonData8.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    wchUartSettings.setDataBit(Byte.parseByte(UartSettingsData[3]));
+                    SnackBarToastForDebug("已设置数据位" + wchUartSettings.getDataBit() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
+                } else {
+                    if (CheckBoxUartWarn.isChecked())
+                        Toast.makeText(MainActivity.this,"更改数据位中",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        RadioButtonStop1 = findViewById(id.rbStop1);
+        RadioButtonStop1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    wchUartSettings.setStopBit(Byte.parseByte(UartSettingsStop[0]));
+                    SnackBarToastForDebug("已设置停止位" + wchUartSettings.getStopBit() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
+                } else {
+                    if (CheckBoxUartWarn.isChecked())
+                        Toast.makeText(MainActivity.this,"更改停止位中",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        RadioButtonStop2 = findViewById(id.rbStop2);
+        RadioButtonStop2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    wchUartSettings.setStopBit(Byte.parseByte(UartSettingsStop[1]));
+                    SnackBarToastForDebug("已设置停止位" + wchUartSettings.getStopBit() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
+                } else {
+                    if (CheckBoxUartWarn.isChecked())
+                        Toast.makeText(MainActivity.this,"更改停止位中",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        RadioButtonParityNone = findViewById(id.rbParityNone);
+        RadioButtonParityNone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    wchUartSettings.setParity(Byte.parseByte(UartSettingsParityII[0]));
+                    SnackBarToastForDebug("已设置校验位" + wchUartSettings.getParity() + UartSettingsParity[0] + "!","设置成功",0,Snackbar.LENGTH_SHORT);
+                } else {
+                    if (CheckBoxUartWarn.isChecked())
+                        Toast.makeText(MainActivity.this,"更改校验位中",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        RadioButtonParityOdd = findViewById(id.rbParityOdd);
+        RadioButtonParityOdd.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    wchUartSettings.setParity(Byte.parseByte(UartSettingsParityII[1]));
+                    SnackBarToastForDebug("已设置校验位" + wchUartSettings.getParity() + UartSettingsParity[1] + "!","设置成功",0,Snackbar.LENGTH_SHORT);
+                } else {
+                    if (CheckBoxUartWarn.isChecked())
+                        Toast.makeText(MainActivity.this,"更改校验位中",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        RadioButtonParityEven = findViewById(id.rbParityEven);
+        RadioButtonParityEven.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    wchUartSettings.setParity(Byte.parseByte(UartSettingsParityII[2]));
+                    SnackBarToastForDebug("已设置校验位" + wchUartSettings.getParity() + UartSettingsParity[2] + "!","设置成功",0,Snackbar.LENGTH_SHORT);
+                } else {
+                    if (CheckBoxUartWarn.isChecked())
+                        Toast.makeText(MainActivity.this,"更改校验位中",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        RadioButtonParityMark = findViewById(id.rbParityMark);
+        RadioButtonParityMark.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    wchUartSettings.setParity(Byte.parseByte(UartSettingsParityII[3]));
+                    SnackBarToastForDebug("已设置校验位" + wchUartSettings.getParity() + UartSettingsParity[3] + "!","设置成功",0,Snackbar.LENGTH_SHORT);
+                } else {
+                    if (CheckBoxUartWarn.isChecked())
+                        Toast.makeText(MainActivity.this,"更改校验位中",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        RadioButtonParitySpace = findViewById(id.rbParitySpace);
+        RadioButtonParitySpace.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    wchUartSettings.setParity(Byte.parseByte(UartSettingsParityII[4]));
+                    SnackBarToastForDebug("已设置校验位" + wchUartSettings.getParity() + UartSettingsParity[4] + "!","设置成功",0,Snackbar.LENGTH_SHORT);
+                } else {
+                    if (CheckBoxUartWarn.isChecked())
+                        Toast.makeText(MainActivity.this,"更改校验位中",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         HhandlerI.sendEmptyMessage(31);
     }
 
     private void InitToOpen() {
+        //启动了就得把串口设置给关掉无法设置，否则会影响程序（调整就重启软件再启动即可）
+        wchUartSettings.setNearLinkUartSet(false);
+        RadioButtonBaud4800.setEnabled(false);
+        RadioButtonBaud9600.setEnabled(false);
+        RadioButtonBaud19200.setEnabled(false);
+        RadioButtonBaud38400.setEnabled(false);
+        RadioButtonBaud57600.setEnabled(false);
+        RadioButtonBaud115200.setEnabled(false);
+        RadioButtonBaud921600.setEnabled(false);
+        RadioButtonData5.setEnabled(false);
+        RadioButtonData6.setEnabled(false);
+        RadioButtonData7.setEnabled(false);
+        RadioButtonData8.setEnabled(false);
+        RadioButtonStop1.setEnabled(false);
+        RadioButtonStop2.setEnabled(false);
+        RadioButtonParityNone.setEnabled(false);
+        RadioButtonParityOdd.setEnabled(false);
+        RadioButtonParityEven.setEnabled(false);
+        RadioButtonParityMark.setEnabled(false);
+        RadioButtonParitySpace.setEnabled(false);
         //判断是否支持SB HOSTU
         if (!MainAPP.CH34X.usbFeatureSupported()) {//不支持，弹出提示窗口
             HhandlerI.sendEmptyMessage(21);
