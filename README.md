@@ -4,6 +4,8 @@ NLChat是专门为[小熊派BearPi的星闪代码](https://github.com/Hny0305Lin
 
 ![IMG.SHIELD.IO](https://img.shields.io/badge/Hi2821_NLChat-Alpha1.0-gray.svg?colorA=007FFC&colorB=4DDDFC&style=for-the-badge)
 
+![NLChat](https://github.com/Hny0305Lin/NLChat/blob/master/DevSummary/NLChat.jpg)
+
 # 使用到的硬件 和 硬件重要资料
 ### Hi2821 BearPi小熊派
 > 购买地址:[tb](https://item.taobao.com/item.htm?spm=a21n57.1.item.2.16c8523cW90sjA&priceTId=2147825e17192240256724107e3028&utparam=%7B%22aplus_abtest%22:%22112cd35adf597e1a65a58f5e2046df26%22%7D&id=803331789469&ns=1&abbucket=20)
