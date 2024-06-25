@@ -580,11 +580,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             SnackBarToastForDebug("向对方发送数据失败!","推荐重新配置",3,Snackbar.LENGTH_SHORT);
         } else {
             Toast.makeText(MainActivity.this, "发送成功!", Toast.LENGTH_SHORT).show();
-            String processedString = CH34xProcessingForSendData(EditChatSend.getText().toString());
+            String TextOfClient = CH34xProcessingForSendData(EditChatSend.getText().toString());
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    NearLinkClientText.append(processedString);
+                    NearLinkClientText.append(TextOfClient);
                     if (NearLinkClientText.length() > 2048) {
                         String str = NearLinkClientText.getText().toString().substring(NearLinkClientText.getText().length() - 1024, NearLinkClientText.getText().length());
                         NearLinkClientText.setText("");
