@@ -2,8 +2,9 @@ name: Android CI Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
 
 jobs:
   build:
@@ -38,8 +39,8 @@ jobs:
           keyPassword: ${{ secrets.KEY_PASSWORD }}
 
       - name: Release
-      - run: mv ${{steps.sign_app.outputs.signedReleaseFile}} NLChat_$GITHUB_REF_NAME.apk
       - uses: ncipollo/release-action@v1
+      - run: mv ${{steps.sign_app.outputs.signedReleaseFile}} NLChat.apk
         with:
           artifacts: "*.apk"
           token: ${{ github.token }}
