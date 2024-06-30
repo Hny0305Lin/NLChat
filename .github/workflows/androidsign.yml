@@ -16,15 +16,15 @@ jobs:
       uses: actions/checkout@v4
     - name: JDK17 Eclipsejdk
       uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
+      with:
+        java-version: '17'
+        distribution: 'temurin'
 
     - name: Set up Gradle
       uses: gradle/gradle-build-action@v2
-        with:
-          gradle-version: current
-          arguments: assembleRelease
+      with:
+        gradle-version: current
+        arguments: assembleRelease
 
     - name: Sign
       uses: r0adkll/sign-android-release@v1
