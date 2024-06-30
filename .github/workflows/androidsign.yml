@@ -36,6 +36,8 @@ jobs:
           alias: ${{ secrets.ALIAS }}
           keyStorePassword: ${{ secrets.KEY_PASSWORD }}
           keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Release
       - run: mv ${{steps.sign_app.outputs.signedReleaseFile}} NLChat_$GITHUB_REF_NAME.apk
       - uses: ncipollo/release-action@v1
         with:
