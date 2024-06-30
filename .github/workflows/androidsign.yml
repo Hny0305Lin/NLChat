@@ -29,7 +29,7 @@ jobs:
           arguments: assembleRelease
 
       - name: Sign
-      - uses: r0adkll/sign-android-release@v1
+        uses: r0adkll/sign-android-release@v1
         id: sign_app
         with:
           releaseDirectory: app/build/outputs/apk/release
@@ -39,7 +39,7 @@ jobs:
           keyPassword: ${{ secrets.KEY_PASSWORD }}
 
       - name: Release
-      - uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@v1
         run: mv ${{steps.sign_app.outputs.signedReleaseFile}} NLChat.apk
         with:
           artifacts: "*.apk"
