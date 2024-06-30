@@ -1,0 +1,44 @@
+name: Android CI Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Chechout
+        uses: actions/checkout@v4
+      - name: JDK17 Eclipsejdk
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: current
+          arguments: assembleRelease
+
+      - name: Sign
+      - uses: r0adkll/sign-android-release@v1
+        id: sign_app
+        with:
+          releaseDirectory: app/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+      - run: mv ${{steps.sign_app.outputs.signedReleaseFile}} NLChat_$GITHUB_REF_NAME.apk
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "*.apk"
+          token: ${{ github.token }}
+          generateReleaseNotes: true
