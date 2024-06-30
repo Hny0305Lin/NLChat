@@ -40,7 +40,7 @@ jobs:
 
       - name: Release
       - uses: ncipollo/release-action@v1
-      - run: mv ${{steps.sign_app.outputs.signedReleaseFile}} NLChat.apk
+        run: mv ${{steps.sign_app.outputs.signedReleaseFile}} NLChat.apk
         with:
           artifacts: "*.apk"
           token: ${{ github.token }}
