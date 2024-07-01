@@ -104,7 +104,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //聊天时间戳
     @SuppressLint("SimpleDateFormat")
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
+    //private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     //调用SQLite
     private SQLiteDataBaseAPP dbHelper;
