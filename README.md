@@ -45,6 +45,22 @@ Description: SLE UART Sample Source.
 使用如下源码：ch34x部分相关代码，用于CH34X芯片与Android的USB通道通讯。
 代码开源地址: [点我进入](https://github.com/yutils/CH34xUART)
 
+### Copyright (c) GitHub
+使用开源协议：未知
+介绍：NLChat在海外Github仓库上已从1.1.28版本开始，启动Android CI自动化编译流水线，感谢Github提供性能生成测试和大量教程。
+代码相关地址：[点我进入](https://github.com/Hny0305Lin/NLChat/tree/master/.github/workflows)
+
+### Copyright (c) Drew Heavner
+使用开源协议：MIT License
+介绍：NLChat在海外Github仓库上已从1.2.1版本开始，启动Android CI Release自动化编译发行流水线，感谢这位作者提供实现能力仓库。
+代码开源地址：[点我进入](https://github.com/r0adkll/sign-android-release)
+代码相关地址：[点我进入](https://github.com/Hny0305Lin/NLChat/tree/master/.github/workflows/androidsign.yml)
+
+### Copyright (c) Android SQLite support Library
+使用开源协议：Apache-2.0 License
+介绍：在Android APP上，使用SQLite。
+代码开源地址：[点我进入](https://github.com/requery/sqlite-android)
+
 ### 版权所有 (C) 2019-FUTURE 浩瀚银河，版权所有。
 ### NLChat 使用 浩瀚银河计算机软件产品源代码开放协议
 **永久开源，二次开发请署名“浩瀚银河”**
