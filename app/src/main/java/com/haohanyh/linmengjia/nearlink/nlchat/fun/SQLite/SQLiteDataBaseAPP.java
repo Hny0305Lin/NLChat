@@ -5,6 +5,9 @@
  */
 package com.haohanyh.linmengjia.nearlink.nlchat.fun.SQLite;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+
 import io.requery.android.database.sqlite.SQLiteDatabase;
 
 public class SQLiteDataBaseAPP {
@@ -20,6 +23,29 @@ public class SQLiteDataBaseAPP {
         sqLiteDataBaseForUser = SQLiteDatabase.openOrCreateDatabase(SDPath + "/NLChatUser.db", null);
 
         sqLiteDataBaseForChat = SQLiteDatabase.openOrCreateDatabase(SDPath + "/NLChatChat.db",null);
+        createChatTable();
         sqLiteDataBaseForDevice = SQLiteDatabase.openOrCreateDatabase(SDPath + "/NLChatDevice.db",null);
+    }
+
+    private void createChatTable() {
+        String TABLE_CREATE =
+                "CREATE TABLE IF NOT EXISTS messages (" +
+                        "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "message TEXT, " +
+                        "sender TEXT, " +
+                        "timestamp TEXT);";
+        sqLiteDataBaseForChat.execSQL(TABLE_CREATE);
+    }
+
+    public void saveMessageToDatabase(String message, String sender, String timestamp) {
+        ContentValues values = new ContentValues();
+        values.put("message", message);
+        values.put("sender", sender);
+        values.put("timestamp", timestamp);
+        sqLiteDataBaseForChat.insert("messages", null, values);
+    }
+
+    public Cursor getAllMessages() {
+        return sqLiteDataBaseForChat.query("messages", null, null, null, null, null, "timestamp ASC");
     }
 }

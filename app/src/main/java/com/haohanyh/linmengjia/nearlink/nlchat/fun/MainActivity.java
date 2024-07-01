@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.hardware.usb.UsbManager;
 import android.net.Uri;
 import android.os.Build;
@@ -52,6 +53,7 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.String.StringUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.WCHUart.WCHUartSettings;
 
 import java.text.SimpleDateFormat;
+import java.util.LinkedList;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -89,7 +91,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //手机常量，代码里设置
     private final boolean MobileKeepScreenOn = false;
 
-
+    //调用SQLite
+    private SQLiteDataBaseAPP dbHelper;
 
     /**
      *
@@ -127,12 +130,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()) {
                 Log.v(TAG,"Android 10以上设备是否获取最高读写文件权限?:" + Environment.isExternalStorageManager());
-                SQLiteDataBaseAPP.SQLiteData().CreateSql(getApplicationContext().getFilesDir().getAbsolutePath());
+                //既然有权限了，带上数据库初始化
+                if (ChatUtils.isSqlite()) {
+                    dbHelper = SQLiteDataBaseAPP.SQLiteData();
+                    dbHelper.CreateSql(getFilesDir().getPath());
+                    loadMessagesFromDatabase();
+                }
             } else {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);intent.setData(Uri.parse("package:" + this.getPackageName()));startActivityForResult(intent, 1024);
             }
         }
-
         //创建CH34x设备对象
         MainAPP.CH34X = new CH34xUARTDriver(
                 (UsbManager) getSystemService(Context.USB_SERVICE), this,
@@ -472,7 +479,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (MainAPP.CH34X.setConfig(WCHUartSettings.needGetData().getBaudRate(),
                             WCHUartSettings.needGetData().getDataBit(), WCHUartSettings.needGetData().getStopBit(),
                             WCHUartSettings.needGetData().getParity(), WCHUartSettings.needGetData().getFlowControl())) {
-                        CH34xReadData();//配置成功后读数据
+                        NearLinkChatReadData();//配置成功后读数据
                         HhandlerI.sendEmptyMessage(30);
                         SnackBarToastForDebug("请主动发送数据或静待接收数据!","谢谢",0,Snackbar.LENGTH_SHORT);
                     } else {
@@ -487,8 +494,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public String TextOfServer = "";
-    private void CH34xReadData() {
+    private void loadMessagesFromDatabase() {
+        Cursor cursor = dbHelper.getAllMessages();
+        if (cursor != null) {
+            try {
+                while (cursor.moveToNext()) {
+                    @SuppressLint("Range") String message = cursor.getString(cursor.getColumnIndex("message"));
+                    @SuppressLint("Range") String sender = cursor.getString(cursor.getColumnIndex("sender"));
+                    // 根据sender区分消息显示
+                    if ("server".equals(sender)) {
+                        NearLinkServerText.append(message + "\n");
+                    } else {
+                        NearLinkClientText.append(message + "\n");
+                    }
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+    }
+
+    private void saveMessageToDatabase(String message, String sender) {
+        String timestamp = dateFormat.format(new java.util.Date());
+        dbHelper.saveMessageToDatabase(message, sender, timestamp);
+    }
+
+    private StringBuilder buffer = new StringBuilder();
+    private LinkedList<String> serverMessageQueue = new LinkedList<>();
+    private LinkedList<String> clientMessageQueue = new LinkedList<>();
+    private static final int MAX_MESSAGES = 10; // 设置最大消息数量
+    @SuppressLint("SimpleDateFormat")
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
+    private void NearLinkChatReadData() {
         //先播报星闪软件情况，已经UART接入星闪网络，再好好的处理字符
         HhandlerI.sendEmptyMessage(10);
         StringBuffer stringBuffer = new StringBuffer();
@@ -501,19 +538,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             stringBuffer.append(processedString);
             //处理完再打印到UI上
             runOnUiThread(() -> {
-                NearLinkServerText.append(processedString);
-                if (NearLinkServerText.length() > 2048) {
-                    String str = NearLinkServerText.getText().toString().substring(NearLinkServerText.getText().length() - 1024, NearLinkServerText.getText().length());
-                    NearLinkServerText.setText("");
-                    NearLinkServerText.append(str);
+                saveMessageToDatabase(processedString, "server");
+                if (ChatUtils.isScrollingMessages()) {
+                    if (serverMessageQueue.size() >= MAX_MESSAGES * 3) {
+                        serverMessageQueue.poll();
+                    }
+                    serverMessageQueue.add(processedString);
+                    updateServerTextView();
+                } else {
+                    NearLinkServerText.append(processedString);
+                    if (NearLinkServerText.length() > 2048) {
+                        String str = NearLinkServerText.getText().toString().substring(NearLinkServerText.getText().length() - 1024, NearLinkServerText.getText().length());
+                        NearLinkServerText.setText("");
+                        NearLinkServerText.append(str);
+                    }
                 }
             });
         });
     }
 
-    private StringBuilder buffer = new StringBuilder();
-    @SuppressLint("SimpleDateFormat")
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
+    private void updateServerTextView() {
+        StringBuilder allMessages = new StringBuilder();
+        for (String message : serverMessageQueue) {
+            allMessages.append(message);
+        }
+        NearLinkServerText.setText(allMessages.toString());
+    }
+
     private String CH34xProcessingForReadData(String string) {
         buffer.append(string);
         String result = buffer.toString();
@@ -550,8 +601,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return "";
     }
 
-    public String TextOfClient = "";
-    public void nearlinkChatSend(View view) {
+    public void NearLinkChatSendData(View view) {
         HhandlerI.sendEmptyMessage(10);
         byte[] to_send = StringUtils.needProcess().toByteArray(String.valueOf(EditChatSend.getText()));		//以字符串方式发送
         int retval = MainAPP.CH34X.writeData(to_send, to_send.length);//写数据，第一个参数为需要发送的字节数组，第二个参数为需要发送的字节长度，返回实际发送的字节长度
@@ -563,15 +613,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    NearLinkClientText.append(TextOfClient);
-                    if (NearLinkClientText.length() > 2048) {
-                        String str = NearLinkClientText.getText().toString().substring(NearLinkClientText.getText().length() - 1024, NearLinkClientText.getText().length());
-                        NearLinkClientText.setText("");
-                        NearLinkClientText.append(str);
+                    saveMessageToDatabase(TextOfClient, "client");
+                    if (ChatUtils.isScrollingMessages()) {
+                        if (clientMessageQueue.size() >= MAX_MESSAGES) {
+                            clientMessageQueue.poll(); // 移除最早的消息
+                        }
+                        clientMessageQueue.add(TextOfClient);
+                        updateClientTextView();
+                    } else {
+                        NearLinkClientText.append(TextOfClient);
+                        if (NearLinkClientText.length() > 2048) {
+                            String str = NearLinkClientText.getText().toString().substring(NearLinkClientText.getText().length() - 1024, NearLinkClientText.getText().length());
+                            NearLinkClientText.setText("");
+                            NearLinkClientText.append(str);
+                        }
                     }
                 }
             });
         }
+    }
+
+    private void updateClientTextView() {
+        StringBuilder allMessages = new StringBuilder();
+        for (String message : clientMessageQueue) {
+            allMessages.append(message);
+        }
+        NearLinkClientText.setText(allMessages.toString());
     }
 
     private String CH34xProcessingForSendData(String string) {

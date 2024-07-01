@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">NLChat</string>
     <string name="app_package">com.haohanyh.linmengjia.nearlink.nlchat.fun</string>
-    <string name="app_version">1.2.1.2024.0701</string>
+    <string name="app_version">1.2.16.2024.0701</string>
 
     <string name="appwarn">NLChat，浩瀚银河宗旨为用爱和魔法创造Android APP。</string>
     <string name="thanks3q">友情感谢</string>
@@ -59,7 +59,6 @@
     <string name="uiNearLinkSettingsForClearSCR">阅后即焚(默认2分钟清) </string>
     <string name="uiNearLinkSettingsForEncryption">通讯加密(Dev) </string>
     <string name="uiNearLinkSettingsForClip">聊天文本进入剪贴板 </string>
-    <string name="uiNearLinkSettingsForPlus1">聊天消息自动+1 </string>
     <string name="uiNearLinkSettingsForPush">消息通知(手动开启) </string>
     <string name="uiNearLinkSettingsForBackground">背景运行(Daemon) </string>
     <string name="uiNearLinkSettingsForBackup">自动备份设置(JSON) </string>
