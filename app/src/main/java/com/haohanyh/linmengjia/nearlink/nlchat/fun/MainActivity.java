@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RadioButton RadioButtonData5,RadioButtonData6,RadioButtonData7,RadioButtonData8;
     private RadioButton RadioButtonStop1,RadioButtonStop2;
     private RadioButton RadioButtonParityNone,RadioButtonParityOdd,RadioButtonParityEven,RadioButtonParityMark,RadioButtonParitySpace;
+
     //手机常量，代码里设置
     private final boolean MobileKeepScreenOn = false;
 
@@ -100,9 +101,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private LinkedList<String> clientMessageQueue = new LinkedList<>();
     private static final int MAX_MESSAGES = 10; // 设置最大消息数量
     private StringBuilder extractedNumbers = new StringBuilder();
+
     //聊天时间戳
     @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
+
     //调用SQLite
     private SQLiteDataBaseAPP dbHelper;
 
@@ -528,6 +531,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void saveMessageToDatabase(String message, String sender) {
+        //检索是否有空消息，串口通讯时常有相关问题
+        if (message == null || message.trim().isEmpty()) {
+            return;
+        }
+        //如果有消息再保存，上面是没消息不予保存
         String timestamp = dateFormat.format(new java.util.Date());
         dbHelper.saveMessageToDatabase(message, sender, timestamp);
     }
