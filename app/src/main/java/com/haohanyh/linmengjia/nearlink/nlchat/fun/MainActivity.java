@@ -3,6 +3,8 @@ package com.haohanyh.linmengjia.nearlink.nlchat.fun;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -55,6 +57,8 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.WCHUart.WCHUartSettings;
 import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     //Log需要的TAG
@@ -91,6 +95,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //手机常量，代码里设置
     private final boolean MobileKeepScreenOn = false;
 
+    //聊天相关
+    private LinkedList<String> serverMessageQueue = new LinkedList<>();
+    private LinkedList<String> clientMessageQueue = new LinkedList<>();
+    private static final int MAX_MESSAGES = 10; // 设置最大消息数量
+    private StringBuilder extractedNumbers = new StringBuilder();
+    //聊天时间戳
+    @SuppressLint("SimpleDateFormat")
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
     //调用SQLite
     private SQLiteDataBaseAPP dbHelper;
 
@@ -131,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (Environment.isExternalStorageManager()) {
                 Log.v(TAG,"Android 10以上设备是否获取最高读写文件权限?:" + Environment.isExternalStorageManager());
                 //既然有权限了，带上数据库初始化
-                if (ChatUtils.isSqlite()) {
+                if (ChatUtils.isSqlitemanager()) {
                     dbHelper = SQLiteDataBaseAPP.SQLiteData();
                     dbHelper.CreateSql(getFilesDir().getPath());
                 }
@@ -432,10 +444,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
-
+        //初始化完成，软件第一次启动必须提示（这里写的第一次启动是软件启动的第一次，而不是使用频率的第一次
         HhandlerI.sendEmptyMessage(31);
-
-        loadMessagesFromDatabase();
+        //如果SQLite有记录，可以显示在UI上
+        if (ChatUtils.isSqliteHistory()) loadMessagesFromDatabase();
     }
 
     private void InitToOpen() {
@@ -521,11 +533,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private StringBuilder buffer = new StringBuilder();
-    private LinkedList<String> serverMessageQueue = new LinkedList<>();
-    private LinkedList<String> clientMessageQueue = new LinkedList<>();
-    private static final int MAX_MESSAGES = 10; // 设置最大消息数量
-    @SuppressLint("SimpleDateFormat")
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
     private void NearLinkChatReadData() {
         //先播报星闪软件情况，已经UART接入星闪网络，再好好的处理字符
         HhandlerI.sendEmptyMessage(10);
@@ -594,6 +601,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (!completeSecondData.endsWith("\n")) {
                     completeSecondData += "\n";
                 }
+
+                //聊天进入剪贴板
+                if (ChatUtils.isClipMessages()) {
+                    // 提取四位和六位数字
+                    Pattern pattern = Pattern.compile("\\b\\d{4}\\b|\\b\\d{6}\\b");
+                    Matcher matcher = pattern.matcher(completeSecondData);
+                    while (matcher.find()) {
+                        String foundNumber = matcher.group();
+                        extractedNumbers.append(foundNumber).append("\n");
+                    }
+
+                    // 将提取到的数字复制到剪贴板
+                    if (extractedNumbers.length() > 0) {
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("extractedNumbers", extractedNumbers.toString().trim());
+                        clipboard.setPrimaryClip(clip);
+                        SnackBarToastForDebug("提取到疑似验证码，已复制到剪贴板!","推荐去粘贴",0,Snackbar.LENGTH_LONG);
+                    }
+                }
+
                 return completeSecondData;
             }
         } else {
