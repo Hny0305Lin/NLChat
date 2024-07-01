@@ -518,7 +518,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @SuppressLint("Range") String message = cursor.getString(cursor.getColumnIndex("message"));
                     @SuppressLint("Range") String sender = cursor.getString(cursor.getColumnIndex("sender"));
                     // 根据sender区分消息显示
-                    if ("server".equals(sender)) {
+                    if ("User".equals(sender)) {
                         NearLinkServerText.append(message + "\n");
                     } else {
                         NearLinkClientText.append(message + "\n");
@@ -554,7 +554,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             stringBuffer.append(processedString);
             //处理完再打印到UI上
             runOnUiThread(() -> {
-                saveMessageToDatabase(processedString, "server");
+                saveMessageToDatabase(processedString, "User");
                 if (ChatUtils.isScrollingMessages()) {
                     if (serverMessageQueue.size() >= MAX_MESSAGES * 3) {
                         serverMessageQueue.poll();
@@ -649,7 +649,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    saveMessageToDatabase(TextOfClient, "client");
+                    saveMessageToDatabase(TextOfClient, "Me");
                     if (ChatUtils.isScrollingMessages()) {
                         if (clientMessageQueue.size() >= MAX_MESSAGES) {
                             clientMessageQueue.poll(); // 移除最早的消息
