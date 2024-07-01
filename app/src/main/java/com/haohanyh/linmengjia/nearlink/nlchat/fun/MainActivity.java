@@ -134,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (ChatUtils.isSqlite()) {
                     dbHelper = SQLiteDataBaseAPP.SQLiteData();
                     dbHelper.CreateSql(getFilesDir().getPath());
-                    loadMessagesFromDatabase();
                 }
             } else {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);intent.setData(Uri.parse("package:" + this.getPackageName()));startActivityForResult(intent, 1024);
@@ -435,6 +434,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         HhandlerI.sendEmptyMessage(31);
+
+        loadMessagesFromDatabase();
     }
 
     private void InitToOpen() {

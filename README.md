@@ -2,7 +2,7 @@
 
 NLChat是专门为[小熊派BearPi的星闪代码](https://github.com/Hny0305Lin/Bearpi_Hi2821_Pico_NLChat)开发的一款基于SLE通讯的文本传输软件，目前还在开发中，敬请期待完整版向大家开放。
 
-![IMG.SHIELD.IO](https://img.shields.io/badge/Hi2821_NLChat-Release1.2.16.2024.0701-gray.svg?colorA=007FFC&colorB=4DDDFC&style=for-the-badge)
+![IMG.SHIELD.IO](https://img.shields.io/badge/Hi2821_NLChat-Release1.2.18.2024.0701-gray.svg?colorA=007FFC&colorB=4DDDFC&style=for-the-badge)
 
 ![NLChat](https://github.com/Hny0305Lin/NLChat/blob/master/DevSummary/NLChat.jpg)
 
