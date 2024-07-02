@@ -24,6 +24,7 @@ public class SQLiteDataBaseAPP {
         createVersionTable();
     }
 
+    //创建消息表，存储消息、相关用户、聊天时间，绑定ID
     private void createChatTable() {
         String TABLE_CREATE =
                 "CREATE TABLE IF NOT EXISTS messages (" +
@@ -34,6 +35,7 @@ public class SQLiteDataBaseAPP {
         sqLiteDataBaseForAPP.execSQL(TABLE_CREATE);
     }
 
+    //创建版本表，存储聊天消息时使用该软件的版本号，绑定ID
     private void createVersionTable() {
         String TABLE_CREATE =
                 "CREATE TABLE IF NOT EXISTS versions (" +
@@ -42,6 +44,7 @@ public class SQLiteDataBaseAPP {
         sqLiteDataBaseForAPP.execSQL(TABLE_CREATE);
     }
 
+    //保存消息到数据库
     public void saveMessageToDatabase(String message, String sender, String timestamp) {
         ContentValues values = new ContentValues();
         values.put("message", message);
@@ -50,12 +53,14 @@ public class SQLiteDataBaseAPP {
         sqLiteDataBaseForAPP.insert("messages", null, values);
     }
 
+    //保存版本号到数据库
     public void saveVersionToDatabase(String version) {
         ContentValues values = new ContentValues();
         values.put("version", version);
         sqLiteDataBaseForAPP.insert("versions", null, values);
     }
 
+    //获取表中消息，按时间戳升序排序
     public Cursor getAllMessages() {
         return sqLiteDataBaseForAPP.query("messages", null, null, null, null, null, "timestamp ASC");
     }
