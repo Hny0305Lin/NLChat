@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Vibrator;
 import android.provider.Settings;
 import android.util.Log;
 import android.util.TypedValue;
@@ -26,6 +25,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,14 +47,19 @@ import com.google.android.material.snackbar.Snackbar;
 import com.haohanyh.linmengjia.nearlink.nlchat.ch34x.CH34xUARTDriver;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.Premission.NearLinkChatGetSomePermission;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.array;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.color;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.drawable;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.id;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.string;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.style;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.SQLite.SQLiteDataBaseAPP;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.String.StringUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.WCHUart.WCHUartSettings;
 
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -92,6 +97,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RadioButton RadioButtonData5,RadioButtonData6,RadioButtonData7,RadioButtonData8;
     private RadioButton RadioButtonStop1,RadioButtonStop2;
     private RadioButton RadioButtonParityNone,RadioButtonParityOdd,RadioButtonParityEven,RadioButtonParityMark,RadioButtonParitySpace;
+    private final int[] baudRateIds = {id.rbBaud4800, id.rbBaud9600, id.rbBaud19200, id.rbBaud38400, id.rbBaud57600, id.rbBaud115200, id.rbBaud921600};
+    private final int[] dataBitIds = {id.rbData5, id.rbData6, id.rbData7, id.rbData8};
+    private final int[] stopBitIds = {id.rbStop1, id.rbStop2};
+    private final int[] parityIds = {id.rbParityNone, id.rbParityOdd, id.rbParityEven, id.rbParityMark, id.rbParitySpace};
+
 
     //手机常量，代码里设置
     private final boolean MobileKeepScreenOn = false;
@@ -208,246 +218,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         NearLinkUartWarnToast = CheckBoxUartWarn.isChecked();
 
         resources = getApplicationContext().getResources();
-        UartSettingsBaud = resources.getStringArray(R.array.listBaud);
-        UartSettingsData = resources.getStringArray(R.array.listData);
-        UartSettingsStop = resources.getStringArray(R.array.listStop);
-        UartSettingsParity = resources.getStringArray(R.array.listParity);
-        UartSettingsParityII = resources.getStringArray(R.array.listParityNum);
+        UartSettingsBaud = resources.getStringArray(array.listBaud);
+        UartSettingsData = resources.getStringArray(array.listData);
+        UartSettingsStop = resources.getStringArray(array.listStop);
+        UartSettingsParity = resources.getStringArray(array.listParity);
+        UartSettingsParityII = resources.getStringArray(array.listParityNum);
 
         RadioButtonBaud4800 = findViewById(id.rbBaud4800);
-        RadioButtonBaud4800.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    wchUartSettings.setBaudRate(Integer.parseInt(UartSettingsBaud[0]));
-                    SnackBarToastForDebug("已设置波特率" + wchUartSettings.getBaudRate() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
-                } else {
-                    if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(MainActivity.this,"更改波特率中",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         RadioButtonBaud9600 = findViewById(id.rbBaud9600);
-        RadioButtonBaud9600.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    wchUartSettings.setBaudRate(Integer.parseInt(UartSettingsBaud[1]));
-                    SnackBarToastForDebug("已设置波特率" + wchUartSettings.getBaudRate() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
-                } else {
-                    if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(MainActivity.this,"更改波特率中",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         RadioButtonBaud19200 = findViewById(id.rbBaud19200);
-        RadioButtonBaud19200.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    wchUartSettings.setBaudRate(Integer.parseInt(UartSettingsBaud[2]));
-                    SnackBarToastForDebug("已设置波特率" + wchUartSettings.getBaudRate() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
-                } else {
-                    if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(MainActivity.this,"更改波特率中",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         RadioButtonBaud38400 = findViewById(id.rbBaud38400);
-        RadioButtonBaud38400.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    wchUartSettings.setBaudRate(Integer.parseInt(UartSettingsBaud[3]));
-                    SnackBarToastForDebug("已设置波特率" + wchUartSettings.getBaudRate() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
-                } else {
-                    if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(MainActivity.this,"更改波特率中",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         RadioButtonBaud57600 = findViewById(id.rbBaud57600);
-        RadioButtonBaud57600.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    wchUartSettings.setBaudRate(Integer.parseInt(UartSettingsBaud[4]));
-                    SnackBarToastForDebug("已设置波特率" + wchUartSettings.getBaudRate() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
-                } else {
-                    if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(MainActivity.this,"更改波特率中",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         RadioButtonBaud115200 = findViewById(id.rbBaud115200);
-        RadioButtonBaud115200.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    wchUartSettings.setBaudRate(Integer.parseInt(UartSettingsBaud[5]));
-                    SnackBarToastForDebug("已设置波特率" + wchUartSettings.getBaudRate() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
-                } else {
-                    if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(MainActivity.this,"更改波特率中",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         RadioButtonBaud921600 = findViewById(id.rbBaud921600);
-        RadioButtonBaud921600.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    wchUartSettings.setBaudRate(Integer.parseInt(UartSettingsBaud[6]));
-                    SnackBarToastForDebug("已设置波特率" + wchUartSettings.getBaudRate() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
-                } else {
-                    if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(MainActivity.this,"更改波特率中",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         RadioButtonData5 = findViewById(id.rbData5);
-        RadioButtonData5.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    wchUartSettings.setDataBit(Byte.parseByte(UartSettingsData[0]));
-                    SnackBarToastForDebug("已设置数据位" + wchUartSettings.getDataBit() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
-                } else {
-                    if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(MainActivity.this,"更改数据位中",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         RadioButtonData6 = findViewById(id.rbData6);
-        RadioButtonData6.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    wchUartSettings.setDataBit(Byte.parseByte(UartSettingsData[1]));
-                    SnackBarToastForDebug("已设置数据位" + wchUartSettings.getDataBit() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
-                } else {
-                    if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(MainActivity.this,"更改数据位中",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         RadioButtonData7 = findViewById(id.rbData7);
-        RadioButtonData7.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    wchUartSettings.setDataBit(Byte.parseByte(UartSettingsData[2]));
-                    SnackBarToastForDebug("已设置数据位" + wchUartSettings.getDataBit() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
-                } else {
-                    if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(MainActivity.this,"更改数据位中",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         RadioButtonData8 = findViewById(id.rbData8);
-        RadioButtonData8.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    wchUartSettings.setDataBit(Byte.parseByte(UartSettingsData[3]));
-                    SnackBarToastForDebug("已设置数据位" + wchUartSettings.getDataBit() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
-                } else {
-                    if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(MainActivity.this,"更改数据位中",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         RadioButtonStop1 = findViewById(id.rbStop1);
-        RadioButtonStop1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    wchUartSettings.setStopBit(Byte.parseByte(UartSettingsStop[0]));
-                    SnackBarToastForDebug("已设置停止位" + wchUartSettings.getStopBit() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
-                } else {
-                    if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(MainActivity.this,"更改停止位中",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         RadioButtonStop2 = findViewById(id.rbStop2);
-        RadioButtonStop2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    wchUartSettings.setStopBit(Byte.parseByte(UartSettingsStop[1]));
-                    SnackBarToastForDebug("已设置停止位" + wchUartSettings.getStopBit() + "!","设置成功",0,Snackbar.LENGTH_SHORT);
-                } else {
-                    if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(MainActivity.this,"更改停止位中",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         RadioButtonParityNone = findViewById(id.rbParityNone);
-        RadioButtonParityNone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    wchUartSettings.setParity(Byte.parseByte(UartSettingsParityII[0]));
-                    SnackBarToastForDebug("已设置校验位" + wchUartSettings.getParity() + UartSettingsParity[0] + "!","设置成功",0,Snackbar.LENGTH_SHORT);
-                } else {
-                    if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(MainActivity.this,"更改校验位中",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         RadioButtonParityOdd = findViewById(id.rbParityOdd);
-        RadioButtonParityOdd.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    wchUartSettings.setParity(Byte.parseByte(UartSettingsParityII[1]));
-                    SnackBarToastForDebug("已设置校验位" + wchUartSettings.getParity() + UartSettingsParity[1] + "!","设置成功",0,Snackbar.LENGTH_SHORT);
-                } else {
-                    if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(MainActivity.this,"更改校验位中",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         RadioButtonParityEven = findViewById(id.rbParityEven);
-        RadioButtonParityEven.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    wchUartSettings.setParity(Byte.parseByte(UartSettingsParityII[2]));
-                    SnackBarToastForDebug("已设置校验位" + wchUartSettings.getParity() + UartSettingsParity[2] + "!","设置成功",0,Snackbar.LENGTH_SHORT);
-                } else {
-                    if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(MainActivity.this,"更改校验位中",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         RadioButtonParityMark = findViewById(id.rbParityMark);
-        RadioButtonParityMark.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    wchUartSettings.setParity(Byte.parseByte(UartSettingsParityII[3]));
-                    SnackBarToastForDebug("已设置校验位" + wchUartSettings.getParity() + UartSettingsParity[3] + "!","设置成功",0,Snackbar.LENGTH_SHORT);
-                } else {
-                    if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(MainActivity.this,"更改校验位中",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
         RadioButtonParitySpace = findViewById(id.rbParitySpace);
-        RadioButtonParitySpace.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    wchUartSettings.setParity(Byte.parseByte(UartSettingsParityII[4]));
-                    SnackBarToastForDebug("已设置校验位" + wchUartSettings.getParity() + UartSettingsParity[4] + "!","设置成功",0,Snackbar.LENGTH_SHORT);
-                } else {
-                    if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(MainActivity.this,"更改校验位中",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+
+        // 设置波特率的 RadioButton
+        for (int i = 0; i < baudRateIds.length; i++) {
+            RadioButton radioButton = findViewById(baudRateIds[i]);
+            radioButton.setOnCheckedChangeListener(createCheckedChangeListener(i, "BaudRate"));
+        }
+
+        // 设置数据位的 RadioButton
+        for (int i = 0; i < dataBitIds.length; i++) {
+            RadioButton radioButton = findViewById(dataBitIds[i]);
+            radioButton.setOnCheckedChangeListener(createCheckedChangeListener(i, "DataBit"));
+        }
+
+        // 设置停止位的 RadioButton
+        for (int i = 0; i < stopBitIds.length; i++) {
+            RadioButton radioButton = findViewById(stopBitIds[i]);
+            radioButton.setOnCheckedChangeListener(createCheckedChangeListener(i, "StopBit"));
+        }
+
+        // 设置校验位的 RadioButton
+        for (int i = 0; i < parityIds.length; i++) {
+            RadioButton radioButton = findViewById(parityIds[i]);
+            radioButton.setOnCheckedChangeListener(createCheckedChangeListener(i, "Parity"));
+        }
+
         //初始化完成，软件第一次启动必须提示（这里写的第一次启动是软件启动的第一次，而不是使用频率的第一次
         HhandlerI.sendEmptyMessage(31);
         //如果SQLite有记录，可以显示在UI上
@@ -548,7 +367,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         StringBuffer stringBuffer = new StringBuffer();
         MainAPP.CH34X.setReadListener(bytes -> {
             //字节转文本
-            String string = StringUtils.needProcess().bytesToString(bytes);
+            //String string = StringUtils.needProcess().bytesToString(bytes);
+            String string = new String(bytes, StandardCharsets.UTF_8);
             Log.v(TAG, "长度：bytes.length="+ bytes.length + "\t内容：" + string);
             //进行文本处理
             String processedString = CH34xProcessingForReadData(string);
@@ -557,11 +377,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             runOnUiThread(() -> {
                 saveMessageToDatabase(processedString, "User");
                 if (ChatUtils.isScrollingMessages()) {
-                    if (serverMessageQueue.size() >= MAX_MESSAGES * 3) {
+                    if (serverMessageQueue.size() >= MAX_MESSAGES) {
                         serverMessageQueue.poll();
                     }
                     serverMessageQueue.add(processedString);
                     updateServerTextView();
+                    MainAPP.Vibrate(this);
                 } else {
                     NearLinkServerText.append(processedString);
                     if (NearLinkServerText.length() > 2048) {
@@ -569,6 +390,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         NearLinkServerText.setText("");
                         NearLinkServerText.append(str);
                     }
+                    MainAPP.Vibrate(this);
                 }
             });
         });
@@ -576,10 +398,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void updateServerTextView() {
         StringBuilder allMessages = new StringBuilder();
-        for (String message : serverMessageQueue) {
-            allMessages.append(message);
+        Iterator<String> iterator = serverMessageQueue.iterator();
+        while (iterator.hasNext()) {
+            String message = iterator.next();
+            Log.v(TAG, "当前消息内容：" + message); // 打印每个消息到日志
+            if (!message.trim().isEmpty()) {
+                allMessages.append(message);
+            } else {
+                Log.v(TAG, "忽略空消息，因此消息队列在User上无改动"); // 打印忽略空消息到日志
+                iterator.remove(); // 从队列中移除空消息
+            }
         }
         NearLinkServerText.setText(allMessages.toString());
+        Log.v(TAG, "消息队列在User上有改动");
+    }
+
+    // 过滤非文本字符的方法
+    private String filterNonTextCharacters(String input) {
+        return input.replaceAll("[^\\p{Print}\\p{Space}\\p{IsHan}]", "");
     }
 
     private String CH34xProcessingForReadData(String string) {
@@ -632,8 +468,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 return completeSecondData;
             }
-        } else {
-            return "";
         }
         return "";
     }
@@ -647,24 +481,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             Toast.makeText(MainActivity.this, "发送成功!", Toast.LENGTH_SHORT).show();
             String TextOfClient = CH34xProcessingForSendData(EditChatSend.getText().toString());
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    saveMessageToDatabase(TextOfClient, "Me");
-                    if (ChatUtils.isScrollingMessages()) {
-                        if (clientMessageQueue.size() >= MAX_MESSAGES) {
-                            clientMessageQueue.poll(); // 移除最早的消息
-                        }
-                        clientMessageQueue.add(TextOfClient);
-                        updateClientTextView();
-                    } else {
-                        NearLinkClientText.append(TextOfClient);
-                        if (NearLinkClientText.length() > 2048) {
-                            String str = NearLinkClientText.getText().toString().substring(NearLinkClientText.getText().length() - 1024, NearLinkClientText.getText().length());
-                            NearLinkClientText.setText("");
-                            NearLinkClientText.append(str);
-                        }
+            runOnUiThread(() -> {
+                saveMessageToDatabase(TextOfClient, "Me");
+                if (ChatUtils.isScrollingMessages()) {
+                    if (clientMessageQueue.size() >= MAX_MESSAGES) {
+                        clientMessageQueue.poll(); // 移除最早的消息
                     }
+                    clientMessageQueue.add(TextOfClient);
+                    updateClientTextView();
+                    MainAPP.Vibrate(this);
+                } else {
+                    NearLinkClientText.append(TextOfClient);
+                    if (NearLinkClientText.length() > 2048) {
+                        String str = NearLinkClientText.getText().toString().substring(NearLinkClientText.getText().length() - 1024, NearLinkClientText.getText().length());
+                        NearLinkClientText.setText("");
+                        NearLinkClientText.append(str);
+                    }
+                    MainAPP.Vibrate(this);
                 }
             });
         }
@@ -672,10 +505,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void updateClientTextView() {
         StringBuilder allMessages = new StringBuilder();
-        for (String message : clientMessageQueue) {
-            allMessages.append(message);
+        Iterator<String> iterator = clientMessageQueue.iterator();
+        while (iterator.hasNext()) {
+            String message = iterator.next();
+            Log.v(TAG, "当前消息内容：" + message); // 打印每个消息到日志
+            if (!message.trim().isEmpty()) {
+                allMessages.append(message);
+            } else {
+                Log.v(TAG, "忽略空消息，因此消息队列在Me上无改动"); // 打印忽略空消息到日志
+                iterator.remove(); // 从队列中移除空消息
+            }
         }
         NearLinkClientText.setText(allMessages.toString());
+        Log.v(TAG, "消息队列在Me上有改动");
     }
 
     private String CH34xProcessingForSendData(String string) {
@@ -724,11 +566,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @SuppressLint({"NonConstantResourceId", "UseCompatLoadingForDrawables"})
     @Override
     public void onClick(View view) {
+        MainAPP.Vibrate(this);
         if (view.getId() == id.btnGO) {
+            MainAPP.Vibrate(this);
             btnGO.setEnabled(false);//一次点击后不可再次点击，因为已经把星闪网络给启动了
             InitToOpen();
         } else if (view.getId() == id.menu_labels_right_btn_nearlink) {
-            Vibrate(this);
+            MainAPP.Vibrate(this);
             if (clickCountButton_btnNearLinkStatus % 2 == 0) {
                 CNearLinkStatus.setVisibility(View.GONE);
                 btnGO.setVisibility(View.GONE);
@@ -742,9 +586,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btnNearLinkStatus.setImageResource(drawable.ic_baseline_done_all_24);
                 clickCountButton_btnNearLinkStatus = 0;
             }
-
         } else if (view.getId() == id.menu_labels_right_btn_nearlink_settings) {
-            Vibrate(this);
+            MainAPP.Vibrate(this);
             if (clickCountButton_btnNearLinkSettings % 2 == 0) {
                 CNearLinkSettings.setVisibility(View.GONE);
                 btnNearLinkSettings.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_close_24));
@@ -758,7 +601,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         } else if (view.getId() == id.menu_labels_right_btn_nearlink_uart) {
-            Vibrate(this);
+            MainAPP.Vibrate(this);
             if (clickCountButton_btnNearLinkUart % 2 == 0) {
                 CNearlinkUart.setVisibility(View.GONE);
                 btnNearlinkUart.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_close_24));
@@ -772,7 +615,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         } else if (view.getId() == id.menu_labels_right_btn_nearlink_dev) {
-            Vibrate(this);
+            MainAPP.Vibrate(this);
             if (clickCountButton_btnNearLinkDev % 2 == 0) {
                 CNearlinkDev.setVisibility(View.GONE);
                 btnNearlinkDev.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_close_24));
@@ -784,14 +627,71 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btnNearlinkDev.setImageResource(drawable.ic_baseline_done_all_24);
                 clickCountButton_btnNearLinkDev = 0;
             }
-
         }
     }
+
+    private void toggleVisibility(View container, ImageButton button, int closeDrawable, int doneDrawable) {
+        if (container.getVisibility() == View.VISIBLE) {
+            container.setVisibility(View.GONE);
+            button.setImageDrawable(getResources().getDrawable(closeDrawable));
+            button.setImageResource(closeDrawable);
+        } else {
+            container.setVisibility(View.VISIBLE);
+            button.setImageDrawable(getResources().getDrawable(doneDrawable));
+            button.setImageResource(doneDrawable);
+        }
+    }
+
+    /**
+     *
+     * @param index
+     * @param type
+     * @return
+     */
+    private CompoundButton.OnCheckedChangeListener createCheckedChangeListener(final int index, final String type) {
+        return new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    switch (type) {
+                        case "BaudRate":
+                            wchUartSettings.setBaudRate(Integer.parseInt(UartSettingsBaud[index]));
+                            SnackBarToastForDebug("已设置波特率" + wchUartSettings.getBaudRate() + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
+                            break;
+                        case "DataBit":
+                            wchUartSettings.setDataBit(Byte.parseByte(UartSettingsData[index]));
+                            SnackBarToastForDebug("已设置数据位" + wchUartSettings.getDataBit() + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
+                            break;
+                        case "StopBit":
+                            wchUartSettings.setStopBit(Byte.parseByte(UartSettingsStop[index]));
+                            SnackBarToastForDebug("已设置停止位" + wchUartSettings.getStopBit() + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
+                            break;
+                        case "Parity":
+                            wchUartSettings.setParity(Byte.parseByte(UartSettingsParityII[index]));
+                            SnackBarToastForDebug("已设置校验位" + wchUartSettings.getParity() + UartSettingsParity[index] + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
+                            break;
+                    }
+                } else {
+                    if (CheckBoxUartWarn.isChecked())
+                        Toast.makeText(MainActivity.this, "更改" + type + "中", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+    }
+
+
+
+
+
+
 
     private void close() {
         SnackBarToastForDebug("检测到USB已接入，请完成初始化后使用!","推荐初始化操作",1,Snackbar.LENGTH_SHORT);
         MainAPP.CH34X.closeDevice();
     }
+
+
+
 
     /**
      * SnackBar通知 遵守Google Material
@@ -824,25 +724,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         snackbar.setAction(actiontext, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Vibrate(MainActivity.this);
+                MainAPP.Vibrate(MainActivity.this);
                 switch (level) { case 520: break; case 521: break; default: break;}
             }
         });
         //snackbar主动出击
         snackbar.show();
-    }
-
-    /**
-     * 手机震动提醒
-     * @param context 上下文
-     */
-    public void Vibrate(Context context) {
-        Log.v(TAG, "浩瀚银河" + "手机震动提醒: " + "成功");
-        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        if (vibrator != null) {
-            long[] pattern = {0, 75, 37, 50};
-            vibrator.vibrate(pattern, -1);
-        }
     }
 
     //没有人能够熄灭满天的星光，每一个开发者都是华为要汇聚的星星之火。星星之火，可以燎原。
@@ -854,8 +741,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textView.setPadding(16, 16, 0, 8);
         textView.setGravity(Gravity.LEFT);
         textView.setTextColor(ContextCompat.getColor(this, color.Pink_is_fancy));
-        AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.HaohanyhDialog)
-                .setMessage(R.string.egg)
+        AlertDialog.Builder builder = new AlertDialog.Builder(this,style.HaohanyhDialog)
+                .setMessage(string.egg)
                 .setCustomTitle(textView)
                 .setNegativeButton("确定!", new DialogInterface.OnClickListener() {
                     @Override
