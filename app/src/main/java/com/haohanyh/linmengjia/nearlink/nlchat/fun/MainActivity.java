@@ -318,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             WCHUartSettings.needGetData().getParity(), WCHUartSettings.needGetData().getFlowControl())) {
                         NearLinkChatReadData();//配置成功后读数据
                         HhandlerI.sendEmptyMessage(30);
-                        SnackBarToastForDebug("请主动发送数据或静待接收数据!","谢谢",0,Snackbar.LENGTH_SHORT);
+                        SnackBarToastForDebug("请主动发送数据或静待接收数据!","谢谢",0,Snackbar.LENGTH_INDEFINITE);
                     } else {
                         HhandlerI.sendEmptyMessage(32);
                         HhandlerI.sendEmptyMessage(11);
