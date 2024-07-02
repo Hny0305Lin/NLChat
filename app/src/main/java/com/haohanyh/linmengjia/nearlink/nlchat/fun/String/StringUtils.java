@@ -44,8 +44,9 @@ public class StringUtils {
      * @return 转换后的String数据
      */
     public String bytesToString(byte[] str) {
-        String keyword = null;
-        keyword = new String(str, StandardCharsets.UTF_8);
-        return keyword;
+//        String keyword = null;
+//        keyword = new String(str, StandardCharsets.UTF_8);
+//        return keyword;
+        return new String(str, StandardCharsets.UTF_8);
     }
 }
