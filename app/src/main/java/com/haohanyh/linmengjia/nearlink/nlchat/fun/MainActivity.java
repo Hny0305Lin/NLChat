@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //聊天时间戳
     @SuppressLint("SimpleDateFormat")
     //private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd HH:mm:ss.SSS");
 
     //调用SQLite
     private SQLiteDataBaseAPP dbHelper;
@@ -465,8 +465,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         SnackBarToastForDebug("提取到疑似验证码，已复制到剪贴板!","推荐去粘贴",0,Snackbar.LENGTH_LONG);
                     }
                 }
-
                 return completeSecondData;
+            } else if (completeFirstData.contains(ChatUtils.getPrefixLogNotConnectedServer())) {
+                Log.v(TAG, "串口Log内容：" + completeFirstData);
+                if (completeFirstData.startsWith(ChatUtils.getPrefixLogNotConnectedServer()))
+                    if (ChatUtils.isShowUartLog())
+                        SnackBarToastForDebug("发送失败!\n" + ChatUtils.getPrefixLogNotConnectedServer(),"推荐检查星闪网络",0,Snackbar.LENGTH_INDEFINITE);
             }
         }
         return "";
@@ -479,7 +483,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (retval < 0) {
             SnackBarToastForDebug("向对方发送数据失败!","推荐重新配置",3,Snackbar.LENGTH_SHORT);
         } else {
-            Toast.makeText(MainActivity.this, "发送成功!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(MainActivity.this, "发送成功!", Toast.LENGTH_SHORT).show();
             String TextOfClient = CH34xProcessingForSendData(EditChatSend.getText().toString());
             runOnUiThread(() -> {
                 saveMessageToDatabase(TextOfClient, "Me");
