@@ -449,8 +449,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 //聊天进入剪贴板
                 if (ChatUtils.isClipMessages()) {
-                    // 提取四位和六位数字
-                    Pattern pattern = Pattern.compile("\\b\\d{4}\\b|\\b\\d{6}\\b");
+                    // 清空 extractedNumbers 以确保每次都是最新的提取结果
+                    extractedNumbers.setLength(0);
+
+                    // 提取四位和六位数字，但排除年份相关的四位数字
+                    Pattern pattern = Pattern.compile("\\b(?!19\\d{2}|20\\d{2})\\d{4}\\b|\\b\\d{6}\\b");
                     Matcher matcher = pattern.matcher(completeSecondData);
                     while (matcher.find()) {
                         String foundNumber = matcher.group();
@@ -462,7 +465,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                         ClipData clip = ClipData.newPlainText("extractedNumbers", extractedNumbers.toString().trim());
                         clipboard.setPrimaryClip(clip);
-                        SnackBarToastForDebug("提取到疑似验证码，已复制到剪贴板!","推荐去粘贴",0,Snackbar.LENGTH_LONG);
+                        SnackBarToastForDebug("提取到疑似验证码，已复制到剪贴板!","推荐去粘贴",0,Snackbar.LENGTH_INDEFINITE);
+
+                        // 取消之前的清空任务并重新设置定时任务
+                        HhandlerClipBoard.removeCallbacks(clipboardRunnable);
+                        HhandlerClipBoard.postDelayed(clipboardRunnable, 30000); // 30秒后清空剪贴板
                     }
                 }
                 return completeSecondData;
@@ -543,6 +550,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TextInformation(msg);
         return true;
     });
+
+    /*
+     * 定义一个 Handler和Runnable，用于剪贴板功能
+     */
+    private Handler HhandlerClipBoard = new Handler();
+    private Runnable clipboardRunnable = new Runnable() {
+        @Override
+        public void run() {
+            // 清空剪贴板内容
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("", "");
+            clipboard.setPrimaryClip(clip);
+        }
+    };
 
     /**
      *
