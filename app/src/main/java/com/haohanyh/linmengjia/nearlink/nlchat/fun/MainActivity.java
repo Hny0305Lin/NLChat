@@ -447,7 +447,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     ChatProcessor.initializeHandler();
                     ChatProcessor.processChat(context, completeSecondData);
                 }
-                
+
                 return completeSecondData;
             } else if (completeFirstData.contains(ChatUtils.getPrefixLogNotConnectedServer())) {
                 Log.v(TAG, "串口Log内容：" + completeFirstData);
