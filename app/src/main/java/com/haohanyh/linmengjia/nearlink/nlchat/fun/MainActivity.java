@@ -1,6 +1,8 @@
 /* 受Haohanyh Computer Software Products Open Source LICENSE保护 https://github.com/Hny0305Lin/LICENSE/blob/main/LICENSE */
 package com.haohanyh.linmengjia.nearlink.nlchat.fun;
 
+import static com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIToast.SnackBarToastForDebug;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ClipData;
@@ -35,7 +37,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.cardview.widget.CardView;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -45,6 +46,7 @@ import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.haohanyh.linmengjia.nearlink.nlchat.ch34x.CH34xUARTDriver;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatProcessor;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.Premission.NearLinkChatGetSomePermission;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.array;
@@ -62,12 +64,10 @@ import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     //Log需要的TAG
-    private static final String TAG = "MainActivity & 浩瀚银河 & NLChat";
+    private static final String TAG = "MainActivity & NLChat";
     //动态获取权限
     public NearLinkChatGetSomePermission hamosGetSomePermission;
     //CH34X相关
@@ -101,7 +101,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final int[] dataBitIds = {id.rbData5, id.rbData6, id.rbData7, id.rbData8};
     private final int[] stopBitIds = {id.rbStop1, id.rbStop2};
     private final int[] parityIds = {id.rbParityNone, id.rbParityOdd, id.rbParityEven, id.rbParityMark, id.rbParitySpace};
-
+    //Context
+    private Context context = MainActivity.this;
 
     //手机常量，代码里设置
     private final boolean MobileKeepScreenOn = false;
@@ -110,8 +111,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private LinkedList<String> serverMessageQueue = new LinkedList<>();
     private LinkedList<String> clientMessageQueue = new LinkedList<>();
     private static final int MAX_MESSAGES = 10; // 设置最大消息数量
-    private StringBuilder extractedNumbers = new StringBuilder();
-    private StringBuilder extractedUrls = new StringBuilder();
 
     //聊天时间戳
     @SuppressLint("SimpleDateFormat")
@@ -298,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!MainAPP.CH34X.usbFeatureSupported()) {//不支持，弹出提示窗口
             HhandlerI.sendEmptyMessage(21);
             HhandlerI.sendEmptyMessage(11);
-            SnackBarToastForDebug("如果USB接入有问题，有可能是Android没有授予USB权限，请授予!","请注意Android弹窗",2,Snackbar.LENGTH_SHORT);
+            SnackBarToastForDebug(context,"如果USB接入有问题，有可能是Android没有授予USB权限，请授予!","请注意Android弹窗",2,Snackbar.LENGTH_SHORT);
         } else {
             HhandlerI.sendEmptyMessage(20);
             //打开USB设备
@@ -318,7 +317,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             WCHUartSettings.needGetData().getParity(), WCHUartSettings.needGetData().getFlowControl())) {
                         NearLinkChatReadData();//配置成功后读数据
                         HhandlerI.sendEmptyMessage(30);
-                        SnackBarToastForDebug("请主动发送数据或静待接收数据!","谢谢",0,Snackbar.LENGTH_INDEFINITE);
+                        SnackBarToastForDebug(context,"请主动发送数据或静待接收数据!","谢谢",0,Snackbar.LENGTH_INDEFINITE);
                     } else {
                         HhandlerI.sendEmptyMessage(32);
                         HhandlerI.sendEmptyMessage(11);
@@ -414,11 +413,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.v(TAG, "消息队列在User上有改动");
     }
 
-    // 过滤非文本字符的方法
-    private String filterNonTextCharacters(String input) {
-        return input.replaceAll("[^\\p{Print}\\p{Space}\\p{IsHan}]", "");
-    }
-
     private String CH34xProcessingForReadData(String string) {
         buffer.append(string);
         String result = buffer.toString();
@@ -450,112 +444,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 //聊天进入剪贴板
                 if (ChatUtils.isClipMessages()) {
-                    // 清空 extractedNumbers 以确保每次都是最新的提取结果
-                    extractedNumbers.setLength(0);
-
-                    // 提取四位和六位数字，但排除年份相关的四位数字
-                    Pattern pattern = Pattern.compile("\\b(?!19\\d{2}|20\\d{2})\\d{4}\\b|\\b\\d{6}\\b");
-                    Matcher matcher = pattern.matcher(completeSecondData);
-                    while (matcher.find()) {
-                        Log.v(TAG, "找到疑似验证码，提取中");
-                        String foundNumber = matcher.group();
-                        extractedNumbers.append(foundNumber).append("\n");
-                    }
-
-                    // 提取链接
-                    Pattern urlPattern = Pattern.compile(
-                            "(https?://(?:www\\.|(?!www))[^\\s\\.]+\\.[^\\s]{2,}|www\\.[^\\s]+\\.[^\\s]{2,})",
-                            Pattern.CASE_INSENSITIVE);
-                    Matcher urlMatcher = urlPattern.matcher(completeSecondData);
-                    while (urlMatcher.find()) {
-                        Log.v(TAG, "找到互联网链接，提取中");
-                        String foundUrl = urlMatcher.group();
-                        extractedUrls.append(foundUrl).append("\n");
-                    }
-
-                    // 提取电子邮件地址
-                    Pattern emailPattern = Pattern.compile(
-                            "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}",
-                            Pattern.CASE_INSENSITIVE);
-                    Matcher emailMatcher = emailPattern.matcher(completeSecondData);
-                    StringBuilder extractedEmails = new StringBuilder();
-                    while (emailMatcher.find()) {
-                        String foundEmail = emailMatcher.group();
-                        extractedEmails.append(foundEmail).append("\n");
-                    }
-
-                    // 提取符合条件的中国大陆电话号码（11位数字，第一位是1，第二位是3、5、7、8、9）
-                    Pattern phonePattern = Pattern.compile("\\b1[35789]\\d{9}\\b");
-                    Matcher phoneMatcher = phonePattern.matcher(completeSecondData);
-                    StringBuilder extractedPhones = new StringBuilder();
-                    while (phoneMatcher.find()) {
-                        String foundPhone = phoneMatcher.group();
-                        extractedPhones.append(foundPhone).append("\n");
-                    }
-
-                    // 将提取到的数字和链接分别复制到剪贴板
-                    ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                    if (extractedNumbers.length() > 0) {
-                        ClipData clip = ClipData.newPlainText("extractedNumbers", extractedNumbers.toString().trim());
-                        clipboard.setPrimaryClip(clip);
-                        SnackBarToastForDebug("提取到疑似验证码，已复制到剪贴板!","推荐去粘贴",0,Snackbar.LENGTH_INDEFINITE);
-
-                        // 取消之前的清空任务并重新设置定时任务
-                        HhandlerClipBoard.removeCallbacks(clipboardRunnable);
-                        HhandlerClipBoard.postDelayed(clipboardRunnable, 30000); // 30秒后清空剪贴板
-                    }
-
-                    if (extractedUrls.length() > 0) {
-                        ClipData clipUrls = ClipData.newPlainText("extractedUrls", extractedUrls.toString().trim());
-                        clipboard.setPrimaryClip(clipUrls);
-                        SnackBarToastForDebug("提取到链接，已复制到剪贴板!","推荐去浏览器",0,Snackbar.LENGTH_LONG);
-
-                        // 取消之前的清空任务并重新设置定时任务
-                        HhandlerClipBoard.removeCallbacks(clipboardRunnable);
-                        HhandlerClipBoard.postDelayed(clipboardRunnable, 30000); // 30秒后清空剪贴板
-                    }
-
-                    // 将提取到的电子邮件地址复制到剪贴板
-                    if (extractedEmails.length() > 0) {
-                        ClipData clipEmails = ClipData.newPlainText("extractedEmails", extractedEmails.toString().trim());
-                        clipboard.setPrimaryClip(clipEmails);
-                        SnackBarToastForDebug("提取到电子邮件地址，已复制到剪贴板!","推荐去发邮件",0,Snackbar.LENGTH_LONG);
-
-                        // 取消之前的清空任务并重新设置定时任务
-                        HhandlerClipBoard.removeCallbacks(clipboardRunnable);
-                        HhandlerClipBoard.postDelayed(clipboardRunnable, 30000); // 30秒后清空剪贴板
-                    }
-
-                    // 将提取到的电话号码复制到剪贴板并调用电话应用程序
-                    if (extractedPhones.length() > 0) {
-                        String phoneNumber = extractedPhones.toString().trim();
-                        ClipData clipPhones = ClipData.newPlainText("extractedPhones", phoneNumber);
-                        clipboard.setPrimaryClip(clipPhones);
-
-                        // 取消之前的清空任务并重新设置定时任务
-                        HhandlerClipBoard.removeCallbacks(clipboardRunnable);
-                        HhandlerClipBoard.postDelayed(clipboardRunnable, 90000); // 电话号码有点特殊，可以90秒后清空剪贴板，或者注释掉不用清空
-
-                        // 调用电话应用程序拨打号码
-                        Intent intent = new Intent(Intent.ACTION_DIAL);
-                        intent.setData(Uri.parse("tel:" + phoneNumber));
-                        startActivity(intent);
-
-                        // 在主线程上显示Toast提示
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(), "已添加电话到安卓软件上，号码为:" + phoneNumber, Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    }
+                    ChatProcessor.initializeHandler();
+                    ChatProcessor.processChat(context, completeSecondData);
                 }
+                
                 return completeSecondData;
             } else if (completeFirstData.contains(ChatUtils.getPrefixLogNotConnectedServer())) {
                 Log.v(TAG, "串口Log内容：" + completeFirstData);
                 if (completeFirstData.startsWith(ChatUtils.getPrefixLogNotConnectedServer()))
                     if (ChatUtils.isShowUartLog())
-                        SnackBarToastForDebug("发送失败!\n" + ChatUtils.getPrefixLogNotConnectedServer(),"推荐检查星闪网络",0,Snackbar.LENGTH_INDEFINITE);
+                        SnackBarToastForDebug(context,"发送失败!\n" + ChatUtils.getPrefixLogNotConnectedServer(),"推荐检查星闪网络",0,Snackbar.LENGTH_INDEFINITE);
             }
         }
         return "";
@@ -566,9 +464,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         byte[] to_send = StringUtils.needProcess().toByteArray(String.valueOf(EditChatSend.getText()));		//以字符串方式发送
         int retval = MainAPP.CH34X.writeData(to_send, to_send.length);//写数据，第一个参数为需要发送的字节数组，第二个参数为需要发送的字节长度，返回实际发送的字节长度
         if (retval < 0) {
-            SnackBarToastForDebug("向对方发送数据失败!","推荐重新配置",3,Snackbar.LENGTH_SHORT);
+            SnackBarToastForDebug(context,"向对方发送数据失败!","推荐重新配置",3,Snackbar.LENGTH_SHORT);
         } else {
-            //Toast.makeText(MainActivity.this, "发送成功!", Toast.LENGTH_SHORT).show();
             String TextOfClient = CH34xProcessingForSendData(EditChatSend.getText().toString());
             runOnUiThread(() -> {
                 saveMessageToDatabase(TextOfClient, "Me");
@@ -759,24 +656,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     switch (type) {
                         case "BaudRate":
                             wchUartSettings.setBaudRate(Integer.parseInt(UartSettingsBaud[index]));
-                            SnackBarToastForDebug("已设置波特率" + wchUartSettings.getBaudRate() + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
+                            SnackBarToastForDebug(context,"已设置波特率" + wchUartSettings.getBaudRate() + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
                             break;
                         case "DataBit":
                             wchUartSettings.setDataBit(Byte.parseByte(UartSettingsData[index]));
-                            SnackBarToastForDebug("已设置数据位" + wchUartSettings.getDataBit() + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
+                            SnackBarToastForDebug(context,"已设置数据位" + wchUartSettings.getDataBit() + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
                             break;
                         case "StopBit":
                             wchUartSettings.setStopBit(Byte.parseByte(UartSettingsStop[index]));
-                            SnackBarToastForDebug("已设置停止位" + wchUartSettings.getStopBit() + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
+                            SnackBarToastForDebug(context,"已设置停止位" + wchUartSettings.getStopBit() + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
                             break;
                         case "Parity":
                             wchUartSettings.setParity(Byte.parseByte(UartSettingsParityII[index]));
-                            SnackBarToastForDebug("已设置校验位" + wchUartSettings.getParity() + UartSettingsParity[index] + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
+                            SnackBarToastForDebug(context,"已设置校验位" + wchUartSettings.getParity() + UartSettingsParity[index] + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
                             break;
                     }
                 } else {
                     if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(MainActivity.this, "更改" + type + "中", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "更改" + type + "中", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -789,50 +686,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void close() {
-        SnackBarToastForDebug("检测到USB已接入，请完成初始化后使用!","推荐初始化操作",1,Snackbar.LENGTH_SHORT);
+        SnackBarToastForDebug(context,"检测到USB已接入，请完成初始化后使用!","推荐初始化操作",1,Snackbar.LENGTH_SHORT);
         MainAPP.CH34X.closeDevice();
-    }
-
-
-
-
-    /**
-     * SnackBar通知 遵守Google Material
-     * @param text  显示的文本
-     * @param actiontext    按钮控件显示的文本
-     * @param level 提示等级(0~4)，对应Android Log等级：Log.v  Log.d   Log.i   Log.w   Log.e
-     * @param SnackbarLength SnackBar通知，通知滞留时间
-     */
-    private void SnackBarToastForDebug(String text,String actiontext,int level,int SnackbarLength) {
-        //找View和Layout
-        View decorView = getWindow().getDecorView();
-        CoordinatorLayout coordinatorLayout = decorView.findViewById(id.MainUI);
-        //设置显示时间、按钮颜色、背景颜色、按钮点击状态
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, text, SnackbarLength);
-        snackbar.setActionTextColor(getResources().getColor(color.Pink_is_justice));
-        switch (level) {
-            case 0: //VERBOSE日志     不重要的提示          黑
-                snackbar.getView().setBackgroundColor(getResources().getColor(color.snackbar_log_v));break;
-            case 1: //DEBUG日志       稍微重要的提示         蓝
-                snackbar.getView().setBackgroundColor(getResources().getColor(color.snackbar_log_d));break;
-            case 2: //INFO日志        一般重要的提示         绿
-                snackbar.getView().setBackgroundColor(getResources().getColor(color.snackbar_log_i));break;
-            case 3: //WARN日志        已经算重要的提示          橙
-                snackbar.getView().setBackgroundColor(getResources().getColor(color.snackbar_log_w));break;
-            case 4: //ERROR日志       很重要的提示          红
-                snackbar.getView().setBackgroundColor(getResources().getColor(color.snackbar_log_e));break;
-            default: //随意啦
-                snackbar.getView().setBackgroundColor(getResources().getColor(color.blue_biaozhun_logowai_transparent));break;
-        }
-        snackbar.setAction(actiontext, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainAPP.Vibrate(MainActivity.this);
-                switch (level) { case 520: break; case 521: break; default: break;}
-            }
-        });
-        //snackbar主动出击
-        snackbar.show();
     }
 
     //没有人能够熄灭满天的星光，每一个开发者都是华为要汇聚的星星之火。星星之火，可以燎原。
