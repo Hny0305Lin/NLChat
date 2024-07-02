@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private LinkedList<String> clientMessageQueue = new LinkedList<>();
     private static final int MAX_MESSAGES = 10; // 设置最大消息数量
     private StringBuilder extractedNumbers = new StringBuilder();
+    private StringBuilder extractedUrls = new StringBuilder();
 
     //聊天时间戳
     @SuppressLint("SimpleDateFormat")
@@ -456,13 +457,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Pattern pattern = Pattern.compile("\\b(?!19\\d{2}|20\\d{2})\\d{4}\\b|\\b\\d{6}\\b");
                     Matcher matcher = pattern.matcher(completeSecondData);
                     while (matcher.find()) {
+                        Log.v(TAG, "找到疑似验证码，提取中");
                         String foundNumber = matcher.group();
                         extractedNumbers.append(foundNumber).append("\n");
                     }
 
-                    // 将提取到的数字复制到剪贴板
+                    // 提取链接
+                    Pattern urlPattern = Pattern.compile(
+                            "(https?://(?:www\\.|(?!www))[^\\s\\.]+\\.[^\\s]{2,}|www\\.[^\\s]+\\.[^\\s]{2,})",
+                            Pattern.CASE_INSENSITIVE);
+                    Matcher urlMatcher = urlPattern.matcher(completeSecondData);
+                    while (urlMatcher.find()) {
+                        Log.v(TAG, "找到互联网链接，提取中");
+                        String foundUrl = urlMatcher.group();
+                        extractedUrls.append(foundUrl).append("\n");
+                    }
+
+                    // 提取电子邮件地址
+                    Pattern emailPattern = Pattern.compile(
+                            "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}",
+                            Pattern.CASE_INSENSITIVE);
+                    Matcher emailMatcher = emailPattern.matcher(completeSecondData);
+                    StringBuilder extractedEmails = new StringBuilder();
+                    while (emailMatcher.find()) {
+                        String foundEmail = emailMatcher.group();
+                        extractedEmails.append(foundEmail).append("\n");
+                    }
+
+                    // 提取符合条件的中国大陆电话号码（11位数字，第一位是1，第二位是3、5、7、8、9）
+                    Pattern phonePattern = Pattern.compile("\\b1[35789]\\d{9}\\b");
+                    Matcher phoneMatcher = phonePattern.matcher(completeSecondData);
+                    StringBuilder extractedPhones = new StringBuilder();
+                    while (phoneMatcher.find()) {
+                        String foundPhone = phoneMatcher.group();
+                        extractedPhones.append(foundPhone).append("\n");
+                    }
+
+                    // 将提取到的数字和链接分别复制到剪贴板
+                    ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                     if (extractedNumbers.length() > 0) {
-                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                         ClipData clip = ClipData.newPlainText("extractedNumbers", extractedNumbers.toString().trim());
                         clipboard.setPrimaryClip(clip);
                         SnackBarToastForDebug("提取到疑似验证码，已复制到剪贴板!","推荐去粘贴",0,Snackbar.LENGTH_INDEFINITE);
@@ -470,6 +503,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         // 取消之前的清空任务并重新设置定时任务
                         HhandlerClipBoard.removeCallbacks(clipboardRunnable);
                         HhandlerClipBoard.postDelayed(clipboardRunnable, 30000); // 30秒后清空剪贴板
+                    }
+
+                    if (extractedUrls.length() > 0) {
+                        ClipData clipUrls = ClipData.newPlainText("extractedUrls", extractedUrls.toString().trim());
+                        clipboard.setPrimaryClip(clipUrls);
+                        SnackBarToastForDebug("提取到链接，已复制到剪贴板!","推荐去浏览器",0,Snackbar.LENGTH_LONG);
+
+                        // 取消之前的清空任务并重新设置定时任务
+                        HhandlerClipBoard.removeCallbacks(clipboardRunnable);
+                        HhandlerClipBoard.postDelayed(clipboardRunnable, 30000); // 30秒后清空剪贴板
+                    }
+
+                    // 将提取到的电子邮件地址复制到剪贴板
+                    if (extractedEmails.length() > 0) {
+                        ClipData clipEmails = ClipData.newPlainText("extractedEmails", extractedEmails.toString().trim());
+                        clipboard.setPrimaryClip(clipEmails);
+                        SnackBarToastForDebug("提取到电子邮件地址，已复制到剪贴板!","推荐去发邮件",0,Snackbar.LENGTH_LONG);
+
+                        // 取消之前的清空任务并重新设置定时任务
+                        HhandlerClipBoard.removeCallbacks(clipboardRunnable);
+                        HhandlerClipBoard.postDelayed(clipboardRunnable, 30000); // 30秒后清空剪贴板
+                    }
+
+                    // 将提取到的电话号码复制到剪贴板并调用电话应用程序
+                    if (extractedPhones.length() > 0) {
+                        String phoneNumber = extractedPhones.toString().trim();
+                        ClipData clipPhones = ClipData.newPlainText("extractedPhones", phoneNumber);
+                        clipboard.setPrimaryClip(clipPhones);
+
+                        // 取消之前的清空任务并重新设置定时任务
+                        HhandlerClipBoard.removeCallbacks(clipboardRunnable);
+                        HhandlerClipBoard.postDelayed(clipboardRunnable, 90000); // 电话号码有点特殊，可以90秒后清空剪贴板，或者注释掉不用清空
+
+                        // 调用电话应用程序拨打号码
+                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                        intent.setData(Uri.parse("tel:" + phoneNumber));
+                        startActivity(intent);
+
+                        // 在主线程上显示Toast提示
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), "已添加电话到安卓软件上，号码为:" + phoneNumber, Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
                 }
                 return completeSecondData;
