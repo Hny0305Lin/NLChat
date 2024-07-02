@@ -350,14 +350,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void saveMessageToDatabase(String message, String sender) {
+    private void saveMessageToDatabase(String timestamp, String message, String sender) {
         //检索是否有空消息，串口通讯时常有相关问题
         if (message == null || message.trim().isEmpty()) {
             return;
         }
         //如果有消息再保存，上面是没消息不予保存
-        String timestamp = dateFormat.format(new java.util.Date());
         dbHelper.saveMessageToDatabase(message, sender, timestamp);
+        dbHelper.saveVersionToDatabase(context.getString(string.app_version));
     }
 
     private StringBuilder buffer = new StringBuilder();
@@ -375,7 +375,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             stringBuffer.append(processedString);
             //处理完再打印到UI上
             runOnUiThread(() -> {
-                saveMessageToDatabase(processedString, "User");
+                //如果需要存储到数据库中
+                if (ChatUtils.isSqlitemanager()) {
+                    // 分离时间戳和消息内容
+                    String[] parts = processedString.split(" - ", 2);
+                    if (parts.length == 2) {
+                        String timestamp = parts[0];
+                        String message = parts[1];
+                        saveMessageToDatabase(timestamp, message, "User");
+                    }
+                }
+                //如果需要UI滚动消息
                 if (ChatUtils.isScrollingMessages()) {
                     if (serverMessageQueue.size() >= MAX_MESSAGES) {
                         serverMessageQueue.poll();
@@ -468,7 +478,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             String TextOfClient = CH34xProcessingForSendData(EditChatSend.getText().toString());
             runOnUiThread(() -> {
-                saveMessageToDatabase(TextOfClient, "Me");
+                //如果需要存储到数据库中
+                if (ChatUtils.isSqlitemanager()) {
+                    // 分离时间戳和消息内容
+                    String[] parts = TextOfClient.split(" - ", 2);
+                    if (parts.length == 2) {
+                        String timestamp = parts[0];
+                        String message = parts[1];
+                        saveMessageToDatabase(timestamp, message, "Me");
+                    }
+                }
+                //如果需要UI滚动消息
                 if (ChatUtils.isScrollingMessages()) {
                     if (clientMessageQueue.size() >= MAX_MESSAGES) {
                         clientMessageQueue.poll(); // 移除最早的消息

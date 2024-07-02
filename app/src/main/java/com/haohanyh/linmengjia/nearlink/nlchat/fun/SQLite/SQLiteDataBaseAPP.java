@@ -12,7 +12,7 @@ import io.requery.android.database.sqlite.SQLiteDatabase;
 
 public class SQLiteDataBaseAPP {
 
-    SQLiteDatabase sqLiteDataBaseForAPP,sqLiteDataBaseForUser,sqLiteDataBaseForChat,sqLiteDataBaseForDevice;
+    SQLiteDatabase sqLiteDataBaseForAPP;
 
     protected SQLiteDataBaseAPP() { }
     public static SQLiteDataBaseAPP SQLiteData() { return SQLiteDataBaseAPP.data.shuju; }
@@ -20,11 +20,8 @@ public class SQLiteDataBaseAPP {
 
     public void CreateSql(String SDPath) {
         sqLiteDataBaseForAPP = SQLiteDatabase.openOrCreateDatabase(SDPath + "/NLChat.db",null);
-        sqLiteDataBaseForUser = SQLiteDatabase.openOrCreateDatabase(SDPath + "/NLChatUser.db", null);
-
-        sqLiteDataBaseForChat = SQLiteDatabase.openOrCreateDatabase(SDPath + "/NLChatChat.db",null);
         createChatTable();
-        sqLiteDataBaseForDevice = SQLiteDatabase.openOrCreateDatabase(SDPath + "/NLChatDevice.db",null);
+        createVersionTable();
     }
 
     private void createChatTable() {
@@ -34,7 +31,15 @@ public class SQLiteDataBaseAPP {
                         "message TEXT, " +
                         "sender TEXT, " +
                         "timestamp TEXT);";
-        sqLiteDataBaseForChat.execSQL(TABLE_CREATE);
+        sqLiteDataBaseForAPP.execSQL(TABLE_CREATE);
+    }
+
+    private void createVersionTable() {
+        String TABLE_CREATE =
+                "CREATE TABLE IF NOT EXISTS versions (" +
+                        "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "version TEXT);";
+        sqLiteDataBaseForAPP.execSQL(TABLE_CREATE);
     }
 
     public void saveMessageToDatabase(String message, String sender, String timestamp) {
@@ -42,10 +47,16 @@ public class SQLiteDataBaseAPP {
         values.put("message", message);
         values.put("sender", sender);
         values.put("timestamp", timestamp);
-        sqLiteDataBaseForChat.insert("messages", null, values);
+        sqLiteDataBaseForAPP.insert("messages", null, values);
+    }
+
+    public void saveVersionToDatabase(String version) {
+        ContentValues values = new ContentValues();
+        values.put("version", version);
+        sqLiteDataBaseForAPP.insert("versions", null, values);
     }
 
     public Cursor getAllMessages() {
-        return sqLiteDataBaseForChat.query("messages", null, null, null, null, null, "timestamp ASC");
+        return sqLiteDataBaseForAPP.query("messages", null, null, null, null, null, "timestamp ASC");
     }
 }
