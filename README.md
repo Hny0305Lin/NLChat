@@ -2,9 +2,9 @@
 
 NLChat是专门为[小熊派BearPi的星闪代码](https://github.com/Hny0305Lin/Bearpi_Hi2821_Pico_NLChat)开发的一款基于SLE通讯的文本传输软件，目前还在开发中，敬请期待完整版向大家开放。
 
-![IMG.SHIELD.IO](https://img.shields.io/github/v/release/Hny0305Lin/NLChat?include_prereleases&display_name=release&style=for-the-badge&logo=Android&logoSize=amd&label=Hi2821_NLChat&labelColor=007FFC&color=4DDDFC&cacheSeconds=3600) ![IMG.SHIELD.IO](https://img.shields.io/github/stars/Hny0305Lin/NLChat?style=for-the-badge&label=NLChat%20Star&labelColor=007FFC&color=4DDDFC&cacheSeconds=3600)
+![IMG.SHIELD.IO](https://img.shields.io/github/v/release/Hny0305Lin/NLChat?include_prereleases&display_name=release&style=for-the-badge&logo=Android&logoSize=amd&label=Hi2821_NLChat&labelColor=007FFC&color=4DDDFC&cacheSeconds=60) ![IMG.SHIELD.IO](https://img.shields.io/github/stars/Hny0305Lin/NLChat?style=for-the-badge&label=NLChat%20Star&labelColor=007FFC&color=4DDDFC&cacheSeconds=60)
 
-![Android自动化构建 Debug](https://img.shields.io/github/actions/workflow/status/Hny0305Lin/NLChat/android.yml?branch=master&style=for-the-badge&logo=android&logoSize=amd&label=Android%20CI&labelColor=00CEFC&color=00C08B&cacheSeconds=3600) ![Android自动化构建 Release](https://img.shields.io/github/actions/workflow/status/Hny0305Lin/NLChat/androidsign.yml?branch=master&style=for-the-badge&logo=android&logoSize=amd&label=Android%20CI%20Release&labelColor=00CEFC&color=00C08B&cacheSeconds=3600)
+![Android自动化构建 Debug](https://img.shields.io/github/actions/workflow/status/Hny0305Lin/NLChat/android.yml?branch=master&style=for-the-badge&logo=android&logoSize=amd&label=Android%20CI&labelColor=00CEFC&color=00C08B&cacheSeconds=600) ![Android自动化构建 Release](https://img.shields.io/github/actions/workflow/status/Hny0305Lin/NLChat/androidsign.yml?branch=master&style=for-the-badge&logo=android&logoSize=amd&label=Android%20CI%20Release&labelColor=00CEFC&color=00C08B&cacheSeconds=600)
 
 ![Static Badge](https://img.shields.io/badge/Bearpi%20Hi2821%20Pico%20NLChat-00C08B?style=for-the-badge&logo=C%2B%2B&labelColor=00CC66&link=https%3A%2F%2Fgithub.com%2FHny0305Lin%2FBearpi_Hi2821_Pico_NLChat)
 
