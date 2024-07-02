@@ -401,7 +401,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Iterator<String> iterator = serverMessageQueue.iterator();
         while (iterator.hasNext()) {
             String message = iterator.next();
-            Log.v(TAG, "当前消息内容：" + message); // 打印每个消息到日志
+            Log.v(TAG, "当前队列消息内容：" + message); // 打印每个消息到日志
             if (!message.trim().isEmpty()) {
                 allMessages.append(message);
             } else {
@@ -508,7 +508,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Iterator<String> iterator = clientMessageQueue.iterator();
         while (iterator.hasNext()) {
             String message = iterator.next();
-            Log.v(TAG, "当前消息内容：" + message); // 打印每个消息到日志
+            Log.v(TAG, "当前队列消息内容：" + message); // 打印每个消息到日志
             if (!message.trim().isEmpty()) {
                 allMessages.append(message);
             } else {
