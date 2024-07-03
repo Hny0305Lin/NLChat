@@ -41,11 +41,15 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.haohanyh.linmengjia.nearlink.nlchat.ch34x.CH34xUARTDriver;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatAdapter;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessage;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatProcessor;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.Premission.NearLinkChatGetSomePermission;
@@ -61,8 +65,10 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.WCHUart.WCHUartSettings;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -101,6 +107,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final int[] dataBitIds = {id.rbData5, id.rbData6, id.rbData7, id.rbData8};
     private final int[] stopBitIds = {id.rbStop1, id.rbStop2};
     private final int[] parityIds = {id.rbParityNone, id.rbParityOdd, id.rbParityEven, id.rbParityMark, id.rbParitySpace};
+    //聊天UI 1.3更新
+    private RecyclerView recyclerView;
+    private ChatAdapter chatAdapter;
+    private List<ChatMessage> chatMessages;
+
     //Context
     private Context context = MainActivity.this;
 
@@ -267,6 +278,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             radioButton.setOnCheckedChangeListener(createCheckedChangeListener(i, "Parity"));
         }
 
+        //聊天UI 1.3更新
+        recyclerView = findViewById(id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        chatMessages = new ArrayList<>();
+        chatAdapter = new ChatAdapter(chatMessages);
+        recyclerView.setAdapter(chatAdapter);
+
         //初始化完成，软件第一次启动必须提示（这里写的第一次启动是软件启动的第一次，而不是使用频率的第一次
         HhandlerI.sendEmptyMessage(31);
         //如果SQLite有记录，可以显示在UI上
@@ -406,6 +424,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void updateServerTextView() {
         StringBuilder allMessages = new StringBuilder();
         Iterator<String> iterator = serverMessageQueue.iterator();
@@ -420,6 +439,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         NearLinkServerText.setText(allMessages.toString());
+//        chatMessages.add(new ChatMessage(allMessages.toString(), false));
+//        chatAdapter.notifyDataSetChanged();
         Log.v(TAG, "消息队列在User上有改动");
     }
 
@@ -509,6 +530,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void updateClientTextView() {
         StringBuilder allMessages = new StringBuilder();
         Iterator<String> iterator = clientMessageQueue.iterator();
@@ -523,6 +545,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         NearLinkClientText.setText(allMessages.toString());
+//        chatMessages.add(new ChatMessage(allMessages.toString(), true));
+//        chatAdapter.notifyDataSetChanged();
         Log.v(TAG, "消息队列在Me上有改动");
     }
 
