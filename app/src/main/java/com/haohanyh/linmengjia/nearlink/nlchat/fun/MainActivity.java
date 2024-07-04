@@ -465,27 +465,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d(TAG, "忽略的消息内容：" + completeFirstData);
                 // 处理忽略消息内容
             }
-            if (completeFirstData.contains("[Connected]")) {
+            //连接日志，以下与星闪连接相关
+            if (completeFirstData.contains(ChatUtils.getPrefixLogConnected())) {
                 Log.d(TAG, "连接日志：" + completeFirstData);
                 // 处理连接日志
             }
-            if (completeFirstData.contains("[Disconnected]")) {
+            if (completeFirstData.contains(ChatUtils.getPrefixLogDisconnected())) {
                 Log.d(TAG, "断开连接日志：" + completeFirstData);
                 // 处理断开连接日志
             }
-            if (completeFirstData.contains("[ACore]")) {
+            if (completeFirstData.contains(ChatUtils.getPrefixLogAcore())) {
                 Log.d(TAG, "ACore日志：" + completeFirstData);
                 // 处理ACore日志
             }
-            if (completeFirstData.contains("[sle uart server]")) {
+            //UART服务器日志，以下可以读取星闪日志
+            if (completeFirstData.contains(ChatUtils.getPrefixLogSleUartServer())) {
                 Log.d(TAG, "UART服务器日志：" + completeFirstData);
                 // 处理UART服务器日志
             }
-            if (completeFirstData.contains("[sle uart server] connect state changed")) {
+            if (completeFirstData.contains(ChatUtils.getPrefixLogConnectStateChanged())) {
                 Log.d(TAG, "连接状态改变日志：" + completeFirstData);
                 // 处理连接状态改变日志
             }
-            if (completeFirstData.contains("[sle uart server] pair complete")) {
+            if (completeFirstData.contains(ChatUtils.getPrefixLogPairComplete())) {
                 Log.d(TAG, "配对完成日志：" + completeFirstData);
                 // 处理配对完成日志
             }
@@ -497,11 +499,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     ChatProcessorForExtract.processChat(context, completeFirstData);
                 }
             }
-            if (completeFirstData.contains("[sle uart server] ssaps ssaps_mtu_changed_cbk")) {
+            if (completeFirstData.contains(ChatUtils.getPrefixLogSsapsMtuChanged())) {
                 Log.d(TAG, "MTU改变日志：" + completeFirstData);
                 // 处理MTU改变日志
             }
-            if (completeFirstData.contains("[sle uart server] sle announce enable callback")) {
+            if (completeFirstData.contains(ChatUtils.getPrefixLogSleAnnounceEnableCallback())) {
                 Log.d(TAG, "启用回调日志：" + completeFirstData);
                 // 处理启用回调日志
             }
