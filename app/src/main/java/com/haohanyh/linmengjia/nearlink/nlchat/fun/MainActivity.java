@@ -5,8 +5,6 @@ import static com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIToast.S
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,7 +25,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,21 +33,20 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.haohanyh.linmengjia.nearlink.nlchat.ch34x.CH34xUARTDriver;
-import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatAdapter;
-import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessage;
-import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatProcessor;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessageQueueUpdater;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatProcessorForExtract;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatSaveMessageDatabaseManager;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.Premission.NearLinkChatGetSomePermission;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.array;
@@ -65,11 +61,9 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.WCHUart.WCHUartSettings;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
+import java.util.Queue;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     //Log需要的TAG
@@ -91,7 +85,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Message MessageTV_Text;
     private TextView APPRunResult,MobileUSBResult,UARTResult;
-    private TextView NearLinkServerText,NearLinkClientText;
+    private AppCompatTextView NearLinkUserTitle;
+    private TextView NearLinkUserText,NearLinkMeText;
     private EditText EditChatSend;
 
     private Resources resources;
@@ -107,11 +102,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final int[] dataBitIds = {id.rbData5, id.rbData6, id.rbData7, id.rbData8};
     private final int[] stopBitIds = {id.rbStop1, id.rbStop2};
     private final int[] parityIds = {id.rbParityNone, id.rbParityOdd, id.rbParityEven, id.rbParityMark, id.rbParitySpace};
-    //聊天UI 1.3更新
-    private RecyclerView recyclerView;
-    private ChatAdapter chatAdapter;
-    private List<ChatMessage> chatMessages;
-
     //Context
     private Context context = MainActivity.this;
 
@@ -119,9 +109,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final boolean MobileKeepScreenOn = false;
 
     //聊天相关
-    private LinkedList<String> serverMessageQueue = new LinkedList<>();
-    private LinkedList<String> clientMessageQueue = new LinkedList<>();
-    private static final int MAX_MESSAGES = 10; // 设置最大消息数量
+    private Queue<String> serverMessageQueue = new LinkedList<>();
+    private Queue<String> clientMessageQueue = new LinkedList<>();
+    private static final int MAX_MESSAGES = 8; // 设置最大消息数量
+    private ChatMessageQueueUpdater serverUpdater;
+    private ChatMessageQueueUpdater clientUpdater;
+    private ChatSaveMessageDatabaseManager chatSaveMessageDatabaseManager;
 
     //聊天时间戳
     @SuppressLint("SimpleDateFormat")
@@ -180,7 +173,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         MainAPP.CH34X = new CH34xUARTDriver(
                 (UsbManager) getSystemService(Context.USB_SERVICE), this,
                 ACTION_USB_PERMISSION);
-        MainAPP.CH34X.setCloseListener(this::close);
+        //设置关闭监听器并合并 close 方法的逻辑
+        MainAPP.CH34X.setCloseListener(() -> {
+            SnackBarToastForDebug(context,"检测到USB已接入，请完成初始化后使用!","推荐初始化操作",1,Snackbar.LENGTH_SHORT);
+            MainAPP.CH34X.closeDevice();
+        });
         //软件控件开始做处理
         btnGO = findViewById(id.btnGO);
         btnGO.setOnClickListener(this);
@@ -221,8 +218,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         APPRunResult = findViewById(id.appResult);
         MobileUSBResult = findViewById(id.mobileUsbResult);
         UARTResult = findViewById(id.uartResult);
-        NearLinkServerText = findViewById(id.readText);
-        NearLinkClientText = findViewById(id.writeText);
+        NearLinkUserTitle = findViewById(id.userTitle);
+        NearLinkUserText = findViewById(id.readText);
+        NearLinkMeText = findViewById(id.writeText);
         EditChatSend = findViewById(id.editChatSend);
 
         CheckBoxUartWarn = findViewById(id.cbUartWarn);
@@ -278,12 +276,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             radioButton.setOnCheckedChangeListener(createCheckedChangeListener(i, "Parity"));
         }
 
-        //聊天UI 1.3更新
-        recyclerView = findViewById(id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        chatMessages = new ArrayList<>();
-        chatAdapter = new ChatAdapter(chatMessages);
-        recyclerView.setAdapter(chatAdapter);
+        //聊天初始化
+        serverUpdater = new ChatMessageQueueUpdater(NearLinkUserText, serverMessageQueue, "User: ");
+        clientUpdater = new ChatMessageQueueUpdater(NearLinkMeText, clientMessageQueue, "Me: ");
 
         //初始化完成，软件第一次启动必须提示（这里写的第一次启动是软件启动的第一次，而不是使用频率的第一次
         HhandlerI.sendEmptyMessage(31);
@@ -357,9 +352,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @SuppressLint("Range") String sender = cursor.getString(cursor.getColumnIndex("sender"));
                     // 根据sender区分消息显示
                     if ("User".equals(sender)) {
-                        NearLinkServerText.append(message + "\n");
+                        NearLinkUserText.append(message + "\n");
                     } else {
-                        NearLinkClientText.append(message + "\n");
+                        NearLinkMeText.append(message + "\n");
                     }
                 }
             } finally {
@@ -409,39 +404,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         serverMessageQueue.poll();
                     }
                     serverMessageQueue.add(processedString);
-                    updateServerTextView();
+                    //updateServerTextView();
+                    serverUpdater.updateTextView();
                     MainAPP.Vibrate(this);
                 } else {
-                    NearLinkServerText.append(processedString);
-                    if (NearLinkServerText.length() > 2048) {
-                        String str = NearLinkServerText.getText().toString().substring(NearLinkServerText.getText().length() - 1024, NearLinkServerText.getText().length());
-                        NearLinkServerText.setText("");
-                        NearLinkServerText.append(str);
+                    NearLinkUserText.append(processedString);
+                    if (NearLinkUserText.length() > 2048) {
+                        String str = NearLinkUserText.getText().toString().substring(NearLinkUserText.getText().length() - 1024, NearLinkUserText.getText().length());
+                        NearLinkUserText.setText("");
+                        NearLinkUserText.append(str);
                     }
                     MainAPP.Vibrate(this);
                 }
             });
         });
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private void updateServerTextView() {
-        StringBuilder allMessages = new StringBuilder();
-        Iterator<String> iterator = serverMessageQueue.iterator();
-        while (iterator.hasNext()) {
-            String message = iterator.next();
-            Log.v(TAG, "当前队列消息内容：" + message); // 打印每个消息到日志
-            if (!message.trim().isEmpty()) {
-                allMessages.append(message);
-            } else {
-                Log.v(TAG, "忽略空消息，因此消息队列在User上无改动"); // 打印忽略空消息到日志
-                iterator.remove(); // 从队列中移除空消息
-            }
-        }
-        NearLinkServerText.setText(allMessages.toString());
-//        chatMessages.add(new ChatMessage(allMessages.toString(), false));
-//        chatAdapter.notifyDataSetChanged();
-        Log.v(TAG, "消息队列在User上有改动");
     }
 
     private String CH34xProcessingForReadData(String string) {
@@ -475,16 +451,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 //聊天进入剪贴板
                 if (ChatUtils.isClipMessages()) {
-                    ChatProcessor.initializeHandler();
-                    ChatProcessor.processChat(context, completeSecondData);
+                    ChatProcessorForExtract.initializeHandler();
+                    ChatProcessorForExtract.processChat(context, completeSecondData);
                 }
 
                 return completeSecondData;
             } else if (completeFirstData.contains(ChatUtils.getPrefixLogNotConnectedServer())) {
-                Log.v(TAG, "串口Log内容：" + completeFirstData);
+                Log.w(TAG, "串口Log内容：" + completeFirstData);
                 if (completeFirstData.startsWith(ChatUtils.getPrefixLogNotConnectedServer()))
                     if (ChatUtils.isShowUartLog())
-                        SnackBarToastForDebug(context,"发送失败!\n" + ChatUtils.getPrefixLogNotConnectedServer(),"推荐检查星闪网络",0,Snackbar.LENGTH_INDEFINITE);
+                        SnackBarToastForDebug(context,"发送失败!\n" + ChatUtils.getPrefixLogNotConnectedServer(),"推荐检查星闪网络",3,Snackbar.LENGTH_SHORT);
+            } else {
+                Log.d(TAG, "忽略的消息内容：" + completeFirstData);
+                // 处理忽略消息内容
+            }
+            if (completeFirstData.contains("[Connected]")) {
+                Log.d(TAG, "连接日志：" + completeFirstData);
+                // 处理连接日志
+            }
+            if (completeFirstData.contains("[Disconnected]")) {
+                Log.d(TAG, "断开连接日志：" + completeFirstData);
+                // 处理断开连接日志
+            }
+            if (completeFirstData.contains("[ACore]")) {
+                Log.d(TAG, "ACore日志：" + completeFirstData);
+                // 处理ACore日志
+            }
+            if (completeFirstData.contains("[sle uart server]")) {
+                Log.d(TAG, "UART服务器日志：" + completeFirstData);
+                // 处理UART服务器日志
+            }
+            if (completeFirstData.contains("[sle uart server] connect state changed")) {
+                Log.d(TAG, "连接状态改变日志：" + completeFirstData);
+                // 处理连接状态改变日志
+            }
+            if (completeFirstData.contains("[sle uart server] pair complete")) {
+                Log.d(TAG, "配对完成日志：" + completeFirstData);
+                // 处理配对完成日志
+            }
+            if (completeFirstData.contains(ChatUtils.getPrefixLogNearlinkDevicesAddr())) {
+                // 处理采集到星闪MAC地址完成日志
+                if (ChatUtils.isClipMessages()) {
+                    Log.d(TAG, "采集到星闪MAC地址日志：" + completeFirstData + "，将进入剪贴板!");
+                    ChatProcessorForExtract.initializeHandler();
+                    ChatProcessorForExtract.processChat(context, completeFirstData);
+                }
+            }
+            if (completeFirstData.contains("[sle uart server] ssaps ssaps_mtu_changed_cbk")) {
+                Log.d(TAG, "MTU改变日志：" + completeFirstData);
+                // 处理MTU改变日志
+            }
+            if (completeFirstData.contains("[sle uart server] sle announce enable callback")) {
+                Log.d(TAG, "启用回调日志：" + completeFirstData);
+                // 处理启用回调日志
             }
         }
         return "";
@@ -515,39 +534,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         clientMessageQueue.poll(); // 移除最早的消息
                     }
                     clientMessageQueue.add(TextOfClient);
-                    updateClientTextView();
+                    //updateClientTextView();
+                    clientUpdater.updateTextView();
                     MainAPP.Vibrate(this);
                 } else {
-                    NearLinkClientText.append(TextOfClient);
-                    if (NearLinkClientText.length() > 2048) {
-                        String str = NearLinkClientText.getText().toString().substring(NearLinkClientText.getText().length() - 1024, NearLinkClientText.getText().length());
-                        NearLinkClientText.setText("");
-                        NearLinkClientText.append(str);
+                    NearLinkMeText.append(TextOfClient);
+                    if (NearLinkMeText.length() > 2048) {
+                        String str = NearLinkMeText.getText().toString().substring(NearLinkMeText.getText().length() - 1024, NearLinkMeText.getText().length());
+                        NearLinkMeText.setText("");
+                        NearLinkMeText.append(str);
                     }
                     MainAPP.Vibrate(this);
                 }
             });
         }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private void updateClientTextView() {
-        StringBuilder allMessages = new StringBuilder();
-        Iterator<String> iterator = clientMessageQueue.iterator();
-        while (iterator.hasNext()) {
-            String message = iterator.next();
-            Log.v(TAG, "当前队列消息内容：" + message); // 打印每个消息到日志
-            if (!message.trim().isEmpty()) {
-                allMessages.append(message);
-            } else {
-                Log.v(TAG, "忽略空消息，因此消息队列在Me上无改动"); // 打印忽略空消息到日志
-                iterator.remove(); // 从队列中移除空消息
-            }
-        }
-        NearLinkClientText.setText(allMessages.toString());
-//        chatMessages.add(new ChatMessage(allMessages.toString(), true));
-//        chatAdapter.notifyDataSetChanged();
-        Log.v(TAG, "消息队列在Me上有改动");
     }
 
     private String CH34xProcessingForSendData(String string) {
@@ -569,20 +569,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TextInformation(msg);
         return true;
     });
-
-    /*
-     * 定义一个 Handler和Runnable，用于剪贴板功能
-     */
-    private Handler HhandlerClipBoard = new Handler();
-    private Runnable clipboardRunnable = new Runnable() {
-        @Override
-        public void run() {
-            // 清空剪贴板内容
-            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("", "");
-            clipboard.setPrimaryClip(clip);
-        }
-    };
 
     /**
      *
@@ -674,23 +660,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void toggleVisibility(View container, ImageButton button, int closeDrawable, int doneDrawable) {
-        if (container.getVisibility() == View.VISIBLE) {
-            container.setVisibility(View.GONE);
-            button.setImageDrawable(getResources().getDrawable(closeDrawable));
-            button.setImageResource(closeDrawable);
-        } else {
-            container.setVisibility(View.VISIBLE);
-            button.setImageDrawable(getResources().getDrawable(doneDrawable));
-            button.setImageResource(doneDrawable);
-        }
-    }
-
     /**
+     * 创建一个 CompoundButton.OnCheckedChangeListener 对象，用于监听复选框的状态变化。
      *
-     * @param index
-     * @param type
-     * @return
+     * @param index 参数索引，用于从数组中获取相应的设置值。
+     * @param type  参数类型，可以是 "BaudRate"、"DataBit"、"StopBit" 或 "Parity"。
+     * @return 返回一个 CompoundButton.OnCheckedChangeListener 对象。
      */
     private CompoundButton.OnCheckedChangeListener createCheckedChangeListener(final int index, final String type) {
         return new CompoundButton.OnCheckedChangeListener() {
@@ -721,17 +696,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         };
-    }
-
-
-
-
-
-
-
-    private void close() {
-        SnackBarToastForDebug(context,"检测到USB已接入，请完成初始化后使用!","推荐初始化操作",1,Snackbar.LENGTH_SHORT);
-        MainAPP.CH34X.closeDevice();
     }
 
     //没有人能够熄灭满天的星光，每一个开发者都是华为要汇聚的星星之火。星星之火，可以燎原。
