@@ -2,11 +2,15 @@
 
 该教程演示如何通过两块开发板实现SLE数据传输测试，A开发板通过串口接收数据，然后通过SLE传输给B开发板，B开发板通过串口将接收到的数据打印出来；同样，B开发板通过串口接收数据，然后通过SLE传输给A开发板，A开发板通过串口将接收到的数据打印出来。在测试中需要一块开发板做为Server端，另外一块开发板做为Client端，两块开发板配对后就可以互发消息了。
 
-![](https://bearpi.cn/assets/image-18-DoDrYUKD.png)
+![图片](https://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/BearPi_Device_Configure_Tutorial/image-18-DoDrYUKD.png)
+
+![图片](https://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/NLChat.jpg)
 
 ## [一、准备工作](#一、准备工作)
 
 +   准备2块BearPi-Pico H2821开发板
++   准备2根USB Type-C双头数据线，方便开发板连入手机等设备
++   准备好硬件侧端项目，因为需要编译，[点我前往硬件侧端](https://github.com/Hny0305Lin/Bearpi_Hi2821_Pico_NLChat)
 
 ## [二、编译 SLE UART Server代码](#二、编译-sle-uart-server代码)
 
@@ -14,7 +18,7 @@
 
 1.  点击左侧的“KConfig”,打开配置界面.
     
-    ![Alt text](https://bearpi.cn/assets/image-4-CqlRac9C.png)
+    ![Alt text](https://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/BearPi_Device_Configure_Tutorial/image-4-CqlRac9C.png)
     
 2.  选择Enable SLE UART Server sample
     
@@ -32,7 +36,7 @@
                                     ( ) Enable SLE UART Client sample.
     ```
     
-    ![Alt text](https://bearpi.cn/assets/image-DjSheyV_.png)![Alt text](https://bearpi.cn/assets/image-1-BBMTCLDP.png)
+    ![Alt text](https://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/BearPi_Device_Configure_Tutorial/image-DjSheyV_.png)![Alt text](https://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/BearPi_Device_Configure_Tutorial/image-1-BBMTCLDP.png)
     
 3.  选择协议
     
@@ -48,11 +52,11 @@
     
     ```
     
-    ![Alt text](https://bearpi.cn/assets/image-2-DikMheki.png)
+    ![Alt text](https://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/BearPi_Device_Configure_Tutorial/image-2-DikMheki.png)
     
 4.  按下"Save"键保存配置。
     
-    ![Alt text](https://bearpi.cn/assets/image-3-sb4fwZla.png)
+    ![Alt text](https://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/BearPi_Device_Configure_Tutorial/image-3-sb4fwZla.png)
     
 5.  编译烧录固件
     
@@ -79,7 +83,7 @@
                                     ( ) Enable SLE UART Client sample.
     ```
     
-    ![Alt text](https://bearpi.cn/assets/image-DjSheyV_.png)![Alt text](https://bearpi.cn/assets/image-1-BBMTCLDP.png)
+    ![Alt text](https://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/BearPi_Device_Configure_Tutorial/image-DjSheyV_.png)![Alt text](https://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/BearPi_Device_Configure_Tutorial/image-1-BBMTCLDP.png)
     
 3.  选择协议
     
@@ -95,7 +99,7 @@
     
     ```
     
-    ![Alt text](https://bearpi.cn/assets/image-2-DikMheki.png)
+    ![Alt text](https://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/BearPi_Device_Configure_Tutorial/image-2-DikMheki.png)
     
 4.  按下"ESC"键退出并保存配置。
     
@@ -110,7 +114,7 @@
 
 1.  点击左侧的“KConfig”,打开配置界面.
     
-    ![Alt text](https://bearpi.cn/assets/image-4-CqlRac9C.png)
+    ![Alt text](https://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/BearPi_Device_Configure_Tutorial/image-4-CqlRac9C.png)
     
 2.  选择Enable SLE UART Client sample
     
@@ -128,7 +132,7 @@
                                     (X) Enable SLE UART Client sample.
     ```
     
-    ![Alt text](https://bearpi.cn/assets/image-DjSheyV_.png)![Alt text](https://bearpi.cn/assets/image-4-D0rs0cxE.png)
+    ![Alt text](https://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/BearPi_Device_Configure_Tutorial/image-DjSheyV_.png)![Alt text](https://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/BearPi_Device_Configure_Tutorial/image-4-D0rs0cxE.png)
     
 3.  选择协议
     
@@ -144,11 +148,11 @@
     
     ```
     
-    ![Alt text](https://bearpi.cn/assets/image-3-tVTLrmeU.png)
+    ![Alt text](https://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/BearPi_Device_Configure_Tutorial/image-3-tVTLrmeU.png)
     
 4.  按下"Save"键保存配置。
     
-    ![Alt text](https://bearpi.cn/assets/image-3-sb4fwZla.png)
+    ![Alt text](https://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/BearPi_Device_Configure_Tutorial/image-3-sb4fwZla.png)
     
 5.  编译烧录固件
     
@@ -175,7 +179,7 @@
                                     (X) Enable SLE UART Client sample.
     ```
     
-    ![Alt text](https://bearpi.cn/assets/image-DjSheyV_.png)![Alt text](https://bearpi.cn/assets/image-4-D0rs0cxE.png)
+    ![Alt text](https://github.com/Hny0305Lin/NLChat/blob/master/DevSummary/BearPi_Devichttps://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/BearPi_Device_Configure_Tutorial/image-DjSheyV_.png)![Alt text](https://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/BearPi_Device_Configure_Tutorial/image-4-D0rs0cxE.png)
     
 3.  选择协议
     
@@ -191,7 +195,7 @@
     
     ```
     
-    ![Alt text](https://bearpi.cn/assets/image-3-tVTLrmeU.png)
+    ![Alt text](https://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/BearPi_Device_Configure_Tutorial/image-3-tVTLrmeU.png)
     
 4.  按下"ESC"键退出并保存配置。
     
