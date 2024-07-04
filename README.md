@@ -8,9 +8,9 @@ NLChat是专门为[小熊派BearPi的星闪代码](https://github.com/Hny0305Lin
 
 ![Static Badge](https://img.shields.io/badge/Bearpi%20Hi2821%20Pico%20NLChat-00C08B?style=for-the-badge&logo=C%2B%2B&labelColor=00CC66&link=https%3A%2F%2Fgithub.com%2FHny0305Lin%2FBearpi_Hi2821_Pico_NLChat)
 
-[点我前往硬件侧端](https://github.com/Hny0305Lin/Bearpi_Hi2821_Pico_NLChat)
+[点我前往硬件侧端](https://github.com/Hny0305Lin/Bearpi_Hi2821_Pico_NLChat) [点我前往烧写编译教程](https://github.com/Hny0305Lin/NLChat/blob/master/SLE_Device_Configure_Tutorial.md)
 
-![NLChat](https://github.com/Hny0305Lin/NLChat/blob/master/DevSummary/NLChat.jpg)
+![NLChat](https://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/NLChat.jpg)
 
 # 使用到的硬件 和 硬件重要资料
 ### Hi2821 BearPi小熊派
