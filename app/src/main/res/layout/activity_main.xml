@@ -233,6 +233,46 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/CardIChatNewUI"
+                android:layout_width="360dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="35dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="15dp"
+                android:visibility="visible"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="18dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/userTitleNewUI"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="15dp"
+                        android:text="New UI"
+                        android:fontFamily="sans-serif-medium"
+                        android:textColor="@color/blue_biaozhun"
+                        tools:ignore="HardcodedText" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="380dp"
+                        android:padding="8dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
                 android:id="@+id/CardII"
                 android:layout_width="360dp"
                 android:layout_height="wrap_content"
@@ -1078,6 +1118,8 @@
         android:paddingRight="10dp"
         android:paddingBottom="10dp"
         android:visibility="visible"
+        app:layout_anchor="@+id/NLChat_MainUI_NestedScrollView"
+        app:layout_anchorGravity="center"
         app:menu_backgroundColor="#CCFEC0CB"
         app:menu_colorNormal="@color/Pink_is_justice"
         app:menu_colorPressed="@color/Pink_is_fancy"

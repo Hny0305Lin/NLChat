@@ -39,11 +39,15 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.haohanyh.linmengjia.nearlink.nlchat.ch34x.CH34xUARTDriver;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatAdapter;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessage;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessageQueueUpdater;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatProcessorForExtract;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatSaveMessageDatabaseManager;
@@ -61,7 +65,9 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.WCHUart.WCHUartSettings;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Queue;
 
@@ -82,6 +88,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int clickCountButton_btnNearLinkDev = 0;   //按钮计数
     private CardView CNearLinkStatus,CNearlinkUart,CNearLinkSettings,CNearlinkDev,CTHANKS;
     private CardView CNearLinkChat;
+
+    private CardView CNearLinkChatNewUI;
+    private AppCompatTextView NearLinkNewUIUserTitle;
+    private RecyclerView recyclerView;
+    private ChatAdapter chatAdapter;
+    private List<ChatMessage> chatMessages = new ArrayList<>();
 
     private Message MessageTV_Text;
     private TextView APPRunResult,MobileUSBResult,UARTResult;
@@ -215,6 +227,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         CTHANKS.setVisibility(View.VISIBLE);
         CNearLinkChat = findViewById(id.CardIChat);
         CNearLinkChat.setVisibility(View.VISIBLE);
+        CNearLinkChatNewUI = findViewById(id.CardIChatNewUI);
+        CNearLinkChatNewUI.setVisibility(View.VISIBLE);
+        NearLinkNewUIUserTitle = findViewById(id.userTitleNewUI);
+        recyclerView = findViewById(id.recycler_view);
         APPRunResult = findViewById(id.appResult);
         MobileUSBResult = findViewById(id.mobileUsbResult);
         UARTResult = findViewById(id.uartResult);
@@ -276,9 +292,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             radioButton.setOnCheckedChangeListener(createCheckedChangeListener(i, "Parity"));
         }
 
+        //聊天 1.3更新
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        chatAdapter = new ChatAdapter(chatMessages);
+        recyclerView.setAdapter(chatAdapter);
+
         //聊天初始化
-        serverUpdater = new ChatMessageQueueUpdater(NearLinkUserText, serverMessageQueue, "User: ");
-        clientUpdater = new ChatMessageQueueUpdater(NearLinkMeText, clientMessageQueue, "Me: ");
+        serverUpdater = new ChatMessageQueueUpdater(NearLinkUserText, serverMessageQueue, chatMessages, chatAdapter, "User: ");
+        clientUpdater = new ChatMessageQueueUpdater(NearLinkMeText, clientMessageQueue, chatMessages, chatAdapter,"Me: ");
 
         //初始化完成，软件第一次启动必须提示（这里写的第一次启动是软件启动的第一次，而不是使用频率的第一次
         HhandlerI.sendEmptyMessage(31);
@@ -330,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             WCHUartSettings.needGetData().getParity(), WCHUartSettings.needGetData().getFlowControl())) {
                         NearLinkChatReadData();//配置成功后读数据
                         HhandlerI.sendEmptyMessage(30);
-                        SnackBarToastForDebug(context,"请主动发送数据或静待接收数据!","谢谢",0,Snackbar.LENGTH_INDEFINITE);
+                        SnackBarToastForDebug(context,"请主动发送数据或静待接收数据!","谢谢",0,Snackbar.LENGTH_SHORT);
                     } else {
                         HhandlerI.sendEmptyMessage(32);
                         HhandlerI.sendEmptyMessage(11);
