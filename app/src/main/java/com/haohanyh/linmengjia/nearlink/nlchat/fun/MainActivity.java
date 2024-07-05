@@ -21,8 +21,10 @@ import android.provider.Settings;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -81,9 +83,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //主要控件
     private FloatingActionButton btnGO;
     private FloatingActionMenu btnMenu;
-    private com.github.clans.fab.FloatingActionButton btnNearLinkStatus,btnNearLinkSettings,btnNearlinkUart,btnNearlinkDev;
+    private com.github.clans.fab.FloatingActionButton btnNearLinkStatus,btnNearLinkSettings,btnNearLinkUIChanges,btnNearlinkUart,btnNearlinkDev;
     private int clickCountButton_btnNearLinkStatus = 0;  //按钮计数
     private int clickCountButton_btnNearLinkSettings = 0;   //按钮计数
+    private int clickCountButton_btnNearLinkUIChanges = 0;  //按钮计数，切换新旧UI
     private int clickCountButton_btnNearLinkUart = 0;   //按钮计数
     private int clickCountButton_btnNearLinkDev = 0;   //按钮计数
     private CardView CNearLinkStatus,CNearlinkUart,CNearLinkSettings,CNearlinkDev,CTHANKS;
@@ -238,6 +241,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         NearLinkUserText = findViewById(id.readText);
         NearLinkMeText = findViewById(id.writeText);
         EditChatSend = findViewById(id.editChatSend);
+        EditChatSend.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE ||
+                        (keyEvent != null && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER && keyEvent.getAction() == KeyEvent.ACTION_DOWN)) {
+                            NearLinkChatSendData(textView);
+                                return true;
+                }
+                return false;
+            }
+        });
 
         CheckBoxUartWarn = findViewById(id.cbUartWarn);
         NearLinkUartWarnToast = CheckBoxUartWarn.isChecked();
@@ -569,6 +583,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     MainAPP.Vibrate(this);
                 }
+                //发送完消息清空待发送文本
+                EditChatSend.setText("");
             });
         }
     }

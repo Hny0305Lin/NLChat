@@ -130,7 +130,7 @@
                 android:layout_marginTop="35dp"
                 android:layout_marginRight="15dp"
                 android:layout_marginBottom="15dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:cardCornerRadius="4dp"
                 app:cardElevation="18dp">
 
@@ -212,6 +212,7 @@
                             android:layout_marginBottom="10dp"
                             android:layout_weight="8"
                             android:textColor="@color/blue_biaozhun_logowai"
+                            android:singleLine="true"
                             tools:ignore="HardcodedText" />
 
                         <com.google.android.material.button.MaterialButton
@@ -1137,6 +1138,17 @@
             app:fab_colorNormal="@color/blue_biaozhun_logowai_transparent"
             app:fab_colorPressed="@color/blue_biaozhun_logowai"
             app:fab_label="NearLink 星闪状态"
+            app:fab_shadowColor="@color/Pink_is_fancy"
+            app:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_labels_right_btn_nearlink_uichanges"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_done_all_24"
+            app:fab_colorNormal="@color/blue_biaozhun_logowai_transparent"
+            app:fab_colorPressed="@color/blue_biaozhun_logowai"
+            app:fab_label="UIChanges 聊天UI切换"
             app:fab_shadowColor="@color/Pink_is_fancy"
             app:fab_size="mini" />
 
