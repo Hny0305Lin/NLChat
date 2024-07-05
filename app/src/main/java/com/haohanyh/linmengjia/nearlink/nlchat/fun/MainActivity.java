@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.hardware.usb.UsbManager;
@@ -53,6 +54,7 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessage;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessageQueueUpdater;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatProcessorForExtract;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatSaveMessageDatabaseManager;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIAnimationUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.Premission.NearLinkChatGetSomePermission;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.array;
@@ -639,6 +641,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (view.getId() == id.btnGO) {
             MainAPP.Vibrate(this);
             btnGO.setEnabled(false);//一次点击后不可再次点击，因为已经把星闪网络给启动了
+            btnGO.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(color.nearlinkgreen_deep)));
+            ChatUIAnimationUtils.animateBackgroundColorChange(MainActivity.this, btnGO, color.nearlinkgreen_deep, color.nearlinkgreen_light);
             InitToOpen();
         } else if (view.getId() == id.menu_labels_right_btn_nearlink) {
             MainAPP.Vibrate(this);

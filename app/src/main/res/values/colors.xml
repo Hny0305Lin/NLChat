@@ -17,6 +17,8 @@
     <color name="blue_biaozhun_logowai_transparent">#4500CEFC</color>
 
     <color name="nearlinkgreen">#00C08B</color>
+    <color name="nearlinkgreen_deep">#FF00C08B</color>
+    <color name="nearlinkgreen_light">#7C00C08B</color>
 
     <color name="snackbar_log_v">#330033</color>
     <color name="snackbar_log_d">#0099FF</color>
