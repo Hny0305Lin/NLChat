@@ -191,6 +191,7 @@ public class ChatProcessorForExtract {
         public static final long DELAY_LONG = 90000;  // 90秒
         public static final long DELAY_VERY_LONG = 180000;  // 180秒
         public static final long DELAY_VERY_VERY_LONG = 600000; // 600秒，根据自己想要的时间来做决定，这里保留复现接口
+        public static final long DELAY_SAFETY_TIMER = 1800000; // 1800秒，1/2小时，剪贴板功能为安全起见，请务必对剪贴板信息保存勿超过30分钟
 
         private Context context;
 
