@@ -8,6 +8,8 @@ NLChat是专门为[小熊派BearPi的星闪代码](https://github.com/Hny0305Lin
 
 ![Static Badge](https://img.shields.io/badge/Bearpi%20Hi2821%20Pico%20NLChat-00C08B?style=for-the-badge&logo=C%2B%2B&labelColor=00CC66&link=https%3A%2F%2Fgithub.com%2FHny0305Lin%2FBearpi_Hi2821_Pico_NLChat)
 
+[![霓光计划-Harmony/NLChat星闪通讯软件](https://gitee.com/light-harmonyOS/NLChat/widgets/widget_card.svg?colors=393222,ebdfc1,fffae5,d8ca9f,393222,a28b40)](https://gitee.com/light-harmonyOS/NLChat)
+
 [点我前往硬件侧端](https://github.com/Hny0305Lin/Bearpi_Hi2821_Pico_NLChat) [点我前往烧写编译教程](https://github.com/Hny0305Lin/NLChat/blob/master/SLE_Device_Configure_Tutorial.md)
 
 [51CTO文章1](https://ost.51cto.com/posts/29266)  [51CTO文章2](https://ost.51cto.com/posts/29275)  [51CTO文章3](https://ost.51cto.com/posts/29294)
