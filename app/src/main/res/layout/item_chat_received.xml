@@ -10,8 +10,8 @@
         android:id="@+id/text_message_body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_chat_bubble_received"
+        android:background="@drawable/bg_chat_bubble_wechat_received"
         android:padding="10dp"
         android:textColor="@android:color/black"
-        android:text="Hello, this is a received message!Test!" />
+        android:text="Hello, this is a received message! Test! " />
 </LinearLayout>

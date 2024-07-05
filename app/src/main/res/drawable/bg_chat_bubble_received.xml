@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#E5E5EA" />
-    <corners android:radius="16dp" />
+    <solid android:color="@color/blue_biaozhun_logowai_transparent" />
+    <corners android:radius="8dp" />
     <padding android:left="8dp" android:top="8dp" android:right="8dp" android:bottom="8dp" />
 </shape>
