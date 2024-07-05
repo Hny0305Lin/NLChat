@@ -1,0 +1,52 @@
+/* 受Haohanyh Computer Software Products Open Source LICENSE保护 https://github.com/Hny0305Lin/LICENSE/blob/main/LICENSE */
+package com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore;
+
+import android.content.Context;
+import android.graphics.Typeface;
+import android.util.Log;
+import android.widget.TextView;
+
+import java.util.Random;
+
+public class ChatFontUtils {
+
+    private static final String TAG = "ChatFontUtils & NLChat";
+
+    // 加载并应用自定义字体
+    public static void applyCustomFont(Context context, TextView textView, int fontType) {
+        String fontPath = getFontPath(fontType);
+        try {
+            Typeface customFont = Typeface.createFromAsset(context.getAssets(), fontPath);
+            textView.setTypeface(customFont);
+            Log.i(TAG, "Font asset found: " + fontPath);
+        } catch (RuntimeException e) {
+            Log.e(TAG, "Font asset not found: " + fontPath, e);
+        }
+    }
+
+    public static void applyCustomFont(Context context, TextView textView) {
+        int fontType = new Random().nextInt(3) + 1; // 生成1到3之间的随机数
+        String fontPath = getFontPath(fontType);
+        try {
+            Typeface customFont = Typeface.createFromAsset(context.getAssets(), fontPath);
+            textView.setTypeface(customFont);
+            Log.i(TAG, "Font asset found: " + fontPath);
+        } catch (RuntimeException e) {
+            Log.e(TAG, "Font asset not found: " + fontPath, e);
+        }
+    }
+
+    // 根据传入的整数值返回对应的字体路径
+    private static String getFontPath(int fontType) {
+        switch (fontType) {
+            case 1:
+                return "fonts/dingtalk_jinbuti.ttf";
+            case 2:
+                return "fonts/alimama_dongfangdakai_regular.ttf";
+            case 3:
+                return "fonts/smileysans_oblique.ttf";
+            default:
+                return "fonts/source_han_sans_sc_regular.otf"; // 默认字体
+        }
+    }
+}

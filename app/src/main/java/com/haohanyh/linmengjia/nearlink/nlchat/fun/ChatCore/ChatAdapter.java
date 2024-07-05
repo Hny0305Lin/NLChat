@@ -1,6 +1,7 @@
 /* 受Haohanyh Computer Software Products Open Source LICENSE保护 https://github.com/Hny0305Lin/LICENSE/blob/main/LICENSE */
 package com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +19,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
 
     private List<ChatMessage> chatMessages;
+    private Context context;
 
     // 构造函数，初始化消息列表
-    public ChatAdapter(List<ChatMessage> chatMessages) {
+    public ChatAdapter(Context context, List<ChatMessage> chatMessages) {
+        this.context = context;
         this.chatMessages = chatMessages;
     }
 
@@ -73,6 +76,9 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         SentMessageHolder(View itemView) {
             super(itemView);
             messageText = itemView.findViewById(R.id.text_message_body);
+
+            // 设置自定义字体
+            ChatFontUtils.applyCustomFont(context, messageText, 0);
         }
 
         void bind(ChatMessage message) {
@@ -87,6 +93,9 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         ReceivedMessageHolder(View itemView) {
             super(itemView);
             messageText = itemView.findViewById(R.id.text_message_body);
+
+            // 设置自定义字体
+            ChatFontUtils.applyCustomFont(context, messageText);
         }
 
         void bind(ChatMessage message) {

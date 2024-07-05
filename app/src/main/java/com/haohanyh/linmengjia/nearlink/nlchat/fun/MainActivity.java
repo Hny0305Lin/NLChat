@@ -248,8 +248,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE ||
                         (keyEvent != null && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER && keyEvent.getAction() == KeyEvent.ACTION_DOWN)) {
-                            NearLinkChatSendData(textView);
+                            String text = textView.getText().toString().trim();
+                            if (!text.isEmpty()) {
+                                NearLinkChatSendData(textView);
                                 return true;
+                            } else {
+                                SnackBarToastForDebug(context,"您发送的消息为空!","推荐编辑好再发送",0,Snackbar.LENGTH_SHORT);
+                            }
                 }
                 return false;
             }
@@ -310,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //聊天 1.3更新
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        chatAdapter = new ChatAdapter(chatMessages);
+        chatAdapter = new ChatAdapter(this, chatMessages);
         recyclerView.setAdapter(chatAdapter);
 
         //聊天初始化
