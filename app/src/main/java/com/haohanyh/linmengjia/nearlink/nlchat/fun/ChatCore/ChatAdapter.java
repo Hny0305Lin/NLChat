@@ -78,7 +78,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             messageText = itemView.findViewById(R.id.text_message_body);
 
             // 设置自定义字体
-            ChatFontUtils.applyCustomFont(context, messageText, 0);
+            ChatFontUtils.applyCustomFont(context, messageText);
         }
 
         void bind(ChatMessage message) {

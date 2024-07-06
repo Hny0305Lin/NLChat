@@ -6,11 +6,20 @@ import android.graphics.Typeface;
 import android.util.Log;
 import android.widget.TextView;
 
-import java.util.Random;
-
 public class ChatFontUtils {
 
     private static final String TAG = "ChatFontUtils & NLChat";
+
+    private static int fontPathNum = 0;    //默认，思源字体
+
+    // getter and settertiao
+    public static int getFontPathNum() {
+        return fontPathNum;
+    }
+
+    public static void setFontPathNum(int fontPathNum) {
+        ChatFontUtils.fontPathNum = fontPathNum;
+    }
 
     // 加载并应用自定义字体
     public static void applyCustomFont(Context context, TextView textView, int fontType) {
@@ -24,9 +33,10 @@ public class ChatFontUtils {
         }
     }
 
+    // 加载并应用自定义字体
     public static void applyCustomFont(Context context, TextView textView) {
-        int fontType = new Random().nextInt(3) + 1; // 生成1到3之间的随机数
-        String fontPath = getFontPath(fontType);
+        //int fontType = new Random().nextInt(3) + 1; // 生成1到3之间的随机数
+        String fontPath = getFontPath(fontPathNum);
         try {
             Typeface customFont = Typeface.createFromAsset(context.getAssets(), fontPath);
             textView.setTypeface(customFont);
@@ -45,6 +55,8 @@ public class ChatFontUtils {
                 return "fonts/alimama_dongfangdakai_regular.ttf";
             case 3:
                 return "fonts/smileysans_oblique.ttf";
+            case 4:
+                return "fonts/haohanyhfont_regular.otf";// 浩瀚银河内测字体
             default:
                 return "fonts/source_han_sans_sc_regular.otf"; // 默认字体
         }
