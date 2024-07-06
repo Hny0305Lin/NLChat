@@ -5,7 +5,8 @@ public class ChatUtils {
     //这里设置的是UI相关，是否做到消息滚动展示在UI上，而不是全部展示，全部展示会占用大量UI资源
     private static boolean showUartLog = false; // 控制是否启用显示串口Log，打印在UI上（开发者使用）
     private static final boolean scrollingMessages = true; // 控制是否启用滚动消息功能
-    private static final boolean clipMessages = true; // 控制是否启用剪贴板功能
+    private static boolean clipMessages = true; // 控制是否启用剪贴板功能
+    private static final boolean uiNewOrOld = true; // 控制是否启用新UI（一般为True）
     //这里设置的是数据库相关
     private static boolean sqlitemanager = true; // 控制是否启用SQLite存储功能
     private static boolean sqlitehistory = false; // 控制是否启用SQLite历史记录显示功能
@@ -31,6 +32,10 @@ public class ChatUtils {
     public static boolean isScrollingMessages() { return scrollingMessages; }
     //控制是否启用剪贴板功能和设置
     public static boolean isClipMessages() { return clipMessages; }
+
+    public static void setClipMessages(boolean clipMessages) { ChatUtils.clipMessages = clipMessages; }
+    //控制是否启用新UI
+    public static boolean isUiNewOrOld() { return uiNewOrOld; }
     //控制是否启用SQLite功能
     public static boolean isSqlitemanager() { return sqlitemanager; }
 

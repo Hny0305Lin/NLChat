@@ -54,6 +54,7 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessage;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessageQueueUpdater;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatProcessorForExtract;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatSaveMessageDatabaseManager;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIAlertDialog;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIAnimationUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.Premission.NearLinkChatGetSomePermission;
@@ -119,6 +120,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final int[] dataBitIds = {id.rbData5, id.rbData6, id.rbData7, id.rbData8};
     private final int[] stopBitIds = {id.rbStop1, id.rbStop2};
     private final int[] parityIds = {id.rbParityNone, id.rbParityOdd, id.rbParityEven, id.rbParityMark, id.rbParitySpace};
+
+    private AppCompatCheckBox SettingsForShowLog,SettingsForSaveSQL,SettingsForDelSQL,SettingsForHistory,SettingsForClearSCR,SettingsForEncryption,SettingsForClip,SettingsForPush,SettingsForBackground,SettingsForBackup,SettingsForNFC;
+
     //Context
     private Context context = MainActivity.this;
 
@@ -213,9 +217,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         clickCountButton_btnNearLinkStatus = 0;
         btnNearLinkStatus.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_done_all_24));
         btnNearLinkStatus.setImageResource(drawable.ic_baseline_done_all_24);
-        clickCountButton_btnNearLinkUIChanges = 0;
-        btnNearLinkUIChanges.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_nearlink_24));
-        btnNearLinkUIChanges.setImageResource(drawable.ic_baseline_nearlink_24);
+        if (ChatUtils.isUiNewOrOld()) {
+            clickCountButton_btnNearLinkUIChanges = 0;
+            btnNearLinkUIChanges.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_nearlink_24));
+            btnNearLinkUIChanges.setImageResource(drawable.ic_baseline_nearlink_24);
+        } else {
+            clickCountButton_btnNearLinkUIChanges = 1;
+            btnNearLinkUIChanges.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_done_all_24));
+            btnNearLinkUIChanges.setImageResource(drawable.ic_baseline_done_all_24);
+        }
         clickCountButton_btnNearLinkUart = 1;
         btnNearlinkUart.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_close_24));
         btnNearlinkUart.setImageResource(drawable.ic_baseline_close_24);
@@ -236,9 +246,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         CTHANKS = findViewById(id.CardAPP);
         CTHANKS.setVisibility(View.VISIBLE);
         CNearLinkChat = findViewById(id.CardIChat);
-        CNearLinkChat.setVisibility(View.GONE);
         CNearLinkChatNewUI = findViewById(id.CardIChatNewUI);
-        CNearLinkChatNewUI.setVisibility(View.VISIBLE);
+        if (ChatUtils.isUiNewOrOld()) {
+            CNearLinkChatNewUI.setVisibility(View.VISIBLE);
+            CNearLinkChat.setVisibility(View.GONE);
+        } else {
+            CNearLinkChat.setVisibility(View.VISIBLE);
+            CNearLinkChatNewUI.setVisibility(View.GONE);
+        }
         NearLinkNewUIUserTitle = findViewById(id.userTitleNewUI);
         recyclerView = findViewById(id.recycler_view);
         APPRunResult = findViewById(id.appResult);
@@ -247,25 +262,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         NearLinkUserTitle = findViewById(id.userTitle);
         NearLinkUserText = findViewById(id.readText);
         NearLinkMeText = findViewById(id.writeText);
-        EditChatSend = findViewById(id.editChatSend);
-        EditChatSend.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if (actionId == EditorInfo.IME_ACTION_DONE ||
-                        (keyEvent != null && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER && keyEvent.getAction() == KeyEvent.ACTION_DOWN)) {
-                            String text = textView.getText().toString().trim();
-                            if (!text.isEmpty()) {
-                                NearLinkChatSendData(textView);
-                                return true;
-                            } else {
-                                SnackBarToastForDebug(context,"您发送的消息为空!","推荐编辑好再发送",0,Snackbar.LENGTH_SHORT);
-                            }
-                }
-                return false;
-            }
-        });
-        EditChatSendNewUI = findViewById(id.editChatSendNewUI);
-        EditChatSendNewUI.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+        TextView.OnEditorActionListener editorActionListenerForChatSend = new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 if (actionId == EditorInfo.IME_ACTION_DONE ||
@@ -280,7 +278,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 return false;
             }
-        });
+        };
+        EditChatSend = findViewById(id.editChatSend);
+        EditChatSend.setOnEditorActionListener(editorActionListenerForChatSend);
+        EditChatSendNewUI = findViewById(id.editChatSendNewUI);
+        EditChatSendNewUI.setOnEditorActionListener(editorActionListenerForChatSend);
+
 
         CheckBoxUartWarn = findViewById(id.cbUartWarn);
         NearLinkUartWarnToast = CheckBoxUartWarn.isChecked();
@@ -335,7 +338,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             radioButton.setOnCheckedChangeListener(createCheckedChangeListener(i, "Parity"));
         }
 
-        //聊天 1.3更新
+        //聊天NewUI
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         chatAdapter = new ChatAdapter(this, chatMessages);
         recyclerView.setAdapter(chatAdapter);
@@ -343,6 +346,98 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //聊天初始化
         serverUpdater = new ChatMessageQueueUpdater(NearLinkUserText, serverMessageQueue, chatMessages, chatAdapter, "User: ");
         clientUpdater = new ChatMessageQueueUpdater(NearLinkMeText, clientMessageQueue, chatMessages, chatAdapter,"Me: ");
+
+        //星闪网络相关设置初始化，目前多数还不允许UI设置，敬请期待
+        CompoundButton.OnCheckedChangeListener SettingsChangeListener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (compoundButton.isEnabled()) {
+                    if (compoundButton.getId() == id.cbSettingsForShowLog) {
+                        SnackBarToastForDebug(context,"敬请期待!","如有不适，那没办法，做的慢怪我咯o(*^＠^*)o",0,Snackbar.LENGTH_SHORT);
+                    } else if (compoundButton.getId() == id.cbSettingsForSaveSQL) {
+                        if (isChecked) {
+                                ChatUtils.setSqlitemanager(true);
+                            SnackBarToastForDebug(context,"您已开始保存您的聊天记录啦!","目前为" + ChatUtils.isSqlitemanager(),0,Snackbar.LENGTH_SHORT);
+                        } else {
+                            if (ChatUIAlertDialog.show(compoundButton.getContext(), "聊天保存(SQLite)", "您确定要停止保存聊天数据吗？停止保存您的聊天，将会在接下来聊天时无法保存内容，可能会造成聊天记录丢失。", compoundButton))
+                                ChatUtils.setSqlitemanager(false);
+                            SnackBarToastForDebug(context,"已为您取消保存聊天记录!","目前为" + ChatUtils.isSqlitemanager(),0,Snackbar.LENGTH_SHORT);
+                        }
+                    } else if (compoundButton.getId() == id.cbSettingsForDelSQL) {
+                        SnackBarToastForDebug(context,"敬请期待!","如有不适，那没办法，做的慢怪我咯o(*^＠^*)o",0,Snackbar.LENGTH_SHORT);
+                    } else if (compoundButton.getId() == id.cbSettingsForHistory) {
+                        if (isChecked) {
+                            ChatUtils.setSqliteHistory(true);
+                            SnackBarToastForDebug(context,"您已开始展示您的聊天记录啦!","目前为" + ChatUtils.isSqliteHistory(),0,Snackbar.LENGTH_SHORT);
+                        } else {
+                            if (ChatUIAlertDialog.show(compoundButton.getContext(), "历史设备记录(SQLite)", "您确定要停止展示聊天数据在UI上吗？", compoundButton))
+                                ChatUtils.setSqliteHistory(false);
+                            SnackBarToastForDebug(context,"已为您取消保存聊天记录!","目前为" + ChatUtils.isSqliteHistory(),0,Snackbar.LENGTH_SHORT);
+                        }
+                    } else if (compoundButton.getId() == id.cbSettingsForClearSCR) {
+                        SnackBarToastForDebug(context,"敬请期待!","如有不适，那没办法，做的慢怪我咯o(*^＠^*)o",0,Snackbar.LENGTH_SHORT);
+                    } else if (compoundButton.getId() == id.cbSettingsForEncryption) {
+                        SnackBarToastForDebug(context,"敬请期待!","如有不适，那没办法，做的慢怪我咯o(*^＠^*)o",0,Snackbar.LENGTH_SHORT);
+                    } else if (compoundButton.getId() == id.cbSettingsForClip) {
+                        if (isChecked) {
+                            ChatUtils.setClipMessages(true);
+                            SnackBarToastForDebug(context,"您已开启剪贴板功能!","目前为" + ChatUtils.isClipMessages(),0,Snackbar.LENGTH_SHORT);
+                        } else {
+                            if (ChatUIAlertDialog.show(compoundButton.getContext(), "聊天文本进入剪贴板", "您确定要停止剪贴板吗？剪贴板功能可以帮您自动按规则捕获内容，可以很大程度上帮助到您手动任务耗时的情况，取消则需要您自行处理屏幕上的UI信息。", compoundButton))
+                                ChatUtils.setClipMessages(false);
+                            SnackBarToastForDebug(context,"已为您取消剪贴板功能!","目前为" + ChatUtils.isClipMessages(),0,Snackbar.LENGTH_SHORT);
+                        }
+                    } else if (compoundButton.getId() == id.cbSettingsForPush) {
+                        SnackBarToastForDebug(context,"敬请期待!","如有不适，那没办法，做的慢怪我咯o(*^＠^*)o",0,Snackbar.LENGTH_SHORT);
+                    } else if (compoundButton.getId() == id.cbSettingsForBackground) {
+                        SnackBarToastForDebug(context,"敬请期待!","如有不适，那没办法，做的慢怪我咯o(*^＠^*)o",0,Snackbar.LENGTH_SHORT);
+                    } else if (compoundButton.getId() == id.cbSettingsForBackup) {
+                        SnackBarToastForDebug(context,"敬请期待!","如有不适，那没办法，做的慢怪我咯o(*^＠^*)o",0,Snackbar.LENGTH_SHORT);
+                    } else if (compoundButton.getId() == id.cbSettingsForNFC) {
+                        SnackBarToastForDebug(context,"敬请期待!","如有不适，那没办法，做的慢怪我咯o(*^＠^*)o",0,Snackbar.LENGTH_SHORT);
+
+                    }
+                }
+            }
+        };
+        SettingsForShowLog = findViewById(id.cbSettingsForShowLog);
+        SettingsForShowLog.setEnabled(false);
+        SettingsForShowLog.setOnCheckedChangeListener(SettingsChangeListener);
+        SettingsForSaveSQL = findViewById(id.cbSettingsForSaveSQL);
+        SettingsForSaveSQL.setEnabled(true);
+        SettingsForSaveSQL.setChecked(true);
+        SettingsForSaveSQL.setOnCheckedChangeListener(SettingsChangeListener);
+        SettingsForDelSQL = findViewById(id.cbSettingsForDelSQL);
+        SettingsForDelSQL.setEnabled(false);
+        SettingsForDelSQL.setOnCheckedChangeListener(SettingsChangeListener);
+        SettingsForHistory = findViewById(id.cbSettingsForHistory);
+        SettingsForHistory.setEnabled(true);
+        SettingsForHistory.setChecked(false);
+        SettingsForHistory.setOnCheckedChangeListener(SettingsChangeListener);
+        SettingsForClearSCR = findViewById(id.cbSettingsForClearSCR);
+        SettingsForClearSCR.setEnabled(false);
+        SettingsForClearSCR.setOnCheckedChangeListener(SettingsChangeListener);
+        SettingsForEncryption = findViewById(id.cbSettingsForEncryption);
+        SettingsForEncryption.setEnabled(false);
+        SettingsForEncryption.setOnCheckedChangeListener(SettingsChangeListener);
+        SettingsForClip = findViewById(id.cbSettingsForClip);
+        SettingsForClip.setEnabled(true);
+        SettingsForClip.setChecked(true);
+        SettingsForClip.setOnCheckedChangeListener(SettingsChangeListener);
+        SettingsForPush = findViewById(id.cbSettingsForPush);
+        SettingsForPush.setEnabled(false);
+        SettingsForPush.setOnCheckedChangeListener(SettingsChangeListener);
+        SettingsForBackground = findViewById(id.cbSettingsForBackground);
+        SettingsForBackground.setEnabled(false);
+        SettingsForBackground.setOnCheckedChangeListener(SettingsChangeListener);
+        SettingsForBackup = findViewById(id.cbSettingsForBackup);
+        SettingsForBackup.setEnabled(false);
+        SettingsForBackup.setOnCheckedChangeListener(SettingsChangeListener);
+        SettingsForNFC = findViewById(id.cbSettingsForNFC);
+        SettingsForNFC.setEnabled(false);
+        SettingsForNFC.setOnCheckedChangeListener(SettingsChangeListener);
+
+
 
         //初始化完成，软件第一次启动必须提示（这里写的第一次启动是软件启动的第一次，而不是使用频率的第一次
         HhandlerI.sendEmptyMessage(31);
