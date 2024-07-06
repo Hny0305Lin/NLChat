@@ -16,6 +16,8 @@ import java.util.Queue;
 public class ChatMessageQueueUpdater {
     private static final String TAG = "ChatMessageQueueUpdater & NLChat";
 
+    private ChatTimestamp chatTimestamp = new ChatTimestamp(); // 聊天时间戳
+
     private Queue<String> messageQueue; // 消息队列
     private TextView textView; // 显示消息的 TextView
     private List<ChatMessage> chatMessages; // 聊天消息列表
@@ -63,7 +65,8 @@ public class ChatMessageQueueUpdater {
         // 新UI处理，将新消息添加到 chatMessages 列表中
         for (String newMessage : newMessages) {
             boolean isUser = logPrefix.contains("User: ");
-            chatMessages.add(new ChatMessage(newMessage, isUser));
+            String timestamp = chatTimestamp.getCurrentTimestamp(); // 获取当前时间戳
+            chatMessages.add(new ChatMessage(newMessage, timestamp, isUser));
         }
         chatAdapter.notifyDataSetChanged();
         // 旧UI处理

@@ -71,11 +71,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     // 发送消息的ViewHolder
     private class SentMessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText;
+        TextView messageText,timestampText;
 
         SentMessageHolder(View itemView) {
             super(itemView);
             messageText = itemView.findViewById(R.id.text_message_body);
+            timestampText = itemView.findViewById(R.id.text_message_time);
 
             // 设置自定义字体
             ChatFontUtils.applyCustomFont(context, messageText);
@@ -83,16 +84,18 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         void bind(ChatMessage message) {
             messageText.setText(message.getMessage());
+            timestampText.setText(message.getTimestamp());
         }
     }
 
     // 接收消息的ViewHolder
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText;
+        TextView messageText,timestampText;
 
         ReceivedMessageHolder(View itemView) {
             super(itemView);
             messageText = itemView.findViewById(R.id.text_message_body);
+            timestampText = itemView.findViewById(R.id.text_message_time);
 
             // 设置自定义字体
             ChatFontUtils.applyCustomFont(context, messageText);
@@ -100,6 +103,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         void bind(ChatMessage message) {
             messageText.setText(message.getMessage());
+            timestampText.setText(message.getTimestamp());
         }
     }
 }

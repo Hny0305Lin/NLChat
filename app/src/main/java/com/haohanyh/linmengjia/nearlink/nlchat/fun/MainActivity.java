@@ -54,6 +54,7 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessage;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessageQueueUpdater;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatProcessorForExtract;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatSaveMessageDatabaseManager;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatTimestamp;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIAlertDialog;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIAnimationUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtils;
@@ -69,7 +70,6 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.String.StringUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.WCHUart.WCHUartSettings;
 
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -138,9 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ChatSaveMessageDatabaseManager chatSaveMessageDatabaseManager;
 
     //聊天时间戳
-    @SuppressLint("SimpleDateFormat")
-    //private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss.SSS");
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd HH:mm:ss.SSS");
+    private ChatTimestamp chatTimestamp = new ChatTimestamp();
 
     //调用SQLite
     private SQLiteDataBaseAPP dbHelper;
@@ -549,13 +547,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             runOnUiThread(() -> {
                 //如果需要存储到数据库中
                 if (ChatUtils.isSqlitemanager()) {
-                    // 分离时间戳和消息内容
-                    String[] parts = processedString.split(" - ", 2);
-                    if (parts.length == 2) {
-                        String timestamp = parts[0];
-                        String message = parts[1];
-                        saveMessageToDatabase(timestamp, message, "User");
-                    }
+                    String timestamp = chatTimestamp.saveCurrentTimestamp();
+                    saveMessageToDatabase(timestamp, processedString, "User");
                 }
                 //如果需要UI滚动消息
                 if (ChatUtils.isScrollingMessages()) {
@@ -599,10 +592,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     completeSecondData = completeFirstData.replace(ChatUtils.getPrefixClient(), "").trim();
                     Log.v(TAG, "长度：completeSecondData.length="+ completeSecondData.length() + "\t内容：" + completeSecondData);
                 }
-                //添加时间戳
-                String timestamp = dateFormat.format(new java.util.Date());
-                completeSecondData = timestamp + " - " + completeSecondData;
-
                 //确保消息以换行符结尾
                 if (!completeSecondData.endsWith("\n")) {
                     completeSecondData += "\n";
@@ -691,13 +680,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             runOnUiThread(() -> {
                 //如果需要存储到数据库中
                 if (ChatUtils.isSqlitemanager()) {
-                    // 分离时间戳和消息内容
-                    String[] parts = TextOfClient.split(" - ", 2);
-                    if (parts.length == 2) {
-                        String timestamp = parts[0];
-                        String message = parts[1];
-                        saveMessageToDatabase(timestamp, message, "Me");
-                    }
+                    String timestamp = chatTimestamp.saveCurrentTimestamp();
+                    saveMessageToDatabase(timestamp, messageSend, "Me");
                 }
                 //如果需要UI滚动消息
                 if (ChatUtils.isScrollingMessages()) {
@@ -725,10 +709,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private String CH34xProcessingForSendData(String string) {
-        //添加时间戳
-        String timestamp = dateFormat.format(new java.util.Date());
-        string = timestamp + " - " + string;
-
         //确保消息以换行符结尾
         if (!string.endsWith("\n")) {
             string += "\n";
