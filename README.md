@@ -12,7 +12,7 @@ NLChat是专门为[小熊派BearPi的星闪代码](https://github.com/Hny0305Lin
 
 [点我前往硬件侧端](https://github.com/Hny0305Lin/Bearpi_Hi2821_Pico_NLChat) [点我前往烧写编译教程](https://github.com/Hny0305Lin/NLChat/blob/master/SLE_Device_Configure_Tutorial.md)
 
-[51CTO文章1](https://ost.51cto.com/posts/29266)  [51CTO文章2](https://ost.51cto.com/posts/29275)  [51CTO文章3](https://ost.51cto.com/posts/29294)
+[51CTO文章1](https://ost.51cto.com/posts/29266)  [51CTO文章2](https://ost.51cto.com/posts/29275)  [51CTO文章3](https://ost.51cto.com/posts/29294) [51CTO文章4](https://ost.51cto.com/posts/29341)
 
 ![NLChat](https://raw.githubusercontent.com/Hny0305Lin/NLChat/master/DevSummary/NLChat.jpg)
 
