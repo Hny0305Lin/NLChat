@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView APPRunResult,MobileUSBResult,UARTResult;
     private AppCompatTextView NearLinkUserTitle;
     private TextView NearLinkUserText,NearLinkMeText;
-    private EditText EditChatSend;
+    private EditText EditChatSend,EditChatSendNewUI;
 
     private Resources resources;
     private String[] UartSettingsBaud,UartSettingsData,UartSettingsStop,UartSettingsParity,UartSettingsParityII;
@@ -204,6 +204,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnNearLinkStatus.setOnClickListener(this);
         btnNearLinkSettings = findViewById(id.menu_labels_right_btn_nearlink_settings);
         btnNearLinkSettings.setOnClickListener(this);
+        btnNearLinkUIChanges = findViewById(id.menu_labels_right_btn_nearlink_uichanges);
+        btnNearLinkUIChanges.setOnClickListener(this);
         btnNearlinkUart = findViewById(id.menu_labels_right_btn_nearlink_uart);
         btnNearlinkUart.setOnClickListener(this);
         btnNearlinkDev = findViewById(id.menu_labels_right_btn_nearlink_dev);
@@ -211,6 +213,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         clickCountButton_btnNearLinkStatus = 0;
         btnNearLinkStatus.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_done_all_24));
         btnNearLinkStatus.setImageResource(drawable.ic_baseline_done_all_24);
+        clickCountButton_btnNearLinkUIChanges = 0;
+        btnNearLinkUIChanges.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_nearlink_24));
+        btnNearLinkUIChanges.setImageResource(drawable.ic_baseline_nearlink_24);
         clickCountButton_btnNearLinkUart = 1;
         btnNearlinkUart.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_close_24));
         btnNearlinkUart.setImageResource(drawable.ic_baseline_close_24);
@@ -231,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         CTHANKS = findViewById(id.CardAPP);
         CTHANKS.setVisibility(View.VISIBLE);
         CNearLinkChat = findViewById(id.CardIChat);
-        CNearLinkChat.setVisibility(View.VISIBLE);
+        CNearLinkChat.setVisibility(View.GONE);
         CNearLinkChatNewUI = findViewById(id.CardIChatNewUI);
         CNearLinkChatNewUI.setVisibility(View.VISIBLE);
         NearLinkNewUIUserTitle = findViewById(id.userTitleNewUI);
@@ -255,6 +260,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             } else {
                                 SnackBarToastForDebug(context,"您发送的消息为空!","推荐编辑好再发送",0,Snackbar.LENGTH_SHORT);
                             }
+                }
+                return false;
+            }
+        });
+        EditChatSendNewUI = findViewById(id.editChatSendNewUI);
+        EditChatSendNewUI.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE ||
+                        (keyEvent != null && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER && keyEvent.getAction() == KeyEvent.ACTION_DOWN)) {
+                    String text = textView.getText().toString().trim();
+                    if (!text.isEmpty()) {
+                        NearLinkChatSendData(textView);
+                        return true;
+                    } else {
+                        SnackBarToastForDebug(context,"您发送的消息为空!","推荐编辑好再发送",0,Snackbar.LENGTH_SHORT);
+                    }
                 }
                 return false;
             }
@@ -555,12 +577,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void NearLinkChatSendData(View view) {
         HhandlerI.sendEmptyMessage(10);
-        byte[] to_send = StringUtils.needProcess().toByteArray(String.valueOf(EditChatSend.getText()));		//以字符串方式发送
+        //这里写的是用户是否使用新UI和旧UI。
+        byte[] to_send;
+        String messageSend;
+        if (!EditChatSend.getText().toString().isEmpty()) {
+            messageSend = EditChatSend.getText().toString();
+            to_send = StringUtils.needProcess().toByteArray(EditChatSend.getText().toString());
+        } else {
+            messageSend = EditChatSendNewUI.getText().toString();
+            to_send = StringUtils.needProcess().toByteArray(EditChatSendNewUI.getText().toString());
+        }
+        //byte[] to_send = StringUtils.needProcess().toByteArray(String.valueOf(EditChatSend.getText()));		//以字符串方式发送
         int retval = MainAPP.CH34X.writeData(to_send, to_send.length);//写数据，第一个参数为需要发送的字节数组，第二个参数为需要发送的字节长度，返回实际发送的字节长度
         if (retval < 0) {
             SnackBarToastForDebug(context,"向对方发送数据失败!","推荐重新配置",3,Snackbar.LENGTH_SHORT);
         } else {
-            String TextOfClient = CH34xProcessingForSendData(EditChatSend.getText().toString());
+            String TextOfClient = CH34xProcessingForSendData(messageSend);
             runOnUiThread(() -> {
                 //如果需要存储到数据库中
                 if (ChatUtils.isSqlitemanager()) {
@@ -582,7 +614,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     clientUpdater.updateTextView();
                     MainAPP.Vibrate(this);
                 } else {
-                    NearLinkMeText.append(TextOfClient);
+                    NearLinkMeText.append(messageSend);
                     if (NearLinkMeText.length() > 2048) {
                         String str = NearLinkMeText.getText().toString().substring(NearLinkMeText.getText().length() - 1024, NearLinkMeText.getText().length());
                         NearLinkMeText.setText("");
@@ -592,6 +624,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 //发送完消息清空待发送文本
                 EditChatSend.setText("");
+                EditChatSendNewUI.setText("");
             });
         }
     }
@@ -663,6 +696,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btnNearLinkStatus.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_done_all_24));
                 btnNearLinkStatus.setImageResource(drawable.ic_baseline_done_all_24);
                 clickCountButton_btnNearLinkStatus = 0;
+            }
+        } else if (view.getId() == id.menu_labels_right_btn_nearlink_uichanges) {
+            MainAPP.Vibrate(this);
+            if (clickCountButton_btnNearLinkUIChanges % 2 == 0) {
+                CNearLinkChat.setVisibility(View.VISIBLE);
+                CNearLinkChatNewUI.setVisibility(View.GONE);
+                EditChatSendNewUI.setText("");
+
+                btnNearLinkUIChanges.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_done_all_24));
+                btnNearLinkUIChanges.setImageResource(drawable.ic_baseline_done_all_24);
+                clickCountButton_btnNearLinkUIChanges = clickCountButton_btnNearLinkUIChanges + 1;
+            } else {
+                CNearLinkChat.setVisibility(View.GONE);
+                CNearLinkChatNewUI.setVisibility(View.VISIBLE);
+                EditChatSend.setText("");
+
+                btnNearLinkUIChanges.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_nearlink_24));
+                btnNearLinkUIChanges.setImageResource(drawable.ic_baseline_nearlink_24);
+                clickCountButton_btnNearLinkUIChanges = 0;
             }
         } else if (view.getId() == id.menu_labels_right_btn_nearlink_settings) {
             MainAPP.Vibrate(this);
