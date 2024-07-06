@@ -11,12 +11,11 @@
         </layer-list>
     </item>
     <item
-        android:gravity="left|top"
-        android:top="15dp">
+        android:gravity="left|center">
         <rotate
             android:fromDegrees="45"
             android:pivotX="50%"
-            android:pivotY="135%">
+            android:pivotY="125%">
             <shape android:shape="rectangle">
                 <size
                     android:width="8dp"

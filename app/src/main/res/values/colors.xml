@@ -25,4 +25,6 @@
     <color name="snackbar_log_i">#00CC66</color>
     <color name="snackbar_log_w">#CC9966</color>
     <color name="snackbar_log_e">#CC0066</color>
+
+    <color name="newui_time">#aaa</color>
 </resources>
