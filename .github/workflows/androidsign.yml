@@ -11,6 +11,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        path: NLChat  # 确保代码被检出到NLChat目录
 
   cache:
     runs-on: ubuntu-latest
@@ -43,6 +45,7 @@ jobs:
       with:
         gradle-version: current
         arguments: assembleRelease
+      working-directory: NLChat  # 指定工作目录为NLChat
 
   sign:
     runs-on: ubuntu-latest
@@ -133,3 +136,4 @@ jobs:
 
     - name: Run Instrumentation Tests
       run: ./gradlew connectedAndroidTest
+      working-directory: NLChat  # 指定工作目录为NLChat
