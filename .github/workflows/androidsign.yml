@@ -8,42 +8,190 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-    - name: JDK17 Eclipsejdk
+      with:
+        path: NLChat  # 确保代码被检出到NLChat目录
+
+    - name: Set up JDK 17
+      id: setup-java
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: Set JAVA_HOME
+      run: echo "JAVA_HOME=${{ steps.setup-java.outputs.path }}" >> $GITHUB_ENV
+
     - name: Set up Gradle
-      uses: gradle/gradle-build-action@v2
+      uses: gradle/actions/setup-gradle@v3
       with:
-        gradle-version: current
-        arguments: assembleRelease
+        gradle-version: 'current'  # 使用最新的 Gradle 版本
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x NLChat/gradlew
+
+    - name: Build Project
+      env:
+        JAVA_HOME: ${{ steps.setup-java.outputs.path }}  # 显式设置 JAVA_HOME
+      run: |
+        echo "JAVA_HOME=${JAVA_HOME}"  # 确认 JAVA_HOME 已设置
+        cd NLChat
+        ./gradlew assembleRelease
 
     - name: Sign
       uses: r0adkll/sign-android-release@v1
       id: sign_app
       with:
-        releaseDirectory: app/build/outputs/apk/release
-        signingKeyBase64: ${{ secrets.SIGING_KEY }}
+        releaseDirectory: NLChat/app/build/outputs/apk/release
+        signingKeyBase64: ${{ secrets.SIGNING_KEY }}
         alias: ${{ secrets.ALIAS }}
         keyStorePassword: ${{ secrets.KEY_PASSWORD }}
         keyPassword: ${{ secrets.KEY_PASSWORD }}
       env:
         BUILD_TOOLS_VERSION: "34.0.0"
 
+    - name: List files in release directory
+      run: ls -R NLChat/app/build/outputs/apk/release
+
+    - name: Upload Signed APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: signed-apk
+        path: NLChat/app/build/outputs/apk/release/app-release-unsigned-signed.apk
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        path: NLChat  # 确保代码被检出到NLChat目录
+
+    - name: Download Signed APK
+      uses: actions/download-artifact@v3
+      with:
+        name: signed-apk
+        path: NLChat/app/build/outputs/apk/release
+
     - name: Release Ready
-      run: mv ${{steps.sign_app.outputs.signedReleaseFile}} NLChat_$GITHUB_REF_NAME.apk
+      run: |
+        if [ -f "NLChat/app/build/outputs/apk/release/app-release-unsigned-signed.apk" ]; then
+          mv NLChat/app/build/outputs/apk/release/app-release-unsigned-signed.apk NLChat_${{ github.ref_name }}.apk
+        else
+          echo "Error: APK file not found!"
+          exit 1
+        fi
 
     - name: Release
       uses: ncipollo/release-action@v1
       with:
-        artifacts: "*.apk"
-        token: ${{ github.token }}
+        artifacts: "NLChat_${{ github.ref_name }}.apk"
+        token: ${{ secrets.GITHUB_TOKEN }}
         generateReleaseNotes: true
+
+    - name: Bump version and generate changelog
+      id: version
+      run: |
+        cd NLChat
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        npm install -g standard-version
+        standard-version --release-as ${{ github.ref_name }}
+        git push --follow-tags origin ${{ github.ref_name }}
+    - name: Get Commit Message
+      id: get_commit_message
+      run: echo "COMMIT_MESSAGE=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
+
+    - name: Create or Update Release Notes
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ github.ref_name }}
+        name: Release ${{ github.ref_name }}
+        body: ${{ env.COMMIT_MESSAGE }}
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用环境变量
+  
+  multi-platform-test:
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      matrix:
+        api-level: [28, 29, 30, 31, 33]  # 你可以根据需要调整 API 级别
+        target: [default, google_apis]
+        arch: [x86, x86_64, arm64-v8a]  # 你可以根据需要调整架构
+        include:
+          - api-level: 28
+            target: default
+            arch: x86
+          - api-level: 29
+            target: default
+            arch: x86_64
+          - api-level: 29
+            target: default
+            arch: arm64-v8a
+          - api-level: 29
+            target: google_apis
+            arch: arm64-v8a
+          - api-level: 30
+            target: default
+            arch: x86_64
+          - api-level: 30
+            target: google_apis
+            arch: x86_64
+          - api-level: 30
+            target: google_apis
+            arch: arm64-v8a
+          - api-level: 31
+            target: default
+            arch: x86_64
+          - api-level: 31
+            target: google_apis
+            arch: x86_64
+          - api-level: 31
+            target: google_apis
+            arch: arm64-v8a
+          - api-level: 33
+            target: default
+            arch: x86_64
+          - api-level: 33
+            target: google_apis
+            arch: x86_64
+          - api-level: 33
+            target: google_apis
+            arch: arm64-v8a
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 17
+
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Instrumentation Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          arch: x86_64
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: ./gradlew connectedAndroidTest --stacktrace
