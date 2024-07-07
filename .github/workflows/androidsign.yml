@@ -45,7 +45,7 @@ jobs:
       with:
         gradle-version: current
         arguments: assembleRelease
-      working-directory: NLChat  # 指定工作目录为NLChat
+      build-root-directory: NLChat
 
   sign:
     runs-on: ubuntu-latest
@@ -135,5 +135,6 @@ jobs:
         build-tools: '34.0.0'
 
     - name: Run Instrumentation Tests
-      run: ./gradlew connectedAndroidTest
-      working-directory: NLChat  # 指定工作目录为NLChat
+      run: |
+        cd NLChat
+        ./gradlew connectedAndroidTest
