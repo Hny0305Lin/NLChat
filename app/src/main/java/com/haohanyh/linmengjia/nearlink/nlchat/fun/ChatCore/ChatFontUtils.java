@@ -61,6 +61,8 @@ public class ChatFontUtils {
                 return "fonts/source_han_sans_sc_regular.otf";              //思源宋体
             case 6:
                 return "fonts/taipeisanstcbeta_regular.ttf";                //台北黑体
+            default:
+                return "fonts/source_han_sans_sc_regular.otf";              //默认思源宋体
         }
     }
 }
