@@ -114,7 +114,7 @@ jobs:
         draft: false
         prerelease: false
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用环境变量
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}  # 使用环境变量
   
   multi-platform-test:
     runs-on: ubuntu-latest
