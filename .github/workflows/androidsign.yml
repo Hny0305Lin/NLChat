@@ -102,16 +102,6 @@ jobs:
         token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}  # 使用 PAT
         generateReleaseNotes: true
 
-    - name: Bump version and generate changelog
-      id: version
-      run: |
-        cd NLChat
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        npm install -g standard-version
-        standard-version --release-as ${{ github.ref_name }}
-        git push --follow-tags origin HEAD
-
     - name: Get Commit Message
       id: get_commit_message
       run: |
