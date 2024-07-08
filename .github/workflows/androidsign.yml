@@ -70,16 +70,6 @@ jobs:
       with:
         path: NLChat  # 确保代码被检出到NLChat目录
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
-
-    - name: Install dependencies
-      run: |
-        cd NLChat
-        npm install
-
     - name: Download Signed APK
       uses: actions/download-artifact@v3
       with:
@@ -95,14 +85,12 @@ jobs:
           exit 1
         fi
 
-    - name: Check and Delete Existing Tag
-      run: |
-        if git rev-parse ${{ github.ref_name }} >/dev/null 2>&1; then
-          git tag -d ${{ github.ref_name }}
-          git push --delete origin ${{ github.ref_name }}
-        fi
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "NLChat_${{ github.ref_name }}.apk"
+        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}  # 使用 PAT
+        generateReleaseNotes: true
 
     - name: Bump version and generate changelog
       id: version
@@ -110,19 +98,13 @@ jobs:
         cd NLChat
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git fetch origin
-        git checkout ${{ github.ref_name }} || git checkout -b ${{ github.ref_name }} origin/${{ github.ref_name }}
-        npx standard-version --release-as minor
-        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+        npm install -g standard-version
+        standard-version --release-as ${{ github.ref_name }}
         git push --follow-tags origin ${{ github.ref_name }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     - name: Get Commit Message
       id: get_commit_message
-      run: |
-        cd NLChat
-        echo "COMMIT_MESSAGE=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
+      run: echo "COMMIT_MESSAGE=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
+      continue-on-error: true
 
     - name: Create or Update Release Notes
       uses: softprops/action-gh-release@v1
@@ -133,14 +115,8 @@ jobs:
         draft: false
         prerelease: false
       env:
-        GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}  # 使用环境变量
-
-    - name: Release
-      uses: ncipollo/release-action@v1
-      with:
-        artifacts: "NLChat_${{ github.ref_name }}.apk"
-        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}  # 使用 PAT
-        generateReleaseNotes: true
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 使用环境变量
+      continue-on-error: true
   
   multi-platform-test:
     runs-on: ubuntu-latest
