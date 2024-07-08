@@ -89,7 +89,7 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         artifacts: "NLChat_${{ github.ref_name }}.apk"
-        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}  # 使用 PAT
+        token: ${{ secrets.GITHUB_TOKEN }}  # 使用 PAT
         generateReleaseNotes: true
 
     - name: Get Commit Message
