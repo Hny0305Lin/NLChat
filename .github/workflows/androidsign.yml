@@ -85,16 +85,6 @@ jobs:
           exit 1
         fi
 
-    - name: Check and Delete Existing Tag
-      run: |
-        cd NLChat
-        if git rev-parse ${{ github.ref_name }} >/dev/null 2>&1; then
-          git tag -d ${{ github.ref_name }}
-          git push --delete origin ${{ github.ref_name }}
-        fi
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     - name: Release
       uses: ncipollo/release-action@v1
       with:
