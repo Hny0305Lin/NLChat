@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.usb.UsbManager;
 import android.net.Uri;
@@ -53,6 +54,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.haohanyh.linmengjia.nearlink.nlchat.ch34x.CH34xUARTDriver;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatAdapter;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatFileUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessage;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessageQueueUpdater;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatProcessorForExtract;
@@ -79,6 +81,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Queue;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     //Log需要的TAG
@@ -458,6 +461,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
                     Drawable drawable = Drawable.createFromStream(inputStream, selectedImageUri.toString());
                     findViewById(R.id.MainUI).setBackground(drawable);
+
+                    ChatFileUtils.saveBackgroundPath(this, selectedImageUri.toString());
+
+                    // 设置 CardView 背景为半透明
+                    setCardViewBackground();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -471,6 +479,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             pickImageLauncher.launch(intent);
             return true; // 返回true表示事件已处理
         });
+
+        // 设置启动时的背景
+        setSavedBackground();
+    }
+
+    private void setSavedBackground() {
+        String backgroundPath = ChatFileUtils.getBackgroundPath(this);
+        if (backgroundPath != null) {
+            Uri backgroundUri = Uri.parse(backgroundPath);
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(backgroundUri);
+                Drawable drawable = Drawable.createFromStream(inputStream, backgroundUri.toString());
+                findViewById(R.id.MainUI).setBackground(drawable);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void setCardViewBackground() {
+        CardView cardView = findViewById(R.id.CardIChatNewUI);
+        if (cardView != null) {
+            cardView.setBackground(new ColorDrawable(0x80FFFFFF)); // 设置半透明背景
+        }
     }
 
     private void InitToOpen() {
