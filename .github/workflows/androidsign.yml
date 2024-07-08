@@ -114,7 +114,7 @@ jobs:
 
     - name: Get Commit Message
       id: get_commit_message
-      run:|
+      run: |
         cd NLChat
         echo "COMMIT_MESSAGE=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
       continue-on-error: true
