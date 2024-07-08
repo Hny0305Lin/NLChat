@@ -95,11 +95,8 @@ jobs:
     - name: Get Commit Message
       id: get_commit_message
       run: |
-        sudo apt-get update
-        sudo apt-get install -y jq
         cd NLChat
-        COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-        echo "COMMIT_MESSAGE=$(echo $COMMIT_MESSAGE | jq -sRr @uri)" >> $GITHUB_ENV
+        echo "COMMIT_MESSAGE=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
       continue-on-error: true
 
     - name: Create or Update Release Notes
@@ -119,13 +116,10 @@ jobs:
     needs: build
     strategy:
       matrix:
-        api-level: [28, 29, 30, 31, 33]  # 你可以根据需要调整 API 级别
+        api-level: [28, 29, 31, 33]  # 你可以根据需要调整 API 级别
         target: [default, google_apis]
-        arch: [x86, x86_64, arm64-v8a]  # 你可以根据需要调整架构
+        arch: [x86_64, arm64-v8a]  # 你可以根据需要调整架构
         include:
-          - api-level: 28
-            target: default
-            arch: x86
           - api-level: 29
             target: default
             arch: x86_64
@@ -133,15 +127,6 @@ jobs:
             target: default
             arch: arm64-v8a
           - api-level: 29
-            target: google_apis
-            arch: arm64-v8a
-          - api-level: 30
-            target: default
-            arch: x86_64
-          - api-level: 30
-            target: google_apis
-            arch: x86_64
-          - api-level: 30
             target: google_apis
             arch: arm64-v8a
           - api-level: 31
