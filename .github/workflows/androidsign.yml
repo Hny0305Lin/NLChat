@@ -95,8 +95,11 @@ jobs:
     - name: Get Commit Message
       id: get_commit_message
       run: |
+        sudo apt-get update
+        sudo apt-get install -y jq
         cd NLChat
-        echo "COMMIT_MESSAGE=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
+        COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+        echo "COMMIT_MESSAGE=$(echo $COMMIT_MESSAGE | jq -sRr @uri)" >> $GITHUB_ENV
       continue-on-error: true
 
     - name: Create or Update Release Notes
