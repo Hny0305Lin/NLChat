@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.hardware.usb.UsbManager;
 import android.net.Uri;
 import android.os.Build;
@@ -33,6 +34,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatCheckBox;
@@ -69,6 +72,7 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.SQLite.SQLiteDataBaseAPP;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.String.StringUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.WCHUart.WCHUartSettings;
 
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -142,6 +146,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //调用SQLite
     private SQLiteDataBaseAPP dbHelper;
+
+    //背景
+    private ActivityResultLauncher<Intent> pickImageLauncher;
 
     /**
      *
@@ -441,6 +448,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         HhandlerI.sendEmptyMessage(31);
         //如果SQLite有记录，可以显示在UI上
         if (ChatUtils.isSqliteHistory()) loadMessagesFromDatabase();
+
+        //背景处理
+        // 注册图片选择器的启动器
+        pickImageLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                Uri selectedImageUri = result.getData().getData();
+                try {
+                    InputStream inputStream = getContentResolver().openInputStream(selectedImageUri);
+                    Drawable drawable = Drawable.createFromStream(inputStream, selectedImageUri.toString());
+                    findViewById(R.id.MainUI).setBackground(drawable);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        // 实现长按事件监听器
+        findViewById(R.id.userTitleNewUI).setOnLongClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            pickImageLauncher.launch(intent);
+            return true; // 返回true表示事件已处理
+        });
     }
 
     private void InitToOpen() {
