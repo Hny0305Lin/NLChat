@@ -91,6 +91,7 @@ jobs:
         artifacts: "NLChat_${{ github.ref_name }}.apk"
         token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}  # 使用 PAT
         generateReleaseNotes: true
+      continue-on-error: true
 
     - name: Bump version and generate changelog
       id: version
@@ -101,9 +102,12 @@ jobs:
         npm install -g standard-version
         standard-version --release-as ${{ github.ref_name }}
         git push --follow-tags origin ${{ github.ref_name }}
+      continue-on-error: true
+
     - name: Get Commit Message
       id: get_commit_message
       run: echo "COMMIT_MESSAGE=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
+      continue-on-error: true
 
     - name: Create or Update Release Notes
       uses: softprops/action-gh-release@v1
@@ -115,6 +119,7 @@ jobs:
         prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}  # 使用环境变量
+      continue-on-error: true
   
   multi-platform-test:
     runs-on: ubuntu-latest
