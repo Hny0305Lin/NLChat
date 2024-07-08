@@ -110,7 +110,7 @@ jobs:
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         npm install -g standard-version
         standard-version --release-as ${{ github.ref_name }}
-        git push --follow-tags origin ${{ github.ref_name }}
+        git push --follow-tags origin HEAD
 
     - name: Get Commit Message
       id: get_commit_message
