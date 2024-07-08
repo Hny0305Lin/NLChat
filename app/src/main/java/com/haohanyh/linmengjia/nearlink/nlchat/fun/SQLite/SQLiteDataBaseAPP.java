@@ -14,7 +14,7 @@ public class SQLiteDataBaseAPP {
 
     SQLiteDatabase sqLiteDataBaseForAPP;
 
-    protected SQLiteDataBaseAPP() { }
+    public SQLiteDataBaseAPP() { }
     public static SQLiteDataBaseAPP SQLiteData() { return SQLiteDataBaseAPP.data.shuju; }
     protected static class data { private static final SQLiteDataBaseAPP shuju = new SQLiteDataBaseAPP(); }
 

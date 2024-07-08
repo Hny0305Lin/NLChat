@@ -448,6 +448,17 @@
                                     tools:ignore="HardcodedText,RtlHardcoded" />
 
                                 <RadioButton
+                                    android:id="@+id/rbBaud230400"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="20dp"
+                                    android:checked="false"
+                                    android:text="230400"
+                                    android:textColor="@color/nearlinkgreen"
+                                    android:theme="@style/MyRadiobutton"
+                                    tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                <RadioButton
                                     android:id="@+id/rbBaud921600"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -458,6 +469,27 @@
                                     android:theme="@style/MyRadiobutton"
                                     tools:ignore="HardcodedText,RtlHardcoded" />
 
+                                <RadioButton
+                                    android:id="@+id/rbBaud1000000"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="20dp"
+                                    android:checked="false"
+                                    android:text="1000000"
+                                    android:textColor="@color/nearlinkgreen"
+                                    android:theme="@style/MyRadiobutton"
+                                    tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                <RadioButton
+                                    android:id="@+id/rbBaud2000000"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="20dp"
+                                    android:checked="false"
+                                    android:text="2000000"
+                                    android:textColor="@color/nearlinkgreen"
+                                    android:theme="@style/MyRadiobutton"
+                                    tools:ignore="HardcodedText,RtlHardcoded" />
                             </RadioGroup>
 
                         </HorizontalScrollView>

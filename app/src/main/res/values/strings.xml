@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">NLChat</string>
     <string name="app_package">com.haohanyh.linmengjia.nearlink.nlchat.fun</string>
-    <string name="app_version">1.3.106.2024.0708</string>
+    <string name="app_version">1.3.120.2024.0708</string>
 
     <string name="appwarn">NLChat，浩瀚银河宗旨为用爱和魔法创造Android APP。</string>
     <string name="thanks3q">友情感谢</string>
@@ -21,7 +21,10 @@
         <item>38400</item>
         <item>57600</item>
         <item>115200</item>
+        <item>230400</item>
         <item>921600</item>
+        <item>1000000</item>
+        <item>2000000</item>
     </string-array>
     <string name="uiBaud">设置波特率: </string>
     <string-array name="listData">

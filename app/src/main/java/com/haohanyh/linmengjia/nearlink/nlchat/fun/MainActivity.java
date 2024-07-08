@@ -119,11 +119,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private WCHUartSettings wchUartSettings = new WCHUartSettings();
     private AppCompatCheckBox CheckBoxUartWarn;
     private boolean NearLinkUartWarnToast = false;
-    private RadioButton RadioButtonBaud4800,RadioButtonBaud9600,RadioButtonBaud19200,RadioButtonBaud38400,RadioButtonBaud57600,RadioButtonBaud115200,RadioButtonBaud921600;
+    private RadioButton RadioButtonBaud4800,RadioButtonBaud9600,RadioButtonBaud19200,RadioButtonBaud38400,RadioButtonBaud57600,RadioButtonBaud115200,RadioButtonBaud230400,RadioButtonBaud921600,RadioButtonBaud1000000, RadioButtonBaud2000000;
     private RadioButton RadioButtonData5,RadioButtonData6,RadioButtonData7,RadioButtonData8;
     private RadioButton RadioButtonStop1,RadioButtonStop2;
     private RadioButton RadioButtonParityNone,RadioButtonParityOdd,RadioButtonParityEven,RadioButtonParityMark,RadioButtonParitySpace;
-    private final int[] baudRateIds = {id.rbBaud4800, id.rbBaud9600, id.rbBaud19200, id.rbBaud38400, id.rbBaud57600, id.rbBaud115200, id.rbBaud921600};
+    private final int[] baudRateIds = {id.rbBaud4800, id.rbBaud9600, id.rbBaud19200, id.rbBaud38400, id.rbBaud57600, id.rbBaud115200, id.rbBaud230400, id.rbBaud921600, id.rbBaud1000000, id.rbBaud2000000};
     private final int[] dataBitIds = {id.rbData5, id.rbData6, id.rbData7, id.rbData8};
     private final int[] stopBitIds = {id.rbStop1, id.rbStop2};
     private final int[] parityIds = {id.rbParityNone, id.rbParityOdd, id.rbParityEven, id.rbParityMark, id.rbParitySpace};
@@ -189,11 +189,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()) {
                 Log.v(TAG,"Android 10以上设备是否获取最高读写文件权限?:" + Environment.isExternalStorageManager());
-                //既然有权限了，带上数据库初始化
-                if (ChatUtils.isSqlitemanager()) {
-                    dbHelper = SQLiteDataBaseAPP.SQLiteData();
-                    dbHelper.CreateSql(getFilesDir().getPath());
-                }
             } else {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);intent.setData(Uri.parse("package:" + this.getPackageName()));startActivityForResult(intent, 1024);
             }
@@ -309,7 +304,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RadioButtonBaud38400 = findViewById(id.rbBaud38400);
         RadioButtonBaud57600 = findViewById(id.rbBaud57600);
         RadioButtonBaud115200 = findViewById(id.rbBaud115200);
+        RadioButtonBaud230400 = findViewById(id.rbBaud230400);
         RadioButtonBaud921600 = findViewById(id.rbBaud921600);
+        RadioButtonBaud1000000 = findViewById(id.rbBaud1000000);
+        RadioButtonBaud2000000 = findViewById(id.rbBaud2000000);
         RadioButtonData5 = findViewById(id.rbData5);
         RadioButtonData6 = findViewById(id.rbData6);
         RadioButtonData7 = findViewById(id.rbData7);
@@ -354,6 +352,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //聊天初始化
         serverUpdater = new ChatMessageQueueUpdater(NearLinkUserText, serverMessageQueue, chatMessages, chatAdapter, "User: ");
         clientUpdater = new ChatMessageQueueUpdater(NearLinkMeText, clientMessageQueue, chatMessages, chatAdapter,"Me: ");
+        //聊天数据库初始化
+        chatSaveMessageDatabaseManager = new ChatSaveMessageDatabaseManager(MainActivity.this);
 
         //星闪网络相关设置初始化，目前多数还不允许UI设置，敬请期待
         CompoundButton.OnCheckedChangeListener SettingsChangeListener = new CompoundButton.OnCheckedChangeListener() {
@@ -445,8 +445,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SettingsForNFC.setEnabled(false);
         SettingsForNFC.setOnCheckedChangeListener(SettingsChangeListener);
 
-
-
         //初始化完成，软件第一次启动必须提示（这里写的第一次启动是软件启动的第一次，而不是使用频率的第一次
         HhandlerI.sendEmptyMessage(31);
         //如果SQLite有记录，可以显示在UI上
@@ -513,7 +511,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RadioButtonBaud38400.setEnabled(false);
         RadioButtonBaud57600.setEnabled(false);
         RadioButtonBaud115200.setEnabled(false);
+        RadioButtonBaud230400.setEnabled(false);
         RadioButtonBaud921600.setEnabled(false);
+        RadioButtonBaud1000000.setEnabled(false);
+        RadioButtonBaud2000000.setEnabled(false);
         RadioButtonData5.setEnabled(false);
         RadioButtonData6.setEnabled(false);
         RadioButtonData7.setEnabled(false);
@@ -582,16 +583,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void saveMessageToDatabase(String timestamp, String message, String sender) {
-        //检索是否有空消息，串口通讯时常有相关问题
-        if (message == null || message.trim().isEmpty()) {
-            return;
-        }
-        //如果有消息再保存，上面是没消息不予保存
-        dbHelper.saveMessageToDatabase(message, sender, timestamp);
-        dbHelper.saveVersionToDatabase(context.getString(string.app_version));
-    }
-
     private StringBuilder buffer = new StringBuilder();
     private void NearLinkChatReadData() {
         //先播报星闪软件情况，已经UART接入星闪网络，再好好的处理字符
@@ -610,7 +601,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //如果需要存储到数据库中
                 if (ChatUtils.isSqlitemanager()) {
                     String timestamp = chatTimestamp.saveCurrentTimestamp();
-                    saveMessageToDatabase(timestamp, processedString, "User");
+                    chatSaveMessageDatabaseManager.saveMessageToDatabase(timestamp, processedString, "User");
                 }
                 //如果需要UI滚动消息
                 if (ChatUtils.isScrollingMessages()) {
@@ -743,7 +734,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //如果需要存储到数据库中
                 if (ChatUtils.isSqlitemanager()) {
                     String timestamp = chatTimestamp.saveCurrentTimestamp();
-                    saveMessageToDatabase(timestamp, messageSend, "Me");
+                    chatSaveMessageDatabaseManager.saveMessageToDatabase(timestamp, messageSend, "Me");
                 }
                 //如果需要UI滚动消息
                 if (ChatUtils.isScrollingMessages()) {
