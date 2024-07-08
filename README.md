@@ -71,6 +71,38 @@ Description: SLE UART Sample Source.
 介绍：在Android APP上，使用SQLite。
 代码开源地址：[点我进入](https://github.com/requery/sqlite-android)
 
+### Copyright (c) 2017-2022 Adobe & Source
+使用开源协议：SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+介绍：思源字体，是一套 OpenType/CFF 泛中日韩字体。这个开源项目不仅提供了可用的 OpenType 字体，还提供了利用 AFDKO 工具创建这些 OpenType 字体时的所有源文件。
+代码开源地址：[点我进入](https://github.com/adobe-fonts/source-han-sans)
+
+### Copyright (c) 2019 JT Foundry
+使用开源协议：SIL Open Font License 1.1（官网标注）
+介绍：翰字鑄造 JT Foundry，規劃以開源的思源黑體（Source Han Sans）為基礎進行改作。改作而成的字型以繁體中文世界的其中一個核心都市為名：台北黑體。
+代码开源地址：[点我进入,Github暂无](https://github.com/jtfoundry)
+下载地址: [点我进入](https://sites.google.com/view/jtfoundry/zh-tw/downloads)
+
+### Copyright (c) Taobao (China) Software Co., Ltd
+使用开源协议：未知，但允许个人商业使用
+介绍：阿里妈妈东方大楷体字体及包含该字体的字库软件，合称“阿里妈妈东方大楷体”，知识产权和相关权益归属于淘宝（中国）软件有限公司。
+下载地址: [国内地址,点我进入](https://www.iconfont.cn/fonts/detail?spm=a313x.fonts_index.i1.d9df05512.2db73a81rlvwNI&cnid=IhcTcFymWeyf)
+
+### Copyright (c) Dingding (China) Information Technology Co., Ltd
+使用开源协议：未知，但允许个人商业使用
+介绍：钉钉进步体字体，包含钉钉进步体中文字体和西文字体、DingTalk Sans（西文字体），前述字体及包含该字体的字库软件，合称“钉钉进步体”，知识产权和相关权益归属于钉钉（中国）信息技术有限公司。
+下载地址: [国内地址,点我进入](https://www.iconfont.cn/fonts/detail?spm=a313x.fonts_index.i1.d9df05512.2db73a81rlvwNI&cnid=clpB5hhpYWUN)
+
+### Copyright (c) 2022--2024, atelierAnchor <https://atelier-anchor.com>,with Reserved Font Name <Smiley> and <得意黑>.
+使用开源协议：SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+介绍：得意黑是一款在人文观感和几何特征中寻找平衡的中文黑体。整体字身窄而斜，细节融入了取法手绘美术字的特殊造型。字体支持简体中文常用字（覆盖 GB/T 2312-1980 编码字符集和《通用规范汉字表》）、拉丁字母、西里尔字母、希腊字母、日文假名、阿拉伯数字和各类标点符号。
+代码开源地址: [点我进入](https://github.com/atelier-anchor/smiley-sans)
+下载地址: [国内地址,点我进入](https://atelier-anchor.com/typefaces/smiley-sans)
+
+### 版权所有 (C) 2019-FUTURE 浩瀚银河，版权所有。
+### 浩瀚银河字体 使用 浩瀚银河计算机软件产品源代码开放协议
+**永久开源，二次传播使用请署名“浩瀚银河”**
+使用开源协议：Haohanyh Computer Software Products Open Source LICENSE
+
 ### 版权所有 (C) 2019-FUTURE 浩瀚银河，版权所有。
 ### NLChat 使用 浩瀚银河计算机软件产品源代码开放协议
 **永久开源，二次开发请署名“浩瀚银河”**

@@ -50,15 +50,17 @@ public class ChatFontUtils {
     private static String getFontPath(int fontType) {
         switch (fontType) {
             case 1:
-                return "fonts/dingtalk_jinbuti.ttf";
+                return "fonts/dingtalk_jinbuti.ttf";                        //来源iconfont 钉钉进步体
             case 2:
-                return "fonts/alimama_dongfangdakai_regular.ttf";
+                return "fonts/alimama_dongfangdakai_regular.ttf";           //来源iconfont 阿里巴巴东方体
             case 3:
-                return "fonts/smileysans_oblique.ttf";
+                return "fonts/smileysans_oblique.ttf";                      //得意黑字体
             case 4:
-                return "fonts/haohanyhfont_regular.otf";// 浩瀚银河内测字体
-            default:
-                return "fonts/source_han_sans_sc_regular.otf"; // 默认字体
+                return "fonts/haohanyhfont_regular.otf";                    //浩瀚银河内测字体
+            case 5:
+                return "fonts/source_han_sans_sc_regular.otf";              //思源宋体
+            case 6:
+                return "fonts/taipeisanstcbeta_regular.ttf";                //台北黑体
         }
     }
 }
