@@ -5,6 +5,8 @@ import android.annotation.SuppressLint;
 import android.util.Log;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +25,7 @@ public class ChatMessageQueueUpdater {
     private List<ChatMessage> chatMessages; // 聊天消息列表
     private ChatAdapter chatAdapter; // 聊天适配器
     private String logPrefix; // 日志前缀，用于区分不同的消息队列
+    private RecyclerView recyclerView; // RecyclerView实例
 
     /**
      * 构造函数
@@ -31,12 +34,13 @@ public class ChatMessageQueueUpdater {
      * @param textView 显示消息的 TextView
      * @param logPrefix 日志前缀
      */
-    public ChatMessageQueueUpdater(TextView textView, Queue<String> messageQueue, List<ChatMessage> chatMessages, ChatAdapter chatAdapter, String logPrefix) {
+    public ChatMessageQueueUpdater(TextView textView, Queue<String> messageQueue, List<ChatMessage> chatMessages, ChatAdapter chatAdapter, String logPrefix, RecyclerView recyclerView) {
         this.messageQueue = messageQueue;
         this.textView = textView;
         this.chatMessages = chatMessages;
         this.chatAdapter = chatAdapter;
         this.logPrefix = logPrefix;
+        this.recyclerView = recyclerView;
     }
 
     /**
@@ -68,7 +72,7 @@ public class ChatMessageQueueUpdater {
             String timestamp = chatTimestamp.getCurrentTimestamp(); // 获取当前时间戳
             chatMessages.add(new ChatMessage(newMessage, timestamp, isUser));
         }
-        chatAdapter.notifyDataSetChanged();
+        chatAdapter.updateMessages(chatMessages, recyclerView); // 更新消息并滚动到底部
         // 旧UI处理
         textView.setText(allMessages.toString());
         Log.i(TAG, logPrefix + "消息队列有改动");

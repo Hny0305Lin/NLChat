@@ -1,6 +1,7 @@
 /* 受Haohanyh Computer Software Products Open Source LICENSE保护 https://github.com/Hny0305Lin/LICENSE/blob/main/LICENSE */
 package com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,5 +106,13 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             messageText.setText(message.getMessage());
             timestampText.setText(message.getTimestamp());
         }
+    }
+
+    // 更新消息列表并滚动到底部
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateMessages(List<ChatMessage> newMessages, RecyclerView recyclerView) {
+        this.chatMessages = newMessages;
+        notifyDataSetChanged();
+        recyclerView.scrollToPosition(chatMessages.size() - 1);
     }
 }

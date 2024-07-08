@@ -350,8 +350,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setAdapter(chatAdapter);
 
         //聊天初始化
-        serverUpdater = new ChatMessageQueueUpdater(NearLinkUserText, serverMessageQueue, chatMessages, chatAdapter, "User: ");
-        clientUpdater = new ChatMessageQueueUpdater(NearLinkMeText, clientMessageQueue, chatMessages, chatAdapter,"Me: ");
+        serverUpdater = new ChatMessageQueueUpdater(NearLinkUserText, serverMessageQueue, chatMessages, chatAdapter, "User: ", recyclerView);
+        clientUpdater = new ChatMessageQueueUpdater(NearLinkMeText, clientMessageQueue, chatMessages, chatAdapter,"Me: ", recyclerView);
         //聊天数据库初始化
         chatSaveMessageDatabaseManager = new ChatSaveMessageDatabaseManager(MainActivity.this);
 
