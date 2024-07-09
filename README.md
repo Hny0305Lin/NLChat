@@ -144,7 +144,7 @@
 
 [![Oneplus 7T](https://img.shields.io/badge/Oneplus%207T-F5010D?style=flat-square&logo=oneplus&logoColor=FFFFFF&labelColor=F40010)](https://www.oneplus.com/hk/7t)
 
-[![Honor 70](https://img.shields.io/badge/Honor%2070-00CEFC?style=flat-square&logo=honor&logoColor=FFFFFF&labelColor=00CEFC)](https://www.honor.com/hk/phones/honor-70/)
+[![Honor 70](https://img.shields.io/badge/Honor%2070-00CEFC?style=flat-square&logo=honor&logoColor=FFFFFF&labelColor=00CEFC)](https://www.honor.com/hk/phones/honor-70/) [![Honor Play 4T Pro](https://img.shields.io/badge/Honor%20Play%204T%20Pro%20(%E5%8F%82%E4%B8%8E%E8%B0%83%E8%AF%95,%E6%84%9F%E8%B0%A2Steven%E7%94%A8%E6%88%B7)-00CEFC?style=flat-square&logo=honor&logoColor=FFFFFF&labelColor=00CEFC)](https://baike.baidu.com/item/%E8%8D%A3%E8%80%80Play4T%20Pro/49793463)
 
 [![Android ARM64](https://img.shields.io/badge/Android%20ARM64模拟器-00C000?style=flat-square&logo=android&logoColor=FFFFFF&labelColor=00C000)](https://github.com/Hny0305Lin/NLChat/actions/workflows/androidsign.yml)
 
