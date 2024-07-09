@@ -144,6 +144,8 @@
 
 [![Oneplus 7T](https://img.shields.io/badge/Oneplus%207T-F5010D?style=flat-square&logo=oneplus&logoColor=FFFFFF&labelColor=F40010)](https://www.oneplus.com/hk/7t)
 
+[![Honor 70](https://img.shields.io/badge/Honor%2070-00CEFC?style=flat-square&logo=honor&logoColor=FFFFFF&labelColor=00CEFC)](https://www.honor.com/hk/phones/honor-70/)
+
 [![Android ARM64](https://img.shields.io/badge/Android%20ARM64模拟器-00C000?style=flat-square&logo=android&logoColor=FFFFFF&labelColor=00C000)](https://github.com/Hny0305Lin/NLChat/actions/workflows/androidsign.yml)
 
 ### 期待您有更多的设备参与进来测试，以帮助该项目通过测试的设备更完善！
