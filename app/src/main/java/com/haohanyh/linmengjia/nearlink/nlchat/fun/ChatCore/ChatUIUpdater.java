@@ -44,7 +44,7 @@ public class ChatUIUpdater {
             // 如果需要存储到数据库中
             if (ChatUtils.isSqlitemanager()) {
                 String timestamp = chatTimestamp.saveCurrentTimestamp();
-                if (ChatUtils.isShowUartLog()) {
+                if (ChatUtils.isShowUartLog() && ChatUtils.isSetDebugLog()) {
                     // 如果是debuglog，则分开存储
                     chatSaveMessageDatabaseManager.saveDebugMessageToDatabase(timestamp, processedString, "UserDebug");
                 } else {
@@ -53,7 +53,7 @@ public class ChatUIUpdater {
             }
             // 如果需要UI滚动消息
             if (ChatUtils.isScrollingMessages()) {
-                if (ChatUtils.isShowUartLog()) {
+                if (ChatUtils.isShowUartLog() && ChatUtils.isSetDebugLog()) {
                     if (serverDebugQueue.size() >= MAX_MESSAGES) {
                         serverDebugQueue.poll();
                     }

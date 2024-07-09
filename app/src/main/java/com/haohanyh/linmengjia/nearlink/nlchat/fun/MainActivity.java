@@ -628,11 +628,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     ChatProcessorForExtract.processChat(context, completeSecondData);
                 }
 
-                ChatUtils.setShowUartLog(false);return completeSecondData;
+                ChatUtils.setShowUartLog(false);
+                if (!ChatUtils.isShowUartLog()) {
+                    return completeSecondData;
+                }
             } else if (completeFirstData.contains(ChatUtils.getPrefixLogNotConnectedServer())) {
                 Log.w(TAG, "串口Log内容：" + completeFirstData);
                 if (completeFirstData.startsWith(ChatUtils.getPrefixLogNotConnectedServer()))
-                    if (ChatUtils.isShowUartLog())
+                    if (ChatUtils.isSetDebugLog())
                         SnackBarToastForDebug(context,"发送失败!\n" + ChatUtils.getPrefixLogNotConnectedServer(),"推荐检查星闪网络",3,Snackbar.LENGTH_SHORT);
             } else {
                 Log.d(TAG, "忽略的消息内容：" + completeFirstData);
@@ -642,33 +645,93 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (completeFirstData.contains(ChatUtils.getPrefixLogConnected())) {
                 Log.d(TAG, "连接日志：" + completeFirstData);
                 // 处理连接日志
-                ChatUtils.setShowUartLog(true);return completeFirstData;
+
+                ChatUtils.setShowUartLog(true);
+                if (ChatUtils.isShowUartLog()) {
+                    Log.d(TAG, "连接日志：" + completeFirstData + "是否显示?:" + true);
+                    if (ChatUtils.isSetDebugLog()) {
+                        Log.d(TAG, "连接日志：" + completeFirstData + "是否设置打开?:" + true);
+                        return completeFirstData;
+                    } else {
+                        Log.d(TAG, "连接日志：" + completeFirstData + "是否设置打开?:" + false);
+                    }
+                }
             }
             if (completeFirstData.contains(ChatUtils.getPrefixLogDisconnected())) {
                 Log.d(TAG, "断开连接日志：" + completeFirstData);
                 // 处理断开连接日志
-                ChatUtils.setShowUartLog(true);return completeFirstData;
+
+                ChatUtils.setShowUartLog(true);
+                if (ChatUtils.isShowUartLog()) {
+                    Log.d(TAG, "断开连接日志：" + completeFirstData + "是否显示?:" + true);
+                    if (ChatUtils.isSetDebugLog()) {
+                        Log.d(TAG, "断开连接日志：" + completeFirstData + "是否设置打开?:" + true);
+                        return completeFirstData;
+                    } else {
+                        Log.d(TAG, "断开连接日志：" + completeFirstData + "是否设置打开?:" + false);
+                    }
+                }
             }
             if (completeFirstData.contains(ChatUtils.getPrefixLogAcore())) {
                 Log.d(TAG, "ACore日志：" + completeFirstData);
                 // 处理ACore日志
-                ChatUtils.setShowUartLog(true);return completeFirstData;
+
+                ChatUtils.setShowUartLog(true);
+                if (ChatUtils.isShowUartLog()) {
+                    Log.d(TAG, "ACore日志：" + completeFirstData + "是否显示?:" + true);
+                    if (ChatUtils.isSetDebugLog()) {
+                        Log.d(TAG, "ACore日志：" + completeFirstData + "是否设置打开?:" + true);
+                        return completeFirstData;
+                    } else {
+                        Log.d(TAG, "ACore日志：" + completeFirstData + "是否设置打开?:" + false);
+                    }
+                }
             }
             //UART服务器日志，以下可以读取星闪日志
             if (completeFirstData.contains(ChatUtils.getPrefixLogSleUartServer())) {
                 Log.d(TAG, "UART服务器日志：" + completeFirstData);
                 // 处理UART服务器日志
-                ChatUtils.setShowUartLog(true);return completeFirstData;
+
+                ChatUtils.setShowUartLog(true);
+                if (ChatUtils.isShowUartLog()) {
+                    Log.d(TAG, "UART服务器日志：" + completeFirstData + "是否显示?:" + true);
+                    if (ChatUtils.isSetDebugLog()) {
+                        Log.d(TAG, "UART服务器日志：" + completeFirstData + "是否设置打开?:" + true);
+                        return completeFirstData;
+                    } else {
+                        Log.d(TAG, "UART服务器日志：" + completeFirstData + "是否设置打开?:" + false);
+                    }
+                }
             }
             if (completeFirstData.contains(ChatUtils.getPrefixLogConnectStateChanged())) {
                 Log.d(TAG, "连接状态改变日志：" + completeFirstData);
                 // 处理连接状态改变日志
-                ChatUtils.setShowUartLog(true);return completeFirstData;
+
+                ChatUtils.setShowUartLog(true);
+                if (ChatUtils.isShowUartLog()) {
+                    Log.d(TAG, "连接状态改变日志：" + completeFirstData + "是否显示?:" + true);
+                    if (ChatUtils.isSetDebugLog()) {
+                        Log.d(TAG, "连接状态改变日志：" + completeFirstData + "是否设置打开?:" + true);
+                        return completeFirstData;
+                    } else {
+                        Log.d(TAG, "连接状态改变日志：" + completeFirstData + "是否设置打开?:" + false);
+                    }
+                }
             }
             if (completeFirstData.contains(ChatUtils.getPrefixLogPairComplete())) {
                 Log.d(TAG, "配对完成日志：" + completeFirstData);
                 // 处理配对完成日志
-                ChatUtils.setShowUartLog(true);return completeFirstData;
+
+                ChatUtils.setShowUartLog(true);
+                if (ChatUtils.isShowUartLog()) {
+                    Log.d(TAG, "配对完成日志：" + completeFirstData + "是否显示?:" + true);
+                    if (ChatUtils.isSetDebugLog()) {
+                        Log.d(TAG, "配对完成日志：" + completeFirstData + "是否设置打开?:" + true);
+                        return completeFirstData;
+                    } else {
+                        Log.d(TAG, "配对完成日志：" + completeFirstData + "是否设置打开?:" + false);
+                    }
+                }
             }
             if (completeFirstData.contains(ChatUtils.getPrefixLogNearlinkDevicesAddr())) {
                 // 处理采集到星闪MAC地址完成日志
@@ -677,17 +740,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     ChatProcessorForExtract.initializeHandler();
                     ChatProcessorForExtract.processChat(context, completeFirstData);
                 }
-                ChatUtils.setShowUartLog(true);return completeFirstData;
+
+                ChatUtils.setShowUartLog(true);
+                if (ChatUtils.isShowUartLog()) {
+                    Log.d(TAG, "采集到星闪MAC地址日志：" + completeFirstData + "是否显示?:" + true);
+                    if (ChatUtils.isSetDebugLog()) {
+                        Log.d(TAG, "采集到星闪MAC地址日志：" + completeFirstData + "是否设置打开?:" + true);
+                        return completeFirstData;
+                    } else {
+                        Log.d(TAG, "采集到星闪MAC地址日志：" + completeFirstData + "是否设置打开?:" + false);
+                    }
+                }
             }
             if (completeFirstData.contains(ChatUtils.getPrefixLogSsapsMtuChanged())) {
                 Log.d(TAG, "MTU改变日志：" + completeFirstData);
                 // 处理MTU改变日志
-                ChatUtils.setShowUartLog(true);return completeFirstData;
+
+                ChatUtils.setShowUartLog(true);
+                if (ChatUtils.isShowUartLog()) {
+                    Log.d(TAG, "MTU改变日志：" + completeFirstData + "是否显示?:" + true);
+                    if (ChatUtils.isSetDebugLog()) {
+                        Log.d(TAG, "MTU改变日志：" + completeFirstData + "是否设置打开?:" + true);
+                        return completeFirstData;
+                    } else {
+                        Log.d(TAG, "MTU改变日志：" + completeFirstData + "是否设置打开?:" + false);
+                    }
+                }
             }
             if (completeFirstData.contains(ChatUtils.getPrefixLogSleAnnounceEnableCallback())) {
                 Log.d(TAG, "启用回调日志：" + completeFirstData);
                 // 处理启用回调日志
-                ChatUtils.setShowUartLog(true);return completeFirstData;
+
+                ChatUtils.setShowUartLog(true);
+                if (ChatUtils.isShowUartLog()) {
+                    Log.d(TAG, "启用回调日志：" + completeFirstData + "是否显示?:" + true);
+                    if (ChatUtils.isSetDebugLog()) {
+                        Log.d(TAG, "启用回调日志：" + completeFirstData + "是否设置打开?:" + true);
+                        return completeFirstData;
+                    } else {
+                        Log.d(TAG, "启用回调日志：" + completeFirstData + "是否设置打开?:" + false);
+                    }
+                }
             }
         }
         return "";
