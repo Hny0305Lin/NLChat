@@ -146,6 +146,8 @@
 
 [![OPPO A97 PFTM10](https://img.shields.io/badge/OPPO%20A97%20PFTM10%20(%E5%8F%82%E4%B8%8E%E8%B0%83%E8%AF%95,%E6%84%9F%E8%B0%A2%E6%B7%A1%E5%A2%A8%E7%94%A8%E6%88%B7)-006B31?style=flat-square&logo=oppo&logoColor=FFFFFF&labelColor=006D37)](https://www.oppo.com/cn/smartphones/series-a/a97/specs/)
 
+[![Huawei Mate 50](https://img.shields.io/badge/Huawei%20Mate%2050(HarmonyOS%204,%E5%8F%82%E4%B8%8E%E8%B0%83%E8%AF%95,%E6%84%9F%E8%B0%A2Destiny%E7%94%A8%E6%88%B7)-F5010D?style=flat-square&logo=huawei&logoColor=FFFFFF&labelColor=F40010)](https://consumer.huawei.com/hk/phones/mate50/)
+
 [![Honor 70](https://img.shields.io/badge/Honor%2070-00CEFC?style=flat-square&logo=honor&logoColor=FFFFFF&labelColor=00CEFC)](https://www.honor.com/hk/phones/honor-70/) [![Honor Play 4T Pro](https://img.shields.io/badge/Honor%20Play%204T%20Pro%20(%E5%8F%82%E4%B8%8E%E8%B0%83%E8%AF%95,%E6%84%9F%E8%B0%A2Steven%E7%94%A8%E6%88%B7)-00CEFC?style=flat-square&logo=honor&logoColor=FFFFFF&labelColor=00CEFC)](https://baike.baidu.com/item/%E8%8D%A3%E8%80%80Play4T%20Pro/49793463)
 
 [![Android ARM64](https://img.shields.io/badge/Android%20ARM64模拟器-00C000?style=flat-square&logo=android&logoColor=FFFFFF&labelColor=00C000)](https://github.com/Hny0305Lin/NLChat/actions/workflows/androidsign.yml)
