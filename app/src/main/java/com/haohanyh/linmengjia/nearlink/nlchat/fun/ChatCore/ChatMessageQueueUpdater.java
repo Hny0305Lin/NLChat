@@ -50,7 +50,7 @@ public class ChatMessageQueueUpdater {
     @SuppressLint("NotifyDataSetChanged")
     public void updateTextView() {
         StringBuilder allMessages = new StringBuilder();
-        List<String> newMessages = new ArrayList<>();               //使用临时列表，服务NewUI
+        List<String> newMessages = new ArrayList<>(); // 使用临时列表，服务NewUI
 
         Iterator<String> iterator = messageQueue.iterator();
         while (iterator.hasNext()) {
@@ -68,15 +68,28 @@ public class ChatMessageQueueUpdater {
 
         // 新UI处理，将新消息添加到 chatMessages 列表中
         for (String newMessage : newMessages) {
-            boolean isUser = logPrefix.contains("User: ");
-            String timestamp = chatTimestamp.getCurrentTimestamp(); // 获取当前时间戳
-            chatMessages.add(new ChatMessage(newMessage, timestamp, isUser));
+            boolean isUser = logPrefix.equals("User: ");
+            boolean isDebug = logPrefix.equals("Debug: ");
+            boolean isMe = logPrefix.equals("Me: ");
+            Log.v(TAG, "isUser：" + isUser);
+            Log.v(TAG, "isDebug：" + isDebug);
+            Log.v(TAG, "isMe：" + isMe);
+            if (isUser) {
+                String timestamp = chatTimestamp.getCurrentTimestamp(); // 获取当前时间戳
+                chatMessages.add(new ChatMessage(newMessage, timestamp, isUser));
+            } else if (isDebug) {
+                chatMessages.add(new ChatMessage(newMessage, isDebug));
+            } else if (isMe) {
+                String timestamp = chatTimestamp.getCurrentTimestamp(); // 获取当前时间戳
+                chatMessages.add(new ChatMessage(newMessage, isMe, timestamp));
+            }
         }
         chatAdapter.updateMessages(chatMessages, recyclerView); // 更新消息并滚动到底部
         // 旧UI处理
-        textView.setText(allMessages.toString());
-        Log.i(TAG, logPrefix + "消息队列有改动");
-        //在处理完所有消息后，清空 messageQueue，确保不会重复处理相同的消息。
+        // textView.setText(allMessages.toString());
+        // Log.i(TAG, logPrefix + "消息队列有改动");
+        // 在处理完所有消息后，清空 messageQueue，确保不会重复处理相同的消息。
         messageQueue.clear();
     }
+
 }

@@ -21,6 +21,7 @@ public class SQLiteDataBaseAPP {
     public void CreateSql(String SDPath) {
         sqLiteDataBaseForAPP = SQLiteDatabase.openOrCreateDatabase(SDPath + "/NLChat.db",null);
         createChatTable();
+        createDebugTable();
         createVersionTable();
     }
 
@@ -29,6 +30,16 @@ public class SQLiteDataBaseAPP {
         String TABLE_CREATE =
                 "CREATE TABLE IF NOT EXISTS messages (" +
                         "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "message TEXT, " +
+                        "sender TEXT, " +
+                        "timestamp TEXT);";
+        sqLiteDataBaseForAPP.execSQL(TABLE_CREATE);
+    }
+
+    //创建日志表，存储日志消息、相关用户、聊天时间
+    private void createDebugTable() {
+        String TABLE_CREATE =
+                "CREATE TABLE IF NOT EXISTS debug (" +
                         "message TEXT, " +
                         "sender TEXT, " +
                         "timestamp TEXT);";
@@ -51,6 +62,15 @@ public class SQLiteDataBaseAPP {
         values.put("sender", sender);
         values.put("timestamp", timestamp);
         sqLiteDataBaseForAPP.insert("messages", null, values);
+    }
+
+    //保存此时日志到数据库
+    public void saveDebugToDatabase(String message, String sender, String timestamp) {
+        ContentValues values = new ContentValues();
+        values.put("message", message);
+        values.put("sender", sender);
+        values.put("timestamp", timestamp);
+        sqLiteDataBaseForAPP.insert("debug", null, values);
     }
 
     //保存版本号到数据库

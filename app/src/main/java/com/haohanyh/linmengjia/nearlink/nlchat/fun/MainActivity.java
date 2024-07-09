@@ -62,6 +62,7 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatTimestamp;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIAlertDialog;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIAnimationUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIBackgroundUtils;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIUpdater;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.Premission.NearLinkChatGetSomePermission;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.array;
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Message MessageTV_Text;
     private TextView APPRunResult,MobileUSBResult,UARTResult;
     private AppCompatTextView NearLinkUserTitle;
-    private TextView NearLinkUserText,NearLinkMeText;
+    private TextView NearLinkUserText,NearLinkDebug,NearLinkMeText;
     private EditText EditChatSend,EditChatSendNewUI;
 
     private Resources resources;
@@ -138,11 +139,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //聊天相关
     private Queue<String> serverMessageQueue = new LinkedList<>();
+    private Queue<String> serverDebugQueue = new LinkedList<>();
     private Queue<String> clientMessageQueue = new LinkedList<>();
     private static final int MAX_MESSAGES = 8; // 设置最大消息数量
     private ChatMessageQueueUpdater serverUpdater;
+    private ChatMessageQueueUpdater serverDebugUpdater;
     private ChatMessageQueueUpdater clientUpdater;
     private ChatSaveMessageDatabaseManager chatSaveMessageDatabaseManager;
+    private ChatUIUpdater chatUIUpdater;
 
     //聊天时间戳
     private ChatTimestamp chatTimestamp = new ChatTimestamp();
@@ -361,9 +365,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //聊天初始化
         serverUpdater = new ChatMessageQueueUpdater(NearLinkUserText, serverMessageQueue, chatMessages, chatAdapter, "User: ", recyclerView);
-        clientUpdater = new ChatMessageQueueUpdater(NearLinkMeText, clientMessageQueue, chatMessages, chatAdapter,"Me: ", recyclerView);
+        serverDebugUpdater = new ChatMessageQueueUpdater(NearLinkDebug, serverDebugQueue, chatMessages, chatAdapter, "Debug: ", recyclerView);
+        clientUpdater = new ChatMessageQueueUpdater(NearLinkMeText, clientMessageQueue, chatMessages, chatAdapter, "Me: ", recyclerView);
         //聊天数据库初始化
         chatSaveMessageDatabaseManager = new ChatSaveMessageDatabaseManager(MainActivity.this);
+        //聊天核心初始化
+        chatUIUpdater = new ChatUIUpdater(this, chatSaveMessageDatabaseManager, chatTimestamp, serverMessageQueue, serverDebugQueue, serverUpdater, serverDebugUpdater, NearLinkUserText);
+
 
         //星闪网络相关设置初始化，目前多数还不允许UI设置，敬请期待
         CompoundButton.OnCheckedChangeListener SettingsChangeListener = new CompoundButton.OnCheckedChangeListener() {
@@ -575,7 +583,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void NearLinkChatReadData() {
         //先播报星闪软件情况，已经UART接入星闪网络，再好好的处理字符
         HhandlerI.sendEmptyMessage(10);
-        StringBuffer stringBuffer = new StringBuffer();
+
+        //监听
         MainAPP.CH34X.setReadListener(bytes -> {
             //字节转文本
             //String string = StringUtils.needProcess().bytesToString(bytes);
@@ -583,32 +592,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.v(TAG, "长度：bytes.length="+ bytes.length + "\t内容：" + string);
             //进行文本处理
             String processedString = CH34xProcessingForReadData(string);
-            stringBuffer.append(processedString);
-            //处理完再打印到UI上
-            runOnUiThread(() -> {
-                //如果需要存储到数据库中
-                if (ChatUtils.isSqlitemanager()) {
-                    String timestamp = chatTimestamp.saveCurrentTimestamp();
-                    chatSaveMessageDatabaseManager.saveMessageToDatabase(timestamp, processedString, "User");
-                }
-                //如果需要UI滚动消息
-                if (ChatUtils.isScrollingMessages()) {
-                    if (serverMessageQueue.size() >= MAX_MESSAGES) {
-                        serverMessageQueue.poll();
-                    }
-                    serverMessageQueue.add(processedString);
-                    serverUpdater.updateTextView();
-                    MainAPP.Vibrate(this);
-                } else {
-                    NearLinkUserText.append(processedString);
-                    if (NearLinkUserText.length() > 2048) {
-                        String str = NearLinkUserText.getText().toString().substring(NearLinkUserText.getText().length() - 1024, NearLinkUserText.getText().length());
-                        NearLinkUserText.setText("");
-                        NearLinkUserText.append(str);
-                    }
-                    MainAPP.Vibrate(this);
-                }
-            });
+            // 使用ChatUIUpdater更新UI
+            chatUIUpdater.updateUI(processedString);
         });
     }
 
@@ -643,7 +628,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     ChatProcessorForExtract.processChat(context, completeSecondData);
                 }
 
-                return completeSecondData;
+                ChatUtils.setShowUartLog(false);return completeSecondData;
             } else if (completeFirstData.contains(ChatUtils.getPrefixLogNotConnectedServer())) {
                 Log.w(TAG, "串口Log内容：" + completeFirstData);
                 if (completeFirstData.startsWith(ChatUtils.getPrefixLogNotConnectedServer()))
@@ -657,27 +642,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (completeFirstData.contains(ChatUtils.getPrefixLogConnected())) {
                 Log.d(TAG, "连接日志：" + completeFirstData);
                 // 处理连接日志
+                ChatUtils.setShowUartLog(true);return completeFirstData;
             }
             if (completeFirstData.contains(ChatUtils.getPrefixLogDisconnected())) {
                 Log.d(TAG, "断开连接日志：" + completeFirstData);
                 // 处理断开连接日志
+                ChatUtils.setShowUartLog(true);return completeFirstData;
             }
             if (completeFirstData.contains(ChatUtils.getPrefixLogAcore())) {
                 Log.d(TAG, "ACore日志：" + completeFirstData);
                 // 处理ACore日志
+                ChatUtils.setShowUartLog(true);return completeFirstData;
             }
             //UART服务器日志，以下可以读取星闪日志
             if (completeFirstData.contains(ChatUtils.getPrefixLogSleUartServer())) {
                 Log.d(TAG, "UART服务器日志：" + completeFirstData);
                 // 处理UART服务器日志
+                ChatUtils.setShowUartLog(true);return completeFirstData;
             }
             if (completeFirstData.contains(ChatUtils.getPrefixLogConnectStateChanged())) {
                 Log.d(TAG, "连接状态改变日志：" + completeFirstData);
                 // 处理连接状态改变日志
+                ChatUtils.setShowUartLog(true);return completeFirstData;
             }
             if (completeFirstData.contains(ChatUtils.getPrefixLogPairComplete())) {
                 Log.d(TAG, "配对完成日志：" + completeFirstData);
                 // 处理配对完成日志
+                ChatUtils.setShowUartLog(true);return completeFirstData;
             }
             if (completeFirstData.contains(ChatUtils.getPrefixLogNearlinkDevicesAddr())) {
                 // 处理采集到星闪MAC地址完成日志
@@ -686,14 +677,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     ChatProcessorForExtract.initializeHandler();
                     ChatProcessorForExtract.processChat(context, completeFirstData);
                 }
+                ChatUtils.setShowUartLog(true);return completeFirstData;
             }
             if (completeFirstData.contains(ChatUtils.getPrefixLogSsapsMtuChanged())) {
                 Log.d(TAG, "MTU改变日志：" + completeFirstData);
                 // 处理MTU改变日志
+                ChatUtils.setShowUartLog(true);return completeFirstData;
             }
             if (completeFirstData.contains(ChatUtils.getPrefixLogSleAnnounceEnableCallback())) {
                 Log.d(TAG, "启用回调日志：" + completeFirstData);
                 // 处理启用回调日志
+                ChatUtils.setShowUartLog(true);return completeFirstData;
             }
         }
         return "";

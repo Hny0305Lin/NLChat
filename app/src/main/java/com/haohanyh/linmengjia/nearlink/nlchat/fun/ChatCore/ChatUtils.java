@@ -3,7 +3,7 @@ package com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore;
 
 public class ChatUtils {
     //这里设置的是UI相关，是否做到消息滚动展示在UI上，而不是全部展示，全部展示会占用大量UI资源
-    private static boolean showUartLog = false; // 控制是否启用显示串口Log，打印在UI上（开发者使用）
+    private static boolean showUartLog = true; // 控制是否启用显示串口Log，打印在UI上（开发者使用）
     private static final boolean scrollingMessages = true; // 控制是否启用滚动消息功能
     private static boolean clipMessages = true; // 控制是否启用剪贴板功能
     private static final boolean uiNewOrOld = true; // 控制是否启用新UI（一般为True）

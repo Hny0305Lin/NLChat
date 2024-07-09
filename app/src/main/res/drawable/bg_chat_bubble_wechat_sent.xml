@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 原背景层 -->
     <item>
         <layer-list>
             <item android:right="8dp">
@@ -10,6 +11,8 @@
             </item>
         </layer-list>
     </item>
+
+    <!-- 旋转的形状 -->
     <item
         android:gravity="end|center">
         <rotate

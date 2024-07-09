@@ -18,6 +18,8 @@
         android:hyphenationFrequency="none"
         android:maxWidth="220dp"
         android:padding="10dp"
+        android:fontFamily="monospace"
+        android:textSize="8sp"
         android:text="Hello, this is a sent message! Test!"
         android:textColor="@android:color/black"/>
 

@@ -17,6 +17,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
+            android:fontFamily="monospace"
+            android:textSize="10sp"
             android:text="12:00 PM"
             android:textColor="@color/newui_time"
             app:layout_constraintEnd_toStartOf="@id/text_message_body"
@@ -33,7 +35,7 @@
             android:maxWidth="220dp"
             android:padding="10dp"
             android:text="Hello, this is a sent message! Test!"
-            android:textColor="@android:color/black"
+            android:textColor="@color/black"
             app:layout_constraintEnd_toStartOf="@id/text_message_time"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
