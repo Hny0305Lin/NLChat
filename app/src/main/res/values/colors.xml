@@ -26,5 +26,11 @@
     <color name="snackbar_log_w">#CC9966</color>
     <color name="snackbar_log_e">#CC0066</color>
 
+    <color name="newui_log_v">#8D090009</color>
+    <color name="newui_log_d">#860099FF</color>
+    <color name="newui_log_i">#8600CC66</color>
+    <color name="newui_log_e">#86CC003A</color>
+    <color name="newui_log_w">#86DC9854</color>
+
     <color name="newui_time">#aaa</color>
 </resources>

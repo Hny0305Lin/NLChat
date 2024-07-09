@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.hardware.usb.UsbManager;
 import android.net.Uri;
@@ -62,6 +61,7 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatSaveMessageDatab
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatTimestamp;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIAlertDialog;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIAnimationUtils;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIBackgroundUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.Premission.NearLinkChatGetSomePermission;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.array;
@@ -248,6 +248,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         CNearlinkDev.setVisibility(View.GONE);
         CTHANKS = findViewById(id.CardAPP);
         CTHANKS.setVisibility(View.VISIBLE);
+
         CNearLinkChat = findViewById(id.CardIChat);
         CNearLinkChatNewUI = findViewById(id.CardIChatNewUI);
         if (ChatUtils.isUiNewOrOld()) {
@@ -257,7 +258,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             CNearLinkChat.setVisibility(View.VISIBLE);
             CNearLinkChatNewUI.setVisibility(View.GONE);
         }
-        NearLinkNewUIUserTitle = findViewById(id.userTitleNewUI);
+
+        NearLinkNewUIUserTitle = findViewById(id.userTitleNewUI);                       //实现长按事件监听器,打开相册文件窗口设置背景用
+        NearLinkNewUIUserTitle.setOnLongClickListener(v -> {
+            Toast.makeText(context, "跳转相册文件中", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            pickImageLauncher.launch(intent);
+            return true; //返回true表示事件已处理
+        });
+
         recyclerView = findViewById(id.recycler_view);
         APPRunResult = findViewById(id.appResult);
         MobileUSBResult = findViewById(id.mobileUsbResult);
@@ -367,7 +377,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 ChatUtils.setSqlitemanager(true);
                             SnackBarToastForDebug(context,"您已开始保存您的聊天记录啦!","目前为" + ChatUtils.isSqlitemanager(),0,Snackbar.LENGTH_SHORT);
                         } else {
-                            if (ChatUIAlertDialog.show(compoundButton.getContext(), "聊天保存(SQLite)", "您确定要停止保存聊天数据吗？停止保存您的聊天，将会在接下来聊天时无法保存内容，可能会造成聊天记录丢失。", compoundButton))
+                            if (ChatUIAlertDialog.showNormal(compoundButton.getContext(), "聊天保存(SQLite)", "您确定要停止保存聊天数据吗？停止保存您的聊天，将会在接下来聊天时无法保存内容，可能会造成聊天记录丢失。", compoundButton))
                                 ChatUtils.setSqlitemanager(false);
                             SnackBarToastForDebug(context,"已为您取消保存聊天记录!","目前为" + ChatUtils.isSqlitemanager(),0,Snackbar.LENGTH_SHORT);
                         }
@@ -378,7 +388,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             ChatUtils.setSqliteHistory(true);
                             SnackBarToastForDebug(context,"您已开始展示您的聊天记录啦!","目前为" + ChatUtils.isSqliteHistory(),0,Snackbar.LENGTH_SHORT);
                         } else {
-                            if (ChatUIAlertDialog.show(compoundButton.getContext(), "历史设备记录(SQLite)", "您确定要停止展示聊天数据在UI上吗？", compoundButton))
+                            if (ChatUIAlertDialog.showNormal(compoundButton.getContext(), "历史设备记录(SQLite)", "您确定要停止展示聊天数据在UI上吗？", compoundButton))
                                 ChatUtils.setSqliteHistory(false);
                             SnackBarToastForDebug(context,"已为您取消保存聊天记录!","目前为" + ChatUtils.isSqliteHistory(),0,Snackbar.LENGTH_SHORT);
                         }
@@ -391,7 +401,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             ChatUtils.setClipMessages(true);
                             SnackBarToastForDebug(context,"您已开启剪贴板功能!","目前为" + ChatUtils.isClipMessages(),0,Snackbar.LENGTH_SHORT);
                         } else {
-                            if (ChatUIAlertDialog.show(compoundButton.getContext(), "聊天文本进入剪贴板", "您确定要停止剪贴板吗？剪贴板功能可以帮您自动按规则捕获内容，可以很大程度上帮助到您手动任务耗时的情况，取消则需要您自行处理屏幕上的UI信息。", compoundButton))
+                            if (ChatUIAlertDialog.showNormal(compoundButton.getContext(), "聊天文本进入剪贴板", "您确定要停止剪贴板吗？剪贴板功能可以帮您自动按规则捕获内容，可以很大程度上帮助到您手动任务耗时的情况，取消则需要您自行处理屏幕上的UI信息。", compoundButton))
                                 ChatUtils.setClipMessages(false);
                             SnackBarToastForDebug(context,"已为您取消剪贴板功能!","目前为" + ChatUtils.isClipMessages(),0,Snackbar.LENGTH_SHORT);
                         }
@@ -451,7 +461,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (ChatUtils.isSqliteHistory()) loadMessagesFromDatabase();
 
         //背景处理
-        // 注册图片选择器的启动器
+        //注册图片选择器的启动器
         pickImageLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                 Uri selectedImageUri = result.getData().getData();
@@ -462,45 +472,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     ChatFileUtils.saveBackgroundPath(this, selectedImageUri.toString());
 
-                    // 设置 CardView 背景为半透明
-                    setCardViewBackground();
+                    // 设置 新旧聊天卡片布局 CardView 背景为半透明
+                    if (ChatUtils.isUiNewOrOld()) {
+                        ChatUIBackgroundUtils.setCardViewBackground(findViewById(id.CardIChatNewUI), 0x80FFFFFF);
+                    } else {
+                        ChatUIBackgroundUtils.setCardViewBackground(findViewById(id.CardIChat), 0x80FFFFFF);
+                    }
+                    // 设置 星闪状态卡片布局 CardView 背景为75%透明
+                    ChatUIBackgroundUtils.setCardViewBackground(findViewById(id.CardI), 0x40FFFFFF);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
 
-        // 实现长按事件监听器
-        findViewById(R.id.userTitleNewUI).setOnLongClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            pickImageLauncher.launch(intent);
-            return true; // 返回true表示事件已处理
-        });
-
         // 设置启动时的背景
-        setSavedBackground();
-    }
-
-    private void setSavedBackground() {
-        String backgroundPath = ChatFileUtils.getBackgroundPath(this);
-        if (backgroundPath != null) {
-            Uri backgroundUri = Uri.parse(backgroundPath);
-            try {
-                InputStream inputStream = getContentResolver().openInputStream(backgroundUri);
-                Drawable drawable = Drawable.createFromStream(inputStream, backgroundUri.toString());
-                findViewById(R.id.MainUI).setBackground(drawable);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void setCardViewBackground() {
-        CardView cardView = findViewById(R.id.CardIChatNewUI);
-        if (cardView != null) {
-            cardView.setBackground(new ColorDrawable(0x80FFFFFF)); // 设置半透明背景
-        }
+        ChatUIBackgroundUtils.setSavedBackground(context, findViewById(R.id.MainUI));
     }
 
     private void InitToOpen() {
@@ -609,7 +597,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         serverMessageQueue.poll();
                     }
                     serverMessageQueue.add(processedString);
-                    //updateServerTextView();
                     serverUpdater.updateTextView();
                     MainAPP.Vibrate(this);
                 } else {

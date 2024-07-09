@@ -6,7 +6,7 @@ import android.graphics.Typeface;
 import android.util.Log;
 import android.widget.TextView;
 
-public class ChatFontUtils {
+public class ChatUIFontUtils {
 
     private static final String TAG = "ChatFontUtils & NLChat";
 
@@ -18,7 +18,7 @@ public class ChatFontUtils {
     }
 
     public static void setFontPathNum(int fontPathNum) {
-        ChatFontUtils.fontPathNum = fontPathNum;
+        ChatUIFontUtils.fontPathNum = fontPathNum;
     }
 
     // 加载并应用自定义字体

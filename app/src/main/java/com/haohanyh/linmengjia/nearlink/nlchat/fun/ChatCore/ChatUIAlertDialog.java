@@ -1,3 +1,4 @@
+/* 受Haohanyh Computer Software Products Open Source LICENSE保护 https://github.com/Hny0305Lin/LICENSE/blob/main/LICENSE */
 package com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore;
 
 import android.content.Context;
@@ -12,7 +13,7 @@ public class ChatUIAlertDialog {
 
     private static boolean b = true;
 
-    public static boolean show(Context context, String title, String message, CompoundButton compoundButton) {
+    public static boolean showNormal(Context context, String title, String message, CompoundButton compoundButton) {
         new AlertDialog.Builder(context, R.style.HaohanyhDialog)
                 .setTitle(title)
                 .setMessage(message)

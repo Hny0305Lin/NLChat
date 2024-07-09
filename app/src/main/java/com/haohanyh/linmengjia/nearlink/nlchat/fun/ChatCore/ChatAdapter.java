@@ -80,7 +80,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             timestampText = itemView.findViewById(R.id.text_message_time);
 
             // 设置自定义字体
-            ChatFontUtils.applyCustomFont(context, messageText);
+            ChatUIFontUtils.applyCustomFont(context, messageText);
         }
 
         void bind(ChatMessage message) {
@@ -99,7 +99,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             timestampText = itemView.findViewById(R.id.text_message_time);
 
             // 设置自定义字体
-            ChatFontUtils.applyCustomFont(context, messageText);
+            ChatUIFontUtils.applyCustomFont(context, messageText);
         }
 
         void bind(ChatMessage message) {
