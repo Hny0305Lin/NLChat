@@ -2,8 +2,10 @@
 package com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore;
 
 public class ChatMessage {
+    private static final String TAG = "ChatMessage & NLChat";
     private String message;
     private String timestamp;
+    private int loglevel;
     private boolean isUser;
     private boolean isDebug;
     private boolean isMe;
@@ -14,9 +16,10 @@ public class ChatMessage {
         this.isUser = isUser;
     }
 
-    public ChatMessage(String message, boolean isDebug) {
+    public ChatMessage(String message, boolean isDebug, int loglevel) {
         this.message = message;
         this.isDebug = isDebug;
+        this.loglevel = loglevel;
     }
 
     public ChatMessage(String message, boolean isMe, String timestamp) {
@@ -33,11 +36,19 @@ public class ChatMessage {
         return timestamp;
     }
 
+    public int getLoglevel() {
+        return loglevel;
+    }
+
     public boolean isUser() {
         return isUser;
     }
 
-    public boolean isDebug() { return isDebug; }
+    public boolean isDebug() {
+        return isDebug;
+    }
 
-    public boolean isMe() { return isMe; }
+    public boolean isMe() {
+        return isMe;
+    }
 }

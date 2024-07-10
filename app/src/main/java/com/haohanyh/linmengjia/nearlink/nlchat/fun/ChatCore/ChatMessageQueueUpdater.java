@@ -25,6 +25,7 @@ public class ChatMessageQueueUpdater {
     private List<ChatMessage> chatMessages; // 聊天消息列表
     private ChatAdapter chatAdapter; // 聊天适配器
     private String logPrefix; // 日志前缀，用于区分不同的消息队列
+    private int loglevel;
     private RecyclerView recyclerView; // RecyclerView实例
 
     /**
@@ -41,6 +42,20 @@ public class ChatMessageQueueUpdater {
         this.chatAdapter = chatAdapter;
         this.logPrefix = logPrefix;
         this.recyclerView = recyclerView;
+    }
+
+    /**
+     * 构造函数
+     * @param messageQueue 消息队列
+     * @param loglevel 日志等级
+     */
+    public ChatMessageQueueUpdater(Queue<String> messageQueue, List<ChatMessage> chatMessages, ChatAdapter chatAdapter, String logPrefix, RecyclerView recyclerView, int loglevel) {
+        this.messageQueue = messageQueue;
+        this.chatMessages = chatMessages;
+        this.chatAdapter = chatAdapter;
+        this.logPrefix = logPrefix;
+        this.recyclerView = recyclerView;
+        this.loglevel = loglevel;
     }
 
     /**
@@ -74,11 +89,12 @@ public class ChatMessageQueueUpdater {
             Log.v(TAG, "isUser：" + isUser);
             Log.v(TAG, "isDebug：" + isDebug);
             Log.v(TAG, "isMe：" + isMe);
+
             if (isUser) {
                 String timestamp = chatTimestamp.getCurrentTimestamp(); // 获取当前时间戳
                 chatMessages.add(new ChatMessage(newMessage, timestamp, isUser));
             } else if (isDebug) {
-                chatMessages.add(new ChatMessage(newMessage, isDebug));
+                chatMessages.add(new ChatMessage(newMessage, isDebug, loglevel));
             } else if (isMe) {
                 String timestamp = chatTimestamp.getCurrentTimestamp(); // 获取当前时间戳
                 chatMessages.add(new ChatMessage(newMessage, isMe, timestamp));

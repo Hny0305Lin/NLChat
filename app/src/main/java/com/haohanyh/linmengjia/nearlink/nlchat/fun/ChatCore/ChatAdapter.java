@@ -3,6 +3,7 @@ package com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.R;
 import java.util.List;
 
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    //Log需要的TAG
+    private static final String TAG = "ChatAdapter & NLChat";
 
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
@@ -112,6 +115,33 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         void bind(ChatMessage message) {
             messageText.setText(message.getMessage());
+
+            switch (message.getLoglevel()) {
+                case Log.VERBOSE:
+                    messageText.setBackgroundResource(R.drawable.bg_debug_bubble_verbose);
+                    messageText.setTextColor(context.getResources().getColor(R.color.white));
+                    break;
+                case Log.DEBUG:
+                    messageText.setBackgroundResource(R.drawable.bg_debug_bubble_debug);
+                    messageText.setTextColor(context.getResources().getColor(R.color.black));
+                    break;
+                case Log.INFO:
+                    messageText.setBackgroundResource(R.drawable.bg_debug_bubble_info);
+                    messageText.setTextColor(context.getResources().getColor(R.color.black));
+                    break;
+                case Log.WARN:
+                    messageText.setBackgroundResource(R.drawable.bg_debug_bubble_warn);
+                    messageText.setTextColor(context.getResources().getColor(R.color.black));
+                    break;
+                case Log.ERROR:
+                    messageText.setBackgroundResource(R.drawable.bg_debug_bubble_error);
+                    messageText.setTextColor(context.getResources().getColor(R.color.black));
+                    break;
+                default:
+                    messageText.setBackgroundResource(R.drawable.bg_debug_bubble_error);
+                    messageText.setTextColor(context.getResources().getColor(R.color.black));
+                    break;
+            }
         }
     }
 

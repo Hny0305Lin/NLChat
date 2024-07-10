@@ -115,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView NearLinkUserText,NearLinkDebug,NearLinkMeText;
     private EditText EditChatSend,EditChatSendNewUI;
 
+    private int LogLevel = Log.WARN;
+
     private Resources resources;
     private String[] UartSettingsBaud,UartSettingsData,UartSettingsStop,UartSettingsParity,UartSettingsParityII;
     private WCHUartSettings wchUartSettings = new WCHUartSettings();
@@ -144,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int MAX_MESSAGES = 8; // 设置最大消息数量
     private ChatMessageQueueUpdater serverUpdater;
     private ChatMessageQueueUpdater serverDebugUpdater;
+    private ChatMessageQueueUpdater serverDebugSetColor;
     private ChatMessageQueueUpdater clientUpdater;
     private ChatSaveMessageDatabaseManager chatSaveMessageDatabaseManager;
     private ChatUIUpdater chatUIUpdater;
@@ -365,8 +368,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //聊天初始化
         serverUpdater = new ChatMessageQueueUpdater(NearLinkUserText, serverMessageQueue, chatMessages, chatAdapter, "User: ", recyclerView);
-        serverDebugUpdater = new ChatMessageQueueUpdater(NearLinkDebug, serverDebugQueue, chatMessages, chatAdapter, "Debug: ", recyclerView);
+        serverDebugUpdater = new ChatMessageQueueUpdater(serverDebugQueue, chatMessages, chatAdapter, "Debug: ", recyclerView, LogLevel);
+
         clientUpdater = new ChatMessageQueueUpdater(NearLinkMeText, clientMessageQueue, chatMessages, chatAdapter, "Me: ", recyclerView);
+
+        //聊天串口为INFO
+//        serverDebugSetColor = new ChatMessageQueueUpdater(LogLevel);
+//        Log.d(TAG, "日志等级：" + LogLevel + "serverDebugSetColor = new ChatMessageQueueUpdater(LogLevel);");
+
         //聊天数据库初始化
         chatSaveMessageDatabaseManager = new ChatSaveMessageDatabaseManager(MainActivity.this);
         //聊天核心初始化
@@ -692,16 +701,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d(TAG, "UART服务器日志：" + completeFirstData);
                 // 处理UART服务器日志
 
-                ChatUtils.setShowUartLog(true);
-                if (ChatUtils.isShowUartLog()) {
-                    Log.d(TAG, "UART服务器日志：" + completeFirstData + "是否显示?:" + true);
-                    if (ChatUtils.isSetDebugLog()) {
-                        Log.d(TAG, "UART服务器日志：" + completeFirstData + "是否设置打开?:" + true);
-                        return completeFirstData;
-                    } else {
-                        Log.d(TAG, "UART服务器日志：" + completeFirstData + "是否设置打开?:" + false);
-                    }
-                }
+//                ChatUtils.setShowUartLog(true);
+//                if (ChatUtils.isShowUartLog()) {
+//                    Log.d(TAG, "UART服务器日志：" + completeFirstData + "是否显示?:" + true);
+//                    if (ChatUtils.isSetDebugLog()) {
+//                        Log.d(TAG, "UART服务器日志：" + completeFirstData + "是否设置打开?:" + true);
+//                        return completeFirstData;
+//                    } else {
+//                        Log.d(TAG, "UART服务器日志：" + completeFirstData + "是否设置打开?:" + false);
+//                    }
+//                }
             }
             if (completeFirstData.contains(ChatUtils.getPrefixLogConnectStateChanged())) {
                 Log.d(TAG, "连接状态改变日志：" + completeFirstData);
