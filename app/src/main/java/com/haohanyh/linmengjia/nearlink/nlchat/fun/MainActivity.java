@@ -598,6 +598,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //字节转文本
             //String string = StringUtils.needProcess().bytesToString(bytes);
             String string = new String(bytes, StandardCharsets.UTF_8);
+            //String string = StringUtils.needProcess().toString(bytes);
             Log.v(TAG, "长度：bytes.length="+ bytes.length + "\t内容：" + string);
             //进行文本处理
             String processedString = CH34xProcessingForReadData(string);
@@ -701,16 +702,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.d(TAG, "UART服务器日志：" + completeFirstData);
                 // 处理UART服务器日志
 
-//                ChatUtils.setShowUartLog(true);
-//                if (ChatUtils.isShowUartLog()) {
-//                    Log.d(TAG, "UART服务器日志：" + completeFirstData + "是否显示?:" + true);
-//                    if (ChatUtils.isSetDebugLog()) {
-//                        Log.d(TAG, "UART服务器日志：" + completeFirstData + "是否设置打开?:" + true);
-//                        return completeFirstData;
-//                    } else {
-//                        Log.d(TAG, "UART服务器日志：" + completeFirstData + "是否设置打开?:" + false);
-//                    }
-//                }
+                ChatUtils.setShowUartLog(true);
+                if (ChatUtils.isShowUartLog()) {
+                    Log.d(TAG, "UART服务器日志：" + completeFirstData + "是否显示?:" + true);
+                    if (ChatUtils.isSetDebugLog()) {
+                        Log.d(TAG, "UART服务器日志：" + completeFirstData + "是否设置打开?:" + true);
+                        return completeFirstData;
+                    } else {
+                        Log.d(TAG, "UART服务器日志：" + completeFirstData + "是否设置打开?:" + false);
+                    }
+                }
             }
             if (completeFirstData.contains(ChatUtils.getPrefixLogConnectStateChanged())) {
                 Log.d(TAG, "连接状态改变日志：" + completeFirstData);
@@ -802,10 +803,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String messageSend;
         if (!EditChatSend.getText().toString().isEmpty()) {
             messageSend = EditChatSend.getText().toString();
-            to_send = StringUtils.needProcess().toByteArray(EditChatSend.getText().toString());
+            to_send = StringUtils.needProcess().toByteArrayII(EditChatSend.getText().toString());
         } else {
             messageSend = EditChatSendNewUI.getText().toString();
-            to_send = StringUtils.needProcess().toByteArray(EditChatSendNewUI.getText().toString());
+            to_send = StringUtils.needProcess().toByteArrayII(EditChatSendNewUI.getText().toString());
         }
         //byte[] to_send = StringUtils.needProcess().toByteArray(String.valueOf(EditChatSend.getText()));		//以字符串方式发送
         int retval = MainAPP.CH34X.writeData(to_send, to_send.length);//写数据，第一个参数为需要发送的字节数组，第二个参数为需要发送的字节长度，返回实际发送的字节长度

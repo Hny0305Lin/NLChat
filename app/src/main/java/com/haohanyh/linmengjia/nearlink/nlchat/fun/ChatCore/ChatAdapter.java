@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R;
@@ -110,7 +110,19 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             messageText = itemView.findViewById(R.id.text_message_body);
 
             // 设置自定义字体
-            ChatUIFontUtils.applyCustomFont(context, messageText);
+            ChatUIFontUtils.applyCustomFont(context, messageText, 3);
+
+            messageText.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+
+
+                    // 在这里处理长按事件
+                    Toast.makeText(context, "长按事件触发", Toast.LENGTH_SHORT).show();
+
+                    return false;
+                }
+            });
         }
 
         void bind(ChatMessage message) {
