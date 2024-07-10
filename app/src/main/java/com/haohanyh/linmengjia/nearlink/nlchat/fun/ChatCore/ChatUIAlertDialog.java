@@ -35,4 +35,22 @@ public class ChatUIAlertDialog {
                 .show();
         return b;
     }
+
+    public static void showSerialLog(Context context, String title, String message, String positiveButtonText, String negativeButtonText) {
+        new AlertDialog.Builder(context, R.style.HaohanyhDialog)
+                .setTitle(title)
+                .setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setNegativeButton(negativeButtonText, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
+    }
 }

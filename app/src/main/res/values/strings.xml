@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">NLChat</string>
     <string name="app_package">com.haohanyh.linmengjia.nearlink.nlchat.fun</string>
-    <string name="app_version">1.3.190.2024.0710</string>
+    <string name="app_version">1.3.196.2024.0710</string>
 
     <string name="appwarn">NLChat，浩瀚银河宗旨为用爱和魔法创造Android APP。</string>
     <string name="thanks3q">友情感谢</string>
@@ -74,9 +74,29 @@
 
 
 
+    <string name="prefixLogConnected">
+        该串口提示为您设备接入的服务板，已经和客户板，通过星闪双向链接，可以开始通讯了。
+        \n
+        弹出Connected内容时，您可视为正常，当然不弹出也是正常的，因为这是您服务板接入使用后，客户板才启动的正常表现。
+    </string>
 
+    <string name="prefixLogDisConnected">
+        该串口提示为您设备接入的服务板，和客户板失去链接，故星闪链接断开。
+        \n
+        弹出此内容时，请您检查设备是否能正常链接，星闪板和设备链接的USB线接触是否正常。
+    </string>
 
+    <string name="prefixLogConnectStateChanged">
+        该串口提示为您设备接入的服务板，和客户板的链接状态发生改变。
+        \n
+        弹出此内容时，请您检查设备是否能正常链接，能正常链接则忽略，如果该内容是与Disconnected相互发送的，则链接已断开。
+    </string>
 
+    <string name="prefixLogPairComplete">
+        该串口提示为您设备接入的服务板，和客户板的链接，配对成功。
+        \n
+        弹出此内容时，请您检查设备MAC地址是否为客户板地址，能正常则忽略。
+    </string>
 
 
 
