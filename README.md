@@ -1,6 +1,5 @@
 # Hi2821_NLChat
 
-
 ![IMG.SHIELD.IO](https://img.shields.io/github/v/release/Hny0305Lin/NLChat?include_prereleases&display_name=release&style=for-the-badge&logo=Android&logoSize=amd&label=Hi2821_NLChat&labelColor=007FFC&color=4DDDFC&cacheSeconds=60) ![IMG.SHIELD.IO](https://img.shields.io/github/stars/Hny0305Lin/NLChat?style=for-the-badge&label=NLChat%20Star&labelColor=007FFC&color=4DDDFC&cacheSeconds=60)
 
 ![Android自动化构建 Debug](https://img.shields.io/github/actions/workflow/status/Hny0305Lin/NLChat/android.yml?branch=master&style=for-the-badge&logo=android&logoSize=amd&label=Android%20CI&labelColor=00CEFC&color=00C08B&cacheSeconds=600) ![Android自动化构建 Release](https://img.shields.io/github/actions/workflow/status/Hny0305Lin/NLChat/androidsign.yml?branch=master&style=for-the-badge&logo=android&logoSize=amd&label=Android%20CI%20Release&labelColor=00CEFC&color=00C08B&cacheSeconds=600)
@@ -154,10 +153,11 @@
 
 ### 期待您有更多的设备参与进来测试，以帮助该项目通过测试的设备更完善！
 
-* 浩瀚银河为鼓励项目更多人参与进来，可以对以上设备以外(除Android ARM64等模拟器)参与测试的人员，给予不等的实物奖励。只需要您参与星闪的通讯软件功能使用，并反馈问题，即可获得。截止时间不限，奖励有限。
-* 通过测试的设备表中以外拥有设备，优先参与测试。
-* 请联系作者，获取参与测试的资格。
+* 浩瀚银河为鼓励项目更多人参与进来，可以对以上设备以外(除Android ARM64等模拟器)参与测试的人员，给予不等的实物奖励。只需要您参与星闪的通讯软件功能使用，并反馈问题，即可获得。截止时间不限，奖励有限。（目前已有多位测试官们获得实物奖励）
+* 设备表中以外的Android设备、华为鸿蒙操作系统设备、非星闪Android设备，优先参与测试，请自备一对小熊派星闪开发板按教程烧入相关代码后，即可参与测试。
+* 请联系作者，获取参与测试的资格。如未*通过作者联系私自参与测试*，将视为违规，将取消参与资格。
 * 请注意，参与测试的人员，如有二次开发商业化等需求，请参照开源协议。
+* 该活动最终解释权归浩瀚银河负责人所有。
 
 # 关于商业化该项目
 
