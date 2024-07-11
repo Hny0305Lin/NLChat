@@ -3,8 +3,24 @@ name: Android CI
 on:
   push:
     branches: [ "master" ]
+    paths-ignore:
+      - "**/.idea/**"
+      - "**/build/**"
+      - "**/DevSummary/**"
+      - '**/*.md'
+      - '**/*.png'
+      - '**/*.jpg'
+      - '**/*.gif'
   pull_request:
     branches: [ "master" ]
+    paths-ignore:
+      - "**/.idea/**"
+      - "**/build/**"
+      - "**/DevSummary/**"
+      - '**/*.md'
+      - '**/*.png'
+      - '**/*.jpg'
+      - '**/*.gif'
 
 jobs:
   build:
