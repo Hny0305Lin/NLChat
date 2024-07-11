@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R;
 
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.string;
+
 import java.util.List;
 
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -118,15 +120,23 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     String result = messageText.getText().toString().trim();
                     
                     if (result.equals(ChatUtils.getPrefixLogConnected())) {
-                        ChatUIAlertDialog.showSerialLog(context, ChatUtils.getPrefixLogConnected(), context.getString(R.string.prefixLogConnected), "推荐开始聊天", "取消显示");
+                        ChatUIAlertDialog.showSerialLog(context, ChatUtils.getPrefixLogConnected(), context.getString(string.prefixLogConnected), "推荐开始聊天", "取消显示", "复制进剪贴板");
                     } else if (result.equals(ChatUtils.getPrefixLogDisconnected())) {
-                        ChatUIAlertDialog.showSerialLog(context, ChatUtils.getPrefixLogDisconnected(), context.getString(R.string.prefixLogDisConnected), "推荐重启软件和星闪板", "取消显示");
+                        ChatUIAlertDialog.showSerialLog(context, ChatUtils.getPrefixLogDisconnected(), context.getString(string.prefixLogDisConnected), "推荐重启软件和星闪板", "取消显示", "复制进剪贴板");
                     } else if (result.equals(ChatUtils.getPrefixLogAcore())) {
                         //ACore暂时不写
                     } else if (result.startsWith(ChatUtils.getPrefixLogConnectStateChanged())) {
-                        ChatUIAlertDialog.showSerialLog(context, ChatUtils.getPrefixLogConnectStateChanged(), context.getString(R.string.prefixLogConnectStateChanged), "推荐检查", "取消显示");
+                        ChatUIAlertDialog.showSerialLog(context, ChatUtils.getPrefixLogConnectStateChanged(), context.getString(string.prefixLogConnectStateChanged), "推荐检查", "取消显示", "复制进剪贴板");
+                    } else if (result.startsWith(ChatUtils.getPrefixLogNearlinkDevicesAddr())) {
+                        ChatUIAlertDialog.showSerialLog(context, ChatUtils.getPrefixLogNearlinkDevicesAddr(), context.getString(string.prefixLogNearlinkDevicesAddr), "推荐开始聊天", "取消显示", "复制进剪贴板");
                     } else if (result.startsWith(ChatUtils.getPrefixLogPairComplete())) {
-                        ChatUIAlertDialog.showSerialLog(context, ChatUtils.getPrefixLogPairComplete(), context.getString(R.string.prefixLogPairComplete), "推荐开始聊天", "取消显示");
+                        ChatUIAlertDialog.showSerialLog(context, ChatUtils.getPrefixLogPairComplete(), context.getString(string.prefixLogPairComplete), "推荐开始聊天", "取消显示", "复制进剪贴板");
+                    } else if (result.startsWith(ChatUtils.getPrefixLogSsapsMtuChanged())) {
+                        //MTU暂时不写
+                    } else if (result.startsWith(ChatUtils.getPrefixLogSleAnnounceEnableCallback())) {
+                        //CakkBack暂时不写
+                    } else {
+                        //分支暂时不写
                     }
 
                     // 在这里处理长按事件

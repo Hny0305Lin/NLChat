@@ -36,7 +36,16 @@ public class ChatUIAlertDialog {
         return b;
     }
 
-    public static void showSerialLog(Context context, String title, String message, String positiveButtonText, String negativeButtonText) {
+    /**
+     * 常用于ChatAdapter，展示串口内容，并做出开发者功能以助于下一步处理
+     * @param context   上下文，捆绑MainActivity
+     * @param title     标题
+     * @param message       捆绑R.string
+     * @param positiveButtonText    普遍为对话框Yes按钮
+     * @param negativeButtonText    普遍为对话框No按钮
+     * @param neutralButtonText     普通按钮，这里做剪贴板功能
+     */
+    public static void showSerialLog(Context context, String title, String message, String positiveButtonText, String negativeButtonText, String neutralButtonText) {
         new AlertDialog.Builder(context, R.style.HaohanyhDialog)
                 .setTitle(title)
                 .setMessage(message)
@@ -48,6 +57,12 @@ public class ChatUIAlertDialog {
                 })
                 .setNegativeButton(negativeButtonText, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setNeutralButton(neutralButtonText, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
                     }
                 })

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">NLChat</string>
     <string name="app_package">com.haohanyh.linmengjia.nearlink.nlchat.fun</string>
-    <string name="app_version">1.3.196.2024.0710</string>
+    <string name="app_version">1.3.200.2024.0711</string>
 
     <string name="appwarn">NLChat，浩瀚银河宗旨为用爱和魔法创造Android APP。</string>
     <string name="thanks3q">友情感谢</string>
@@ -98,7 +98,11 @@
         弹出此内容时，请您检查设备MAC地址是否为客户板地址，能正常则忽略。
     </string>
 
-
+    <string name="prefixLogNearlinkDevicesAddr">
+        该串口提示为您的设备接入的服务板，已经获取客户端的专有MAC地址。
+        \n
+        弹出此内容时，请您检查设备是否能正常链接，能正常链接则忽略。
+    </string>
 
 
 
