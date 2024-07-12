@@ -8,6 +8,7 @@ import android.hardware.usb.UsbRequest;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 /* 重命名来自: cn.wch.ch34xuartdriver.b */
@@ -39,7 +40,7 @@ public final class Ch34ReadThread extends Thread {
             cH34xUARTDriver.getUsbRequests()[i] = new UsbRequest();
             cH34xUARTDriver.getUsbRequests()[i].initialize(this.usbDeviceConnection, this.usbEndpoint);
 
-            cH34xUARTDriver.getByteBuffers()[i] = ByteBuffer.allocate(this.ch34xUARTDriver._32);
+            cH34xUARTDriver.getByteBuffers()[i] = ByteBuffer.allocate(this.ch34xUARTDriver._32 * 4); //缓冲区增加Test
         }
         this.setPriority(10);
     }
@@ -79,6 +80,7 @@ public final class Ch34ReadThread extends Thread {
             this.ch34xUARTDriver.getUsbRequests()[i].queue(this.ch34xUARTDriver.getByteBuffers()[i], this.ch34xUARTDriver._32);
         }
         int count = 0;
+
         root:
         while (!Thread.interrupted()) {
             do {
@@ -101,12 +103,25 @@ public final class Ch34ReadThread extends Thread {
                 byte[] temp = this.ch34xUARTDriver.getByteBuffers()[i].array();
                 int tempLength = this.ch34xUARTDriver.getByteBuffers()[i].position();
                 if (tempLength > 0) {
+
                     try {
                         this.ch34xUARTDriver.getSemaphore().acquire();
+
                         byte[] bytes = Arrays.copyOf(temp, tempLength);
 
+                        // 记录接收到的字节用于调试
+                        Log.d(TAG, "Received bytes: " + Arrays.toString(bytes));
+
+                        // 使用 UTF-8 编码将字节数组转换为字符串
+                        String receivedData = new String(bytes, 0, tempLength, StandardCharsets.UTF_8);
+                        Log.d(TAG, "Received data: " + receivedData);
+
+                        // 如果有字节提取监听器，则调用其 value 方法
                         if (bytesExtract != null) bytesExtract.value(bytes);
+
                     } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
                         this.ch34xUARTDriver.getSemaphore().release();

@@ -64,6 +64,7 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIAnimationUtils
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIBackgroundUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIUpdater;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtils;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatService.MyForegroundService;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.Premission.NearLinkChatGetSomePermission;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.array;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.color;
@@ -200,6 +201,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);intent.setData(Uri.parse("package:" + this.getPackageName()));startActivityForResult(intent, 1024);
             }
         }
+        //Service常驻
+        Intent serviceIntent = new Intent(this, MyForegroundService.class);
+        startForegroundService(serviceIntent);
         //创建CH34x设备对象
         MainAPP.CH34X = new CH34xUARTDriver(
                 (UsbManager) getSystemService(Context.USB_SERVICE), this,
