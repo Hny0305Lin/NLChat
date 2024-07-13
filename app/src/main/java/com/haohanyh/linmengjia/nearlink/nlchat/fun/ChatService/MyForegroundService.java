@@ -6,9 +6,12 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -18,6 +21,17 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.R;
 public class MyForegroundService extends Service {
     private static final String TAG = "MyForegroundService & NLChat";
     private static final String CHANNEL_ID = "ForegroundServiceChannel";
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable stopSelfRunnable = new Runnable() {
+        @Override
+        public void run() {
+            stopSelf();
+            showCompletionNotification();
+            exitApp();
+        }
+    };
+    private Runnable updateNotificationRunnable;
+    private long endTime;
 
     @Override
     public void onCreate() {
@@ -30,14 +44,24 @@ public class MyForegroundService extends Service {
         Log.d(TAG, "服务已启动");
 
         createNotificationChannel();
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("NLChat保活活动")
-                .setContentText("保持软件后台运行，已启用，请注意电池消耗，消耗过快请关闭本程序。")
-                .setSmallIcon(R.drawable.app_icon_new)
-                .build();
-        startForeground(1, notification);
+        endTime = System.currentTimeMillis() + 10 * 60 * 1000; // 10分钟后停止服务
+        startForeground(1, createNotification("保持软件后台运行，已启用，请注意电池消耗，消耗过快请关闭本程序。"));
 
-        // Your background task code here
+        // 10分钟后自动停止服务
+        handler.postDelayed(stopSelfRunnable, 10 * 60 * 1000);
+
+        // 每秒更新通知
+        updateNotificationRunnable = new Runnable() {
+            @Override
+            public void run() {
+                long remainingTime = endTime - System.currentTimeMillis();
+                if (remainingTime > 0) {
+                    startForeground(1, createNotification("剩余时间: " + remainingTime / 1000 + "秒"));
+                    handler.postDelayed(this, 1000);
+                }
+            }
+        };
+        handler.post(updateNotificationRunnable);
 
         return START_STICKY;
     }
@@ -46,6 +70,8 @@ public class MyForegroundService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "服务已销毁");
+        handler.removeCallbacks(stopSelfRunnable);
+        handler.removeCallbacks(updateNotificationRunnable);
     }
 
     @Override
@@ -67,5 +93,38 @@ public class MyForegroundService extends Service {
                 manager.createNotificationChannel(serviceChannel);
             }
         }
+    }
+
+    private Notification createNotification(String contentText) {
+        return new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("NLChat保活活动")
+                .setContentText(contentText)
+                .setSmallIcon(R.drawable.app_icon_new)
+                .build();
+    }
+
+    private void showCompletionNotification() {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification completionNotification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("NLChat保活活动")
+                .setContentText("软件已在后台运行超过10分钟，已自动关闭并销毁Service和MainActivity。")
+                .setSmallIcon(R.drawable.app_icon_new)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+                .build();
+        if (notificationManager != null) {
+            notificationManager.notify(2, completionNotification);
+        }
+    }
+
+    private void exitApp() {
+        // 关闭所有Activity
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("com.haohanyh.linmengjia.nearlink.nlchat.fun.ACTION_EXIT_APP");
+        sendBroadcast(broadcastIntent);
+
+        // 终止进程
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(0);
     }
 }

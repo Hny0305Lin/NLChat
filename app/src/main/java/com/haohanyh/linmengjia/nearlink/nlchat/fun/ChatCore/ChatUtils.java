@@ -8,6 +8,7 @@ public class ChatUtils {
     private static final boolean scrollingMessages = true; // 控制是否启用滚动消息功能
     private static boolean clipMessages = true; // 控制是否启用剪贴板功能
     private static final boolean uiNewOrOld = true; // 控制是否启用新UI（一般为True）
+
     //这里设置的是数据库相关
     private static boolean sqlitemanager = true; // 控制是否启用SQLite存储功能
     private static boolean sqlitehistory = false; // 控制是否启用SQLite历史记录显示功能
@@ -25,6 +26,20 @@ public class ChatUtils {
     private static final String PREFIX_LOG_NEARLINK_DEVICES_ADDR = "[sle uart server] pair complete addr:";
     private static final String PREFIX_LOG_SSAPS_MTU_CHANGED = "[sle uart server] ssaps ssaps_mtu_changed_cbk";
     private static final String PREFIX_LOG_SLE_ANNOUNCE_ENABLE_CALLBACK = "[sle uart server] sle announce enable callback";
+
+    private static final String PREFIX_LOG_SLE_UART_CLIENT = "[sle uart client]";
+    private static final String PREFIX_LOG_CLIENT_CONNECT_STATE_CHANGED = "[sle uart client] conn state changed";
+    private static final String PREFIX_LOG_CLIENT_STATE_CONNECTED = "[sle uart client] SLE_ACB_STATE_CONNECTED";
+    private static final String PREFIX_LOG_CLIENT_LOW_RX = "[sle uart client] sle_low_latency_rx_enable";
+    private static final String PREFIX_LOG_CLIENT_PAIR_COMPLETE = "[sle uart client] pair complete";
+    private static final String PREFIX_LOG_CLIENT_NEARLINK_DEVICES_ADDR = "[sle uart client] pair complete conn_id:0, addr:";
+    private static final String PREFIX_LOG_CLIENT_SSAPC_EXCHANGE = "ssapc exchange info";
+    private static final String PREFIX_LOG_CLIENT_SLE_ANNOUNCE_ENABLE_CALLBACK = "[sle uart client] exchange_info_cbk";
+    private static final String PREFIX_LOG_CLIENT_SLE_DISCOVERY = "discovery character cbk";
+    private static final String PREFIX_LOG_CLIENT_MTU = "[sle uart client] exchange mtu";
+    private static final String PREFIX_LOG_CLIENT_SAMPLE_FIND_P_CBK = "[sle uart client] sle_uart_client_sample_find_property_cbk";
+    private static final String PREFIX_LOG_CLIENT_SAMPLE_FIND_SD_CBK = "[sle uart client] sle_uart_client_sample_find_structure_cmp_cbk";
+
     // 控制是否启用显示串口Log，打印在UI上（开发者使用）
     public static boolean isShowUartLog() { return showUartLog; }
 

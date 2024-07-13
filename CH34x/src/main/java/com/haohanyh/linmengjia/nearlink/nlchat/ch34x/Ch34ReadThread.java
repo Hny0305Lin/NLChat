@@ -40,6 +40,12 @@ public final class Ch34ReadThread extends Thread {
     /* 标志位 辅助保存处理最长字节数组，因为最长字节数组一定就是最终的唯一一次，这个标志位随时true false更替 */
     private boolean hasExtracted = false;
 
+    /* 控制CH34X Log是否打印在Android Studio上（太多了影响Log阅读，通过代码修改显示）*/
+    private static final boolean ch34xLog = false;
+
+    /* 控制是否AndroidStudio里显示CH34XLog(开发者) */
+    public static boolean isCh34xLog() { return ch34xLog; }
+
     /* 构造方法 */
     public Ch34ReadThread(CH34xUARTDriver cH34xUARTDriver, UsbEndpoint usbEndpoint, UsbDeviceConnection usbDeviceConnection) {
         super();
@@ -130,13 +136,15 @@ public final class Ch34ReadThread extends Thread {
                                 if (currentLine.length() > 0) {
                                     //使用UTF-8编码转换
                                     byte[] processedBytes = hexStringToByteArray(currentLine.toString());
-                                    Log.d(TAG, "0000000 长度：processedBytes.length="+ processedBytes.length + "\t内容：" + Arrays.toString(processedBytes));
+                                    if (isCh34xLog())
+                                        Log.d(TAG, "0000000 长度：processedBytes.length="+ processedBytes.length + "\t内容：" + Arrays.toString(processedBytes));
                                     if (longestProcessedBytes == null || processedBytes.length > longestProcessedBytes.length) {
                                         longestProcessedBytes = processedBytes; // 更新为最长的字节数组
                                         hasExtracted = true;
                                     }
                                     String outputLine = new String(hexStringToByteArray(currentLine.toString()), StandardCharsets.UTF_8);
-                                    Log.d(TAG, "Processed line 0000000: " + outputLine);
+                                    if (isCh34xLog())
+                                        Log.d(TAG, "Processed line 0000000: " + outputLine);
                                     //清空StringBuilder为下一行
                                     currentLine.setLength(0);
                                 }
@@ -155,8 +163,10 @@ public final class Ch34ReadThread extends Thread {
                                 hasExtracted = false;
                             }
                             String outputLine = new String(processedBytes, StandardCharsets.UTF_8);
-                            Log.d(TAG, "1111111 长度：processedBytes.length="+ processedBytes.length + "\t内容：" + Arrays.toString(processedBytes));
-                            Log.d(TAG, "Processed line 1111111: " + outputLine);
+                            if (isCh34xLog())
+                                Log.d(TAG, "1111111 长度：processedBytes.length="+ processedBytes.length + "\t内容：" + Arrays.toString(processedBytes));
+                            if (isCh34xLog())
+                                Log.d(TAG, "Processed line 1111111: " + outputLine);
                         }
 
                         //清空allBytes以避免累积

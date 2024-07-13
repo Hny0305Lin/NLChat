@@ -5,9 +5,11 @@ import static com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIToast.S
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -18,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
 import android.util.Log;
@@ -161,6 +164,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //背景
     private ActivityResultLauncher<Intent> pickImageLauncher;
 
+    //APP背景运行
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable stopServiceRunnable = new Runnable() {
+        @Override
+        public void run() {
+            stopService(new Intent(MainActivity.this, MyForegroundService.class));
+        }
+    };
+    private BroadcastReceiver exitReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if ("com.haohanyh.linmengjia.nearlink.nlchat.fun.ACTION_EXIT_APP".equals(intent.getAction())) {
+                finish();
+            }
+        }
+    };
+
     /**
      *
      * @param savedInstanceState
@@ -176,8 +196,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return insets;
         });
 
+        IntentFilter filter = new IntentFilter("com.haohanyh.linmengjia.nearlink.nlchat.fun.ACTION_EXIT_APP");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(exitReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(exitReceiver, filter);
+        }
+
         if (MobileKeepScreenOn) {getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);}
         Init();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // App进入前台，停止服务
+        stopService(new Intent(this, MyForegroundService.class));
+        handler.removeCallbacks(stopServiceRunnable);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // App进入后台，启动服务
+        startService(new Intent(this, MyForegroundService.class));
+        handler.postDelayed(stopServiceRunnable, 10 * 60 * 1000);
     }
 
     /**
@@ -201,9 +244,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);intent.setData(Uri.parse("package:" + this.getPackageName()));startActivityForResult(intent, 1024);
             }
         }
-        //Service常驻
-        Intent serviceIntent = new Intent(this, MyForegroundService.class);
-        startForegroundService(serviceIntent);
         //创建CH34x设备对象
         MainAPP.CH34X = new CH34xUARTDriver(
                 (UsbManager) getSystemService(Context.USB_SERVICE), this,
