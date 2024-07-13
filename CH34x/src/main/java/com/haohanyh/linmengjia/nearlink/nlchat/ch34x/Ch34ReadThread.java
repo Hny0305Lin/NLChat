@@ -30,6 +30,16 @@ public final class Ch34ReadThread extends Thread {
     /* 字节监听提取接口 */
     private BytesExtract bytesExtract;
 
+    /* 全局String 用于保存所有字节数据 */
+    private StringBuilder allBytes = new StringBuilder();
+    private StringBuilder currentLine = new StringBuilder();
+
+    /* 全局String 用于保存处理过的最长字节数组 */
+    private byte[] longestProcessedBytes = null;
+
+    /* 标志位 辅助保存处理最长字节数组，因为最长字节数组一定就是最终的唯一一次，这个标志位随时true false更替 */
+    private boolean hasExtracted = false;
+
     /* 构造方法 */
     public Ch34ReadThread(CH34xUARTDriver cH34xUARTDriver, UsbEndpoint usbEndpoint, UsbDeviceConnection usbDeviceConnection) {
         super();
@@ -89,36 +99,82 @@ public final class Ch34ReadThread extends Thread {
             } while (this.usbEndpoint == null && !Thread.interrupted());
 
             for (int i = 0; i < this.ch34xUARTDriver.REQUEST_COUNT; ++i) {
+                //等待USB
                 UsbRequest usbRequest = this.usbDeviceConnection.requestWait();
                 UsbRequest usbRequestI = this.ch34xUARTDriver.getUsbRequests()[i];
+
+                //如果USB已关闭且计数器超过20、如果请求为空或不匹配，则跳出循环，重置计数器
                 if (!this.ch34xUARTDriver.isNullUsb() && count++ > 20) {
                     Log.v(TAG, "USB已经关闭");
-                    break root;
+                    break root;                             //跳出循环
                 }
                 if (usbRequest == null) break;
                 if (usbRequest != usbRequestI) {
                     continue;
                 }
                 count = 0;
+
+                //获取当前请求的字节缓冲区和长度
                 byte[] temp = this.ch34xUARTDriver.getByteBuffers()[i].array();
                 int tempLength = this.ch34xUARTDriver.getByteBuffers()[i].position();
                 if (tempLength > 0) {
 
                     try {
+                        //获取
                         this.ch34xUARTDriver.getSemaphore().acquire();
 
-                        byte[] bytes = Arrays.copyOf(temp, tempLength);
+                        //处理字节数组
+                        for (int j = 0; j < tempLength; j++) {
+                            allBytes.append(String.format("%02x", temp[j] & 0xFF)); //转换为小写十六进制
+                            if (temp[j] == 0x0a) { // 检查是否为换行符
+                                if (currentLine.length() > 0) {
+                                    //使用UTF-8编码转换
+                                    byte[] processedBytes = hexStringToByteArray(currentLine.toString());
+                                    Log.d(TAG, "0000000 长度：processedBytes.length="+ processedBytes.length + "\t内容：" + Arrays.toString(processedBytes));
+                                    if (longestProcessedBytes == null || processedBytes.length > longestProcessedBytes.length) {
+                                        longestProcessedBytes = processedBytes; // 更新为最长的字节数组
+                                        hasExtracted = true;
+                                    }
+                                    String outputLine = new String(hexStringToByteArray(currentLine.toString()), StandardCharsets.UTF_8);
+                                    Log.d(TAG, "Processed line 0000000: " + outputLine);
+                                    //清空StringBuilder为下一行
+                                    currentLine.setLength(0);
+                                }
+                            } else {
+                                if (allBytes.length() > 0) {
+                                    currentLine.append(String.format("%02x", temp[j] & 0xFF));
+                                }
+                            }
+                        }
 
-                        // 记录接收到的字节用于调试
-                        Log.d(TAG, "Received bytes: " + Arrays.toString(bytes));
+                        //检查并输出最后一行（如果存在）
+                        if (currentLine.length() > 0) {
+                            byte[] processedBytes = hexStringToByteArray(currentLine.toString());
+                            if (longestProcessedBytes == null || processedBytes.length > longestProcessedBytes.length) {
+                                longestProcessedBytes = processedBytes; // 更新为最长的字节数组
+                                hasExtracted = false;
+                            }
+                            String outputLine = new String(processedBytes, StandardCharsets.UTF_8);
+                            Log.d(TAG, "1111111 长度：processedBytes.length="+ processedBytes.length + "\t内容：" + Arrays.toString(processedBytes));
+                            Log.d(TAG, "Processed line 1111111: " + outputLine);
+                        }
 
-                        // 使用 UTF-8 编码将字节数组转换为字符串
-                        String receivedData = new String(bytes, 0, tempLength, StandardCharsets.UTF_8);
-                        Log.d(TAG, "Received data: " + receivedData);
+                        //清空allBytes以避免累积
+                        allBytes.setLength(0);
 
-                        // 如果有字节提取监听器，则调用其 value 方法
-                        if (bytesExtract != null) bytesExtract.value(bytes);
+                        //传入最长的字节数组
+                        if (bytesExtract != null && longestProcessedBytes != null && hasExtracted) {
+                            bytesExtract.value(longestProcessedBytes);
+                            longestProcessedBytes = null;
+                            hasExtracted = false;
+                        }
 
+                        //第一版代码，现在已更换
+//                        byte[] bytes = Arrays.copyOf(temp, tempLength);
+//                        //Log.d(TAG, "Received bytes: " + Arrays.toString(bytes));
+//                        String receivedData = new String(bytes, 0, tempLength, StandardCharsets.UTF_8);
+//                        //Log.d(TAG, "Received data: " + receivedData);
+//                        if (bytesExtract != null) bytesExtract.value(bytes);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     } catch (Exception e) {
@@ -145,5 +201,17 @@ public final class Ch34ReadThread extends Thread {
      */
     public void setListener(BytesExtract bytesExtract) {
         this.bytesExtract = bytesExtract;
+    }
+
+
+    // 辅助方法：将十六进制字符串转换为字节数组
+    private byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i+1), 16));
+        }
+        return data;
     }
 }

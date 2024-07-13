@@ -599,6 +599,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //监听
         MainAPP.CH34X.setReadListener(bytes -> {
+            Log.v(TAG, "setReadListener已进入");
             //字节转文本
             //String string = StringUtils.needProcess().bytesToString(bytes);
             String string = new String(bytes, StandardCharsets.UTF_8);
@@ -621,7 +622,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String completeSecondData = "";
             Log.v(TAG, "长度：completeFirstData.length="+ completeFirstData.length() + "\t内容：" + completeFirstData);
             buffer.delete(0, endIndex + 1);
-
+            /* 这里可以添加末尾有换行符判断的代码 */
+        } else {
+            String completeFirstData = string;
+            String completeSecondData = "";
             //去掉特定的前缀字符串，然后返回（聊天内容），只有当消息包含特定的前缀时才处理
             if (completeFirstData.contains(ChatUtils.getPrefixServer()) || completeFirstData.contains(ChatUtils.getPrefixClient())) {
                 if (completeFirstData.startsWith(ChatUtils.getPrefixServer())) {
@@ -796,6 +800,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
             }
+            /* 这里可以添加末尾无换行符判断的代码 */
         }
         return "";
     }
