@@ -56,7 +56,7 @@ public class MyForegroundService extends Service {
             public void run() {
                 long remainingTime = endTime - System.currentTimeMillis();
                 if (remainingTime > 0) {
-                    startForeground(1, createNotification("剩余时间: " + remainingTime / 1000 + "秒"));
+                    startForeground(1, createNotification("背景保活，已设置时间，剩余" + remainingTime / 1000 + "秒"));
                     handler.postDelayed(this, 1000);
                 } else {
                     // 当计时结束时停止更新通知
@@ -130,10 +130,5 @@ public class MyForegroundService extends Service {
         // 终止进程
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(0);
-    }
-
-    public void stopActivities() {
-        Intent intent = new Intent("com.haohanyh.linmengjia.nearlink.nlchat.fun.ACTION_FINISH_ACTIVITY");
-        sendBroadcast(intent);
     }
 }
