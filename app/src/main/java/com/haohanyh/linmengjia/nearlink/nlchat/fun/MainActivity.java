@@ -44,6 +44,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -172,11 +173,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             stopService(new Intent(MainActivity.this, MyForegroundService.class));
         }
     };
-    private BroadcastReceiver exitReceiver = new BroadcastReceiver() {
+
+    private BroadcastReceiver finishActivityReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if ("com.haohanyh.linmengjia.nearlink.nlchat.fun.ACTION_EXIT_APP".equals(intent.getAction())) {
-                finish();
+            if ("com.haohanyh.linmengjia.nearlink.nlchat.fun.ACTION_FINISH_ACTIVITY".equals(intent.getAction())) {
+                ActivityCompat.finishAffinity(MainActivity.this);
             }
         }
     };
@@ -185,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      *
      * @param savedInstanceState
      */
+    @SuppressLint({"ObsoleteSdkInt", "InlinedApi"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -196,13 +199,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return insets;
         });
 
-        IntentFilter filter = new IntentFilter("com.haohanyh.linmengjia.nearlink.nlchat.fun.ACTION_EXIT_APP");
+        // 根据Android版本注册广播接收器，以确保应用的兼容性，注册监听退出应用的广播接收器
+        IntentFilter filter = new IntentFilter("com.haohanyh.linmengjia.nearlink.nlchat.fun.ACTION_FINISH_ACTIVITY");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(exitReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+            registerReceiver(finishActivityReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
         } else {
-            registerReceiver(exitReceiver, filter);
+            registerReceiver(finishActivityReceiver, filter, Context.RECEIVER_EXPORTED);
         }
 
+        // 设置屏幕常亮
         if (MobileKeepScreenOn) {getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);}
         Init();
     }
@@ -221,6 +226,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // App进入后台，启动服务
         startService(new Intent(this, MyForegroundService.class));
         handler.postDelayed(stopServiceRunnable, 10 * 60 * 1000);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // 注销广播接收器
+        unregisterReceiver(finishActivityReceiver);
     }
 
     /**

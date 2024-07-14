@@ -25,9 +25,9 @@ public class MyForegroundService extends Service {
     private Runnable stopSelfRunnable = new Runnable() {
         @Override
         public void run() {
-            stopSelf();
-            showCompletionNotification();
-            exitApp();
+            stopSelf();                                         //停止服务
+            showCompletionNotification();                       //显示完成通知
+            exitApp();                                          //退出应用
         }
     };
     private Runnable updateNotificationRunnable;
@@ -44,10 +44,10 @@ public class MyForegroundService extends Service {
         Log.d(TAG, "服务已启动");
 
         createNotificationChannel();
-        endTime = System.currentTimeMillis() + 10 * 60 * 1000; // 10分钟后停止服务
+        endTime = System.currentTimeMillis() + 10 * 60 * 1000; // 1分钟后停止服务
         startForeground(1, createNotification("保持软件后台运行，已启用，请注意电池消耗，消耗过快请关闭本程序。"));
 
-        // 10分钟后自动停止服务
+        // 1分钟后自动停止服务
         handler.postDelayed(stopSelfRunnable, 10 * 60 * 1000);
 
         // 每秒更新通知
@@ -58,6 +58,9 @@ public class MyForegroundService extends Service {
                 if (remainingTime > 0) {
                     startForeground(1, createNotification("剩余时间: " + remainingTime / 1000 + "秒"));
                     handler.postDelayed(this, 1000);
+                } else {
+                    // 当计时结束时停止更新通知
+                    handler.removeCallbacks(this);
                 }
             }
         };
@@ -121,10 +124,16 @@ public class MyForegroundService extends Service {
         // 关闭所有Activity
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction("com.haohanyh.linmengjia.nearlink.nlchat.fun.ACTION_EXIT_APP");
+        broadcastIntent.setPackage("com.haohanyh.linmengjia.nearlink.nlchat.fun");
         sendBroadcast(broadcastIntent);
 
         // 终止进程
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(0);
+    }
+
+    public void stopActivities() {
+        Intent intent = new Intent("com.haohanyh.linmengjia.nearlink.nlchat.fun.ACTION_FINISH_ACTIVITY");
+        sendBroadcast(intent);
     }
 }
