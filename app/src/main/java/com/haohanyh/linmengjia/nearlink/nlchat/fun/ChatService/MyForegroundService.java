@@ -44,10 +44,10 @@ public class MyForegroundService extends Service {
         Log.d(TAG, "服务已启动");
 
         createNotificationChannel();
-        endTime = System.currentTimeMillis() + 10 * 60 * 1000; // 1分钟后停止服务
+        endTime = System.currentTimeMillis() + 10 * 60 * 1000; // 10分钟后停止服务
         startForeground(1, createNotification("保持软件后台运行，已启用，请注意电池消耗，消耗过快请关闭本程序。"));
 
-        // 1分钟后自动停止服务
+        // 10分钟后自动停止服务
         handler.postDelayed(stopSelfRunnable, 10 * 60 * 1000);
 
         // 每秒更新通知

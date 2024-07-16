@@ -106,9 +106,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int clickCountButton_btnNearLinkUart = 0;   //按钮计数
     private int clickCountButton_btnNearLinkDev = 0;   //按钮计数
     private CardView CNearLinkStatus,CNearlinkUart,CNearLinkSettings,CNearlinkDev,CTHANKS;
-    private CardView CNearLinkChat;
-
     private CardView CNearLinkChatNewUI;
+
     private AppCompatTextView NearLinkNewUIUserTitle;
     private RecyclerView recyclerView;
     private ChatAdapter chatAdapter;
@@ -116,9 +115,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Message MessageTV_Text;
     private TextView APPRunResult,MobileUSBResult,UARTResult;
-    private AppCompatTextView NearLinkUserTitle;
-    private TextView NearLinkUserText,NearLinkDebug,NearLinkMeText;
-    private EditText EditChatSend,EditChatSendNewUI;
+    private EditText EditChatSendNewUI;
+
+    /* TODO 1.4版本前，务必把这个TextView未参与初始化和聊天核心内容，进行修改，目前是可以正常使用了。 */
+    private TextView NearLinkUserText,NearLinkMeText;
 
     private int LogLevel = Log.WARN;
 
@@ -283,15 +283,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         clickCountButton_btnNearLinkStatus = 0;
         btnNearLinkStatus.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_done_all_24));
         btnNearLinkStatus.setImageResource(drawable.ic_baseline_done_all_24);
-        if (ChatUtils.isUiNewOrOld()) {
-            clickCountButton_btnNearLinkUIChanges = 0;
-            btnNearLinkUIChanges.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_nearlink_24));
-            btnNearLinkUIChanges.setImageResource(drawable.ic_baseline_nearlink_24);
-        } else {
-            clickCountButton_btnNearLinkUIChanges = 1;
-            btnNearLinkUIChanges.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_done_all_24));
-            btnNearLinkUIChanges.setImageResource(drawable.ic_baseline_done_all_24);
-        }
+        clickCountButton_btnNearLinkUIChanges = 0;
+        btnNearLinkUIChanges.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_nearlink_done_24));
+        btnNearLinkUIChanges.setImageResource(drawable.ic_baseline_nearlink_done_24);
         clickCountButton_btnNearLinkUart = 1;
         btnNearlinkUart.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_close_24));
         btnNearlinkUart.setImageResource(drawable.ic_baseline_close_24);
@@ -312,15 +306,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         CTHANKS = findViewById(id.CardAPP);
         CTHANKS.setVisibility(View.VISIBLE);
 
-        CNearLinkChat = findViewById(id.CardIChat);
         CNearLinkChatNewUI = findViewById(id.CardIChatNewUI);
-        if (ChatUtils.isUiNewOrOld()) {
-            CNearLinkChatNewUI.setVisibility(View.VISIBLE);
-            CNearLinkChat.setVisibility(View.GONE);
-        } else {
-            CNearLinkChat.setVisibility(View.VISIBLE);
-            CNearLinkChatNewUI.setVisibility(View.GONE);
-        }
+        CNearLinkChatNewUI.setVisibility(View.VISIBLE);
 
         NearLinkNewUIUserTitle = findViewById(id.userTitleNewUI);                       //实现长按事件监听器,打开相册文件窗口设置背景用
         NearLinkNewUIUserTitle.setOnLongClickListener(v -> {
@@ -335,9 +322,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         APPRunResult = findViewById(id.appResult);
         MobileUSBResult = findViewById(id.mobileUsbResult);
         UARTResult = findViewById(id.uartResult);
-        NearLinkUserTitle = findViewById(id.userTitle);
-        NearLinkUserText = findViewById(id.readText);
-        NearLinkMeText = findViewById(id.writeText);
 
         TextView.OnEditorActionListener editorActionListenerForChatSend = new TextView.OnEditorActionListener() {
             @Override
@@ -355,8 +339,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return false;
             }
         };
-        EditChatSend = findViewById(id.editChatSend);
-        EditChatSend.setOnEditorActionListener(editorActionListenerForChatSend);
         EditChatSendNewUI = findViewById(id.editChatSendNewUI);
         EditChatSendNewUI.setOnEditorActionListener(editorActionListenerForChatSend);
 
@@ -463,7 +445,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         } else {
                             if (ChatUIAlertDialog.showNormal(compoundButton.getContext(), "历史设备记录(SQLite)", "您确定要停止展示聊天数据在UI上吗？", compoundButton))
                                 ChatUtils.setSqliteHistory(false);
-                            SnackBarToastForDebug(context,"已为您取消保存聊天记录!","目前为" + ChatUtils.isSqliteHistory(),0,Snackbar.LENGTH_SHORT);
+                            SnackBarToastForDebug(context,"已为您取消展示聊天记录!","目前为" + ChatUtils.isSqliteHistory(),0,Snackbar.LENGTH_SHORT);
                         }
                     } else if (compoundButton.getId() == id.cbSettingsForClearSCR) {
                         SnackBarToastForDebug(context,"敬请期待!","如有不适，那没办法，做的慢怪我咯o(*^＠^*)o",0,Snackbar.LENGTH_SHORT);
@@ -531,7 +513,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //初始化完成，软件第一次启动必须提示（这里写的第一次启动是软件启动的第一次，而不是使用频率的第一次
         HhandlerI.sendEmptyMessage(31);
         //如果SQLite有记录，可以显示在UI上
-        if (ChatUtils.isSqliteHistory()) loadMessagesFromDatabase();
+        //if (ChatUtils.isSqliteHistory()) loadMessagesFromDatabase();
 
         //背景处理
         //注册图片选择器的启动器
@@ -546,11 +528,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     ChatFileUtils.saveBackgroundPath(this, selectedImageUri.toString());
 
                     // 设置 新旧聊天卡片布局 CardView 背景为半透明
-                    if (ChatUtils.isUiNewOrOld()) {
-                        ChatUIBackgroundUtils.setCardViewBackground(findViewById(id.CardIChatNewUI), 0x80FFFFFF);
-                    } else {
-                        ChatUIBackgroundUtils.setCardViewBackground(findViewById(id.CardIChat), 0x80FFFFFF);
-                    }
+                    ChatUIBackgroundUtils.setCardViewBackground(findViewById(id.CardIChatNewUI), 0x80FFFFFF);
                     // 设置 星闪状态卡片布局 CardView 背景为75%透明
                     ChatUIBackgroundUtils.setCardViewBackground(findViewById(id.CardI), 0x40FFFFFF);
 
@@ -718,12 +696,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 ChatUtils.setShowUartLog(true);
                 if (ChatUtils.isShowUartLog()) {
-                    Log.d(TAG, "连接日志：" + completeFirstData + "是否显示?:" + true);
+                    Log.d(TAG, "连接日志：" + completeFirstData + "，是否显示?:" + true);
                     if (ChatUtils.isSetDebugLog()) {
-                        Log.d(TAG, "连接日志：" + completeFirstData + "是否设置打开?:" + true);
+                        Log.d(TAG, "连接日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
-                        Log.d(TAG, "连接日志：" + completeFirstData + "是否设置打开?:" + false);
+                        Log.d(TAG, "连接日志：" + completeFirstData + "，是否设置打开?:" + false);
                     }
                 }
             }
@@ -733,12 +711,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 ChatUtils.setShowUartLog(true);
                 if (ChatUtils.isShowUartLog()) {
-                    Log.d(TAG, "断开连接日志：" + completeFirstData + "是否显示?:" + true);
+                    Log.d(TAG, "断开连接日志：" + completeFirstData + "，是否显示?:" + true);
                     if (ChatUtils.isSetDebugLog()) {
-                        Log.d(TAG, "断开连接日志：" + completeFirstData + "是否设置打开?:" + true);
+                        Log.d(TAG, "断开连接日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
-                        Log.d(TAG, "断开连接日志：" + completeFirstData + "是否设置打开?:" + false);
+                        Log.d(TAG, "断开连接日志：" + completeFirstData + "，是否设置打开?:" + false);
                     }
                 }
             }
@@ -748,61 +726,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 ChatUtils.setShowUartLog(true);
                 if (ChatUtils.isShowUartLog()) {
-                    Log.d(TAG, "ACore日志：" + completeFirstData + "是否显示?:" + true);
+                    Log.d(TAG, "ACore日志：" + completeFirstData + "，是否显示?:" + true);
                     if (ChatUtils.isSetDebugLog()) {
-                        Log.d(TAG, "ACore日志：" + completeFirstData + "是否设置打开?:" + true);
+                        Log.d(TAG, "ACore日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
-                        Log.d(TAG, "ACore日志：" + completeFirstData + "是否设置打开?:" + false);
+                        Log.d(TAG, "ACore日志：" + completeFirstData + "，是否设置打开?:" + false);
                     }
                 }
             }
-            //UART服务器日志，以下可以读取星闪日志
-            if (completeFirstData.contains(ChatUtils.getPrefixLogSleUartServer())) {
-                Log.d(TAG, "UART服务器日志：" + completeFirstData);
-                // 处理UART服务器日志
-
-                ChatUtils.setShowUartLog(true);
-                if (ChatUtils.isShowUartLog()) {
-                    Log.d(TAG, "UART服务器日志：" + completeFirstData + "是否显示?:" + true);
-                    if (ChatUtils.isSetDebugLog()) {
-                        Log.d(TAG, "UART服务器日志：" + completeFirstData + "是否设置打开?:" + true);
-                        return completeFirstData;
-                    } else {
-                        Log.d(TAG, "UART服务器日志：" + completeFirstData + "是否设置打开?:" + false);
-                    }
-                }
-            }
-            if (completeFirstData.contains(ChatUtils.getPrefixLogConnectStateChanged())) {
-                Log.d(TAG, "连接状态改变日志：" + completeFirstData);
-                // 处理连接状态改变日志
-
-                ChatUtils.setShowUartLog(true);
-                if (ChatUtils.isShowUartLog()) {
-                    Log.d(TAG, "连接状态改变日志：" + completeFirstData + "是否显示?:" + true);
-                    if (ChatUtils.isSetDebugLog()) {
-                        Log.d(TAG, "连接状态改变日志：" + completeFirstData + "是否设置打开?:" + true);
-                        return completeFirstData;
-                    } else {
-                        Log.d(TAG, "连接状态改变日志：" + completeFirstData + "是否设置打开?:" + false);
-                    }
-                }
-            }
-            if (completeFirstData.contains(ChatUtils.getPrefixLogPairComplete())) {
-                Log.d(TAG, "配对完成日志：" + completeFirstData);
-                // 处理配对完成日志
-
-                ChatUtils.setShowUartLog(true);
-                if (ChatUtils.isShowUartLog()) {
-                    Log.d(TAG, "配对完成日志：" + completeFirstData + "是否显示?:" + true);
-                    if (ChatUtils.isSetDebugLog()) {
-                        Log.d(TAG, "配对完成日志：" + completeFirstData + "是否设置打开?:" + true);
-                        return completeFirstData;
-                    } else {
-                        Log.d(TAG, "配对完成日志：" + completeFirstData + "是否设置打开?:" + false);
-                    }
-                }
-            }
+            //UART服务器日志相关，星闪MAC，为防止获取不到先判断
             if (completeFirstData.contains(ChatUtils.getPrefixLogNearlinkDevicesAddr())) {
                 // 处理采集到星闪MAC地址完成日志
                 if (ChatUtils.isClipMessages()) {
@@ -813,12 +746,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 ChatUtils.setShowUartLog(true);
                 if (ChatUtils.isShowUartLog()) {
-                    Log.d(TAG, "采集到星闪MAC地址日志：" + completeFirstData + "是否显示?:" + true);
+                    Log.d(TAG, "采集到星闪MAC地址日志：" + completeFirstData + "，是否显示?:" + true);
                     if (ChatUtils.isSetDebugLog()) {
-                        Log.d(TAG, "采集到星闪MAC地址日志：" + completeFirstData + "是否设置打开?:" + true);
+                        Log.d(TAG, "采集到星闪MAC地址日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
-                        Log.d(TAG, "采集到星闪MAC地址日志：" + completeFirstData + "是否设置打开?:" + false);
+                        Log.d(TAG, "采集到星闪MAC地址日志：" + completeFirstData + "，是否设置打开?:" + false);
+                    }
+                }
+            }
+            //UART服务器日志相关，连接状态
+            if (completeFirstData.contains(ChatUtils.getPrefixLogConnectStateChanged())) {
+                Log.d(TAG, "连接状态改变日志：" + completeFirstData);
+                // 处理连接状态改变日志
+
+                ChatUtils.setShowUartLog(true);
+                if (ChatUtils.isShowUartLog()) {
+                    Log.d(TAG, "连接状态改变日志：" + completeFirstData + "，是否显示?:" + true);
+                    if (ChatUtils.isSetDebugLog()) {
+                        Log.d(TAG, "连接状态改变日志：" + completeFirstData + "，是否设置打开?:" + true);
+                        return completeFirstData;
+                    } else {
+                        Log.d(TAG, "连接状态改变日志：" + completeFirstData + "，是否设置打开?:" + false);
+                    }
+                }
+            }
+            //UART服务器日志
+            if (completeFirstData.contains(ChatUtils.getPrefixLogSleUartServer())) {
+                Log.d(TAG, "UART服务器日志：" + completeFirstData);
+                // 处理UART服务器日志
+
+                ChatUtils.setShowUartLog(true);
+                if (ChatUtils.isShowUartLog()) {
+                    Log.d(TAG, "UART服务器日志：" + completeFirstData + "，是否显示?:" + true);
+                    if (ChatUtils.isSetDebugLog()) {
+                        Log.d(TAG, "UART服务器日志：" + completeFirstData + "，是否设置打开?:" + true);
+                        return completeFirstData;
+                    } else {
+                        Log.d(TAG, "UART服务器日志：" + completeFirstData + "，是否设置打开?:" + false);
+                    }
+                }
+            }
+            if (completeFirstData.contains(ChatUtils.getPrefixLogPairComplete())) {
+                Log.d(TAG, "配对完成日志：" + completeFirstData);
+                // 处理配对完成日志
+
+                ChatUtils.setShowUartLog(true);
+                if (ChatUtils.isShowUartLog()) {
+                    Log.d(TAG, "配对完成日志：" + completeFirstData + "，是否显示?:" + true);
+                    if (ChatUtils.isSetDebugLog()) {
+                        Log.d(TAG, "配对完成日志：" + completeFirstData + "，是否设置打开?:" + true);
+                        return completeFirstData;
+                    } else {
+                        Log.d(TAG, "配对完成日志：" + completeFirstData + "，是否设置打开?:" + false);
                     }
                 }
             }
@@ -828,12 +808,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 ChatUtils.setShowUartLog(true);
                 if (ChatUtils.isShowUartLog()) {
-                    Log.d(TAG, "MTU改变日志：" + completeFirstData + "是否显示?:" + true);
+                    Log.d(TAG, "MTU改变日志：" + completeFirstData + "，是否显示?:" + true);
                     if (ChatUtils.isSetDebugLog()) {
-                        Log.d(TAG, "MTU改变日志：" + completeFirstData + "是否设置打开?:" + true);
+                        Log.d(TAG, "MTU改变日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
-                        Log.d(TAG, "MTU改变日志：" + completeFirstData + "是否设置打开?:" + false);
+                        Log.d(TAG, "MTU改变日志：" + completeFirstData + "，是否设置打开?:" + false);
                     }
                 }
             }
@@ -843,12 +823,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 ChatUtils.setShowUartLog(true);
                 if (ChatUtils.isShowUartLog()) {
-                    Log.d(TAG, "启用回调日志：" + completeFirstData + "是否显示?:" + true);
+                    Log.d(TAG, "启用回调日志：" + completeFirstData + "，是否显示?:" + true);
                     if (ChatUtils.isSetDebugLog()) {
-                        Log.d(TAG, "启用回调日志：" + completeFirstData + "是否设置打开?:" + true);
+                        Log.d(TAG, "启用回调日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
-                        Log.d(TAG, "启用回调日志：" + completeFirstData + "是否设置打开?:" + false);
+                        Log.d(TAG, "启用回调日志：" + completeFirstData + "，是否设置打开?:" + false);
                     }
                 }
             }
@@ -862,13 +842,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //这里写的是用户是否使用新UI和旧UI。
         byte[] to_send;
         String messageSend;
-        if (!EditChatSend.getText().toString().isEmpty()) {
-            messageSend = EditChatSend.getText().toString();
-            to_send = StringUtils.needProcess().toByteArrayII(EditChatSend.getText().toString());
-        } else {
-            messageSend = EditChatSendNewUI.getText().toString();
-            to_send = StringUtils.needProcess().toByteArrayII(EditChatSendNewUI.getText().toString());
-        }
+
+        //新UI处理发送，以字符串方式发送
+        messageSend = EditChatSendNewUI.getText().toString();
+        to_send = StringUtils.needProcess().toByteArrayII(EditChatSendNewUI.getText().toString());
+
         //byte[] to_send = StringUtils.needProcess().toByteArray(String.valueOf(EditChatSend.getText()));		//以字符串方式发送
         int retval = MainAPP.CH34X.writeData(to_send, to_send.length);//写数据，第一个参数为需要发送的字节数组，第二个参数为需要发送的字节长度，返回实际发送的字节长度
         if (retval < 0) {
@@ -900,7 +878,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     MainAPP.Vibrate(this);
                 }
                 //发送完消息清空待发送文本
-                EditChatSend.setText("");
                 EditChatSendNewUI.setText("");
             });
         }
@@ -973,20 +950,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (view.getId() == id.menu_labels_right_btn_nearlink_uichanges) {
             MainAPP.Vibrate(this);
             if (clickCountButton_btnNearLinkUIChanges % 2 == 0) {
-                CNearLinkChat.setVisibility(View.VISIBLE);
                 CNearLinkChatNewUI.setVisibility(View.GONE);
                 EditChatSendNewUI.setText("");
 
-                btnNearLinkUIChanges.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_done_all_24));
-                btnNearLinkUIChanges.setImageResource(drawable.ic_baseline_done_all_24);
+                btnNearLinkUIChanges.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_close_24));
+                btnNearLinkUIChanges.setImageResource(drawable.ic_baseline_close_24);
                 clickCountButton_btnNearLinkUIChanges = clickCountButton_btnNearLinkUIChanges + 1;
             } else {
-                CNearLinkChat.setVisibility(View.GONE);
                 CNearLinkChatNewUI.setVisibility(View.VISIBLE);
-                EditChatSend.setText("");
 
-                btnNearLinkUIChanges.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_nearlink_24));
-                btnNearLinkUIChanges.setImageResource(drawable.ic_baseline_nearlink_24);
+                btnNearLinkUIChanges.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_nearlink_done_24));
+                btnNearLinkUIChanges.setImageResource(drawable.ic_baseline_nearlink_done_24);
                 clickCountButton_btnNearLinkUIChanges = 0;
             }
         } else if (view.getId() == id.menu_labels_right_btn_nearlink_settings) {

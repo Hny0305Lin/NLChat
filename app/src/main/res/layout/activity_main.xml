@@ -123,117 +123,6 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/CardIChat"
-                android:layout_width="360dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="35dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="15dp"
-                android:visibility="gone"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="18dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/userTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginBottom="15dp"
-                        android:text="User"
-                        android:fontFamily="sans-serif-medium"
-                        android:textColor="@color/blue_biaozhun"
-                        tools:ignore="HardcodedText" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        tools:ignore="ScrollViewSize">
-
-                        <TextView
-                            android:id="@+id/readText"
-                            android:layout_width="match_parent"
-                            android:layout_height="180dp"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginEnd="5dp"
-                            android:layout_marginBottom="10dp"
-                            tools:ignore="SpeakableTextPresentCheck" />
-
-                    </LinearLayout>
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginBottom="15dp"
-                        android:text="Me"
-                        android:fontFamily="sans-serif-medium"
-                        android:textColor="@color/blue_biaozhun"
-                        tools:ignore="HardcodedText" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/writeText"
-                            android:layout_width="match_parent"
-                            android:layout_height="180dp"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginEnd="5dp"
-                            android:layout_marginBottom="10dp"
-                            tools:ignore="SpeakableTextPresentCheck" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <EditText
-                            android:id="@+id/editChatSend"
-                            android:layout_width="wrap_content"
-                            android:layout_height="100dp"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginEnd="5dp"
-                            android:layout_marginBottom="10dp"
-                            android:layout_weight="8"
-                            android:textColor="@color/blue_biaozhun_logowai"
-                            android:singleLine="true"
-                            tools:ignore="HardcodedText" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:layout_width="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:fontFamily="sans-serif-medium"
-                            android:onClick="NearLinkChatSendData"
-                            android:text="@string/nearlinkChatSend"
-                            android:textColor="#FFFFFFFF"
-                            app:backgroundTint="@color/Pink_is_fancy"
-                            app:cornerRadius="10dp" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
                 android:id="@+id/CardIChatNewUI"
                 android:layout_width="360dp"
                 android:layout_height="wrap_content"
@@ -241,7 +130,7 @@
                 android:layout_marginTop="35dp"
                 android:layout_marginRight="15dp"
                 android:layout_marginBottom="15dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:cardCornerRadius="4dp"
                 app:cardElevation="18dp">
 
@@ -1209,10 +1098,10 @@
             android:id="@+id/menu_labels_right_btn_nearlink_uichanges"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_done_all_24"
+            android:src="@drawable/ic_baseline_nearlink_done_24"
             app:fab_colorNormal="@color/blue_biaozhun_logowai_transparent"
             app:fab_colorPressed="@color/blue_biaozhun_logowai"
-            app:fab_label="UIChanges 聊天UI切换"
+            app:fab_label="ChatUI 聊天UI"
             app:fab_shadowColor="@color/Pink_is_fancy"
             app:fab_size="mini" />
 

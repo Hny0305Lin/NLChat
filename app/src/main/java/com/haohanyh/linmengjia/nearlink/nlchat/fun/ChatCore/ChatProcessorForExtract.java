@@ -167,8 +167,8 @@ public class ChatProcessorForExtract {
                     @SuppressLint("SetTextI18n")
                     @Override
                     public void run() {
-                        AppCompatTextView compatTextView = ((Activity) context).findViewById(R.id.userTitle);
-                        compatTextView.setText("User" + extractedLogForNearLinkAddr.toString().trim());
+                        AppCompatTextView compatTextView = ((Activity) context).findViewById(R.id.userTitleNewUI);
+                        compatTextView.setText("New UI, opposite mac" + extractedLogForNearLinkAddr.toString().trim());
                     }
                 });
 
