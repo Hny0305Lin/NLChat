@@ -405,10 +405,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setAdapter(chatAdapter);
 
         //聊天初始化
-        serverUpdater = new ChatMessageQueueUpdater(NearLinkUserText, serverMessageQueue, chatMessages, chatAdapter, "User: ", recyclerView);
+        serverUpdater = new ChatMessageQueueUpdater(serverMessageQueue, chatMessages, chatAdapter, "User: ", recyclerView);
         serverDebugUpdater = new ChatMessageQueueUpdater(serverDebugQueue, chatMessages, chatAdapter, "Debug: ", recyclerView, LogLevel);
-
-        clientUpdater = new ChatMessageQueueUpdater(NearLinkMeText, clientMessageQueue, chatMessages, chatAdapter, "Me: ", recyclerView);
+        clientUpdater = new ChatMessageQueueUpdater(clientMessageQueue, chatMessages, chatAdapter, "Me: ", recyclerView);
 
         //聊天串口为INFO
 //        serverDebugSetColor = new ChatMessageQueueUpdater(LogLevel);
@@ -832,6 +831,60 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
             }
+            //UART服务器日志相关，客户端星闪MAC，为防止获取不到先判断
+            if (completeFirstData.contains(ChatUtils.getPrefixLogClientPairComplete())) {
+                // 处理采集到客户端星闪MAC地址完成日志
+                if (ChatUtils.isClipMessages()) {
+                    Log.d(TAG, "采集到客户端星闪MAC地址日志：" + completeFirstData + "，将进入剪贴板!");
+                    ChatProcessorForExtract.initializeHandler();
+                    ChatProcessorForExtract.processChat(context, completeFirstData);
+                }
+
+                ChatUtils.setShowUartLog(true);
+                if (ChatUtils.isShowUartLog()) {
+                    Log.d(TAG, "采集到客户端星闪MAC地址日志：" + completeFirstData + "，是否显示?:" + true);
+                    if (ChatUtils.isSetDebugLog()) {
+                        Log.d(TAG, "采集到客户端星闪MAC地址日志：" + completeFirstData + "，是否设置打开?:" + true);
+                        return completeFirstData;
+                    } else {
+                        Log.d(TAG, "采集到客户端星闪MAC地址日志：" + completeFirstData + "，是否设置打开?:" + false);
+                    }
+                }
+            }
+            //UART客户端日志相关，连接状态
+            if (completeFirstData.contains(ChatUtils.getPrefixLogClientConnectStateChanged())) {
+                Log.d(TAG, "客户端连接状态改变日志：" + completeFirstData);
+                // 处理连接状态改变日志
+
+                ChatUtils.setShowUartLog(true);
+                if (ChatUtils.isShowUartLog()) {
+                    Log.d(TAG, "客户端连接状态改变日志：" + completeFirstData + "，是否显示?:" + true);
+                    if (ChatUtils.isSetDebugLog()) {
+                        Log.d(TAG, "客户端连接状态改变日志：" + completeFirstData + "，是否设置打开?:" + true);
+                        return completeFirstData;
+                    } else {
+                        Log.d(TAG, "客户端连接状态改变日志：" + completeFirstData + "，是否设置打开?:" + false);
+                    }
+                }
+            }
+            //UART客户端日志
+            if (completeFirstData.contains(ChatUtils.getPrefixLogSleUartClient())) {
+                Log.d(TAG, "UART客户端日志：" + completeFirstData);
+                // 处理UART服务器日志
+
+                ChatUtils.setShowUartLog(true);
+                if (ChatUtils.isShowUartLog()) {
+                    Log.d(TAG, "UART客户端日志：" + completeFirstData + "，是否显示?:" + true);
+                    if (ChatUtils.isSetDebugLog()) {
+                        Log.d(TAG, "UART客户端日志：" + completeFirstData + "，是否设置打开?:" + true);
+                        return completeFirstData;
+                    } else {
+                        Log.d(TAG, "UART客户端日志：" + completeFirstData + "，是否设置打开?:" + false);
+                    }
+                }
+            }
+
+
             /* 这里可以添加末尾无换行符判断的代码 */
         }
         return "";

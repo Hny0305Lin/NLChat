@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 
 public class ChatProcessorForExtract {
     private static final String TAG = "ChatProcessorForExtract & NLChat";
-    private static Handler HhandlerClipBoard;
+    public static Handler HhandlerClipBoard;
 
     //用于存储提取到的内容
     private static StringBuilder extractedNumbers = new StringBuilder();
@@ -183,7 +183,7 @@ public class ChatProcessorForExtract {
         }
     }
 
-    private static class ClipboardRunnable implements Runnable {
+    public static class ClipboardRunnable implements Runnable {
         // 定义静态全局变量来管理延迟时间
         public static final long DELAY_VERY_SHORT = 15000; // 15秒
         public static final long DELAY_SHORT = 30000; // 30秒

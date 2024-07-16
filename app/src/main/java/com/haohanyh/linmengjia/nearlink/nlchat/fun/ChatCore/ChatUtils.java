@@ -7,7 +7,6 @@ public class ChatUtils {
     private static final boolean setDebugLog = true; // 控制是否启用显示串口Log，打印在UI上（开发者使用）
     private static final boolean scrollingMessages = true; // 控制是否启用滚动消息功能
     private static boolean clipMessages = true; // 控制是否启用剪贴板功能
-
     //这里设置的是数据库相关
     private static boolean sqlitemanager = true; // 控制是否启用SQLite存储功能
     private static boolean sqlitehistory = false; // 控制是否启用SQLite历史记录显示功能
@@ -70,7 +69,9 @@ public class ChatUtils {
         return PREFIX_CLIENT;
     }
 
-    //串口Log
+    /* 如下为串口Log内容，有服务板和客户板的
+     * 如果不懂怎么判断该方法是否为两者其中之一，请多用Ctrl键定位。
+     */
     public static String getPrefixLogConnected() {
         return PREFIX_LOG_CONNECTED;
     }
@@ -109,5 +110,53 @@ public class ChatUtils {
 
     public static String getPrefixLogSleAnnounceEnableCallback() {
         return PREFIX_LOG_SLE_ANNOUNCE_ENABLE_CALLBACK;
+    }
+
+    public static String getPrefixLogSleUartClient() {
+        return PREFIX_LOG_SLE_UART_CLIENT;
+    }
+
+    public static String getPrefixLogClientConnectStateChanged() {
+        return PREFIX_LOG_CLIENT_CONNECT_STATE_CHANGED;
+    }
+
+    public static String getPrefixLogClientStateConnected() {
+        return PREFIX_LOG_CLIENT_STATE_CONNECTED;
+    }
+
+    public static String getPrefixLogClientLowRx() {
+        return PREFIX_LOG_CLIENT_LOW_RX;
+    }
+
+    public static String getPrefixLogClientPairComplete() {
+        return PREFIX_LOG_CLIENT_PAIR_COMPLETE;
+    }
+
+    public static String getPrefixLogClientNearlinkDevicesAddr() {
+        return PREFIX_LOG_CLIENT_NEARLINK_DEVICES_ADDR;
+    }
+
+    public static String getPrefixLogClientSsapcExchange() {
+        return PREFIX_LOG_CLIENT_SSAPC_EXCHANGE;
+    }
+
+    public static String getPrefixLogClientSleAnnounceEnableCallback() {
+        return PREFIX_LOG_CLIENT_SLE_ANNOUNCE_ENABLE_CALLBACK;
+    }
+
+    public static String getPrefixLogClientSleDiscovery() {
+        return PREFIX_LOG_CLIENT_SLE_DISCOVERY;
+    }
+
+    public static String getPrefixLogClientMtu() {
+        return PREFIX_LOG_CLIENT_MTU;
+    }
+
+    public static String getPrefixLogClientSampleFindPCbk() {
+        return PREFIX_LOG_CLIENT_SAMPLE_FIND_P_CBK;
+    }
+
+    public static String getPrefixLogClientSampleFindSdCbk() {
+        return PREFIX_LOG_CLIENT_SAMPLE_FIND_SD_CBK;
     }
 }

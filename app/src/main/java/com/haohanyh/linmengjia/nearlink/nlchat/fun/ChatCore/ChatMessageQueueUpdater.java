@@ -3,7 +3,6 @@ package com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore;
 
 import android.annotation.SuppressLint;
 import android.util.Log;
-import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,7 +20,6 @@ public class ChatMessageQueueUpdater {
     private ChatTimestamp chatTimestamp = new ChatTimestamp(); // 聊天时间戳
 
     private Queue<String> messageQueue; // 消息队列
-    private TextView textView; // 显示消息的 TextView
     private List<ChatMessage> chatMessages; // 聊天消息列表
     private ChatAdapter chatAdapter; // 聊天适配器
     private String logPrefix; // 日志前缀，用于区分不同的消息队列
@@ -29,15 +27,12 @@ public class ChatMessageQueueUpdater {
     private RecyclerView recyclerView; // RecyclerView实例
 
     /**
-     * 构造函数
-     *
+     * 构造函数，适用于User和Me消息
      * @param messageQueue 消息队列
-     * @param textView 显示消息的 TextView
      * @param logPrefix 日志前缀
      */
-    public ChatMessageQueueUpdater(TextView textView, Queue<String> messageQueue, List<ChatMessage> chatMessages, ChatAdapter chatAdapter, String logPrefix, RecyclerView recyclerView) {
+    public ChatMessageQueueUpdater(Queue<String> messageQueue, List<ChatMessage> chatMessages, ChatAdapter chatAdapter, String logPrefix, RecyclerView recyclerView) {
         this.messageQueue = messageQueue;
-        this.textView = textView;
         this.chatMessages = chatMessages;
         this.chatAdapter = chatAdapter;
         this.logPrefix = logPrefix;
@@ -45,7 +40,7 @@ public class ChatMessageQueueUpdater {
     }
 
     /**
-     * 构造函数
+     * 构造函数，适用于Debug日志消息
      * @param messageQueue 消息队列
      * @param loglevel 日志等级
      */
@@ -91,19 +86,19 @@ public class ChatMessageQueueUpdater {
             Log.v(TAG, "isMe：" + isMe);
 
             if (isUser) {
-                String timestamp = chatTimestamp.getCurrentTimestamp(); // 获取当前时间戳
+                String timestamp = chatTimestamp.getCurrentTimestamp(); // 获取当前时间戳，展示在ChatUI上
                 chatMessages.add(new ChatMessage(newMessage, timestamp, isUser));
             } else if (isDebug) {
                 chatMessages.add(new ChatMessage(newMessage, isDebug, loglevel));
             } else if (isMe) {
-                String timestamp = chatTimestamp.getCurrentTimestamp(); // 获取当前时间戳
+                String timestamp = chatTimestamp.getCurrentTimestamp(); // 获取当前时间戳，展示在ChatUI上
                 chatMessages.add(new ChatMessage(newMessage, isMe, timestamp));
             }
         }
         chatAdapter.updateMessages(chatMessages, recyclerView); // 更新消息并滚动到底部
-        // 旧UI处理
-        // textView.setText(allMessages.toString());
+
         // Log.i(TAG, logPrefix + "消息队列有改动");
+
         // 在处理完所有消息后，清空 messageQueue，确保不会重复处理相同的消息。
         messageQueue.clear();
     }
