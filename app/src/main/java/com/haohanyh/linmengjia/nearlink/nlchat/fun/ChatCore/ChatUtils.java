@@ -9,7 +9,7 @@ public class ChatUtils {
     private static boolean clipMessages = true; // 控制是否启用剪贴板功能
     //这里设置的是数据库相关
     private static boolean sqlitemanager = true; // 控制是否启用SQLite存储功能
-    private static boolean sqlitehistory = false; // 控制是否启用SQLite历史记录显示功能
+    private static boolean sqlitehistory = true; // 控制是否启用SQLite历史记录显示功能
     //这里设置的是跟C代码相关的，白名单获取聊天文本，当这些文本出现在串口通讯里面的时候，提取这String后者即可，期间过滤掉前者和大量串口log。
     private static final String PREFIX_SERVER = " Let's start chatting, This is the content of the server:";
     private static final String PREFIX_CLIENT = " Let's start chatting, This is the content of the client:";

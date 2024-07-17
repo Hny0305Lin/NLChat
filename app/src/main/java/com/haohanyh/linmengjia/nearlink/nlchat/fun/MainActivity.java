@@ -252,6 +252,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()) {
                 Log.v(TAG,"Android 10以上设备是否获取最高读写文件权限?:" + Environment.isExternalStorageManager());
+                //既然有权限了，带上数据库初始化
+                if (ChatUtils.isSqlitemanager()) {
+                    dbHelper = SQLiteDataBaseAPP.SQLiteData();
+                    dbHelper.CreateSql(getFilesDir().getPath());
+                }
             } else {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);intent.setData(Uri.parse("package:" + this.getPackageName()));startActivityForResult(intent, 1024);
             }
@@ -512,7 +517,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //初始化完成，软件第一次启动必须提示（这里写的第一次启动是软件启动的第一次，而不是使用频率的第一次
         HhandlerI.sendEmptyMessage(31);
         //如果SQLite有记录，可以显示在UI上
-        //if (ChatUtils.isSqliteHistory()) loadMessagesFromDatabase();
+        if (ChatUtils.isSqliteHistory()) loadMessagesFromDatabase();
 
         //背景处理
         //注册图片选择器的启动器
@@ -603,18 +608,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void loadMessagesFromDatabase() {
         Cursor cursor = dbHelper.getAllMessages();
-        if (cursor != null) {
+        if (cursor != null && cursor.moveToFirst()) {
             try {
-                while (cursor.moveToNext()) {
+                do {
+                    @SuppressLint("Range") String timestampStr = cursor.getString(cursor.getColumnIndex("timestamp"));
                     @SuppressLint("Range") String message = cursor.getString(cursor.getColumnIndex("message"));
                     @SuppressLint("Range") String sender = cursor.getString(cursor.getColumnIndex("sender"));
+                    Log.d(TAG, "Message: " + message + ", Sender: " + sender + ", Timestamp: " + timestampStr); // 记录调试日志
                     // 根据sender区分消息显示
-                    if ("User".equals(sender)) {
-                        NearLinkUserText.append(message + "\n");
-                    } else {
-                        NearLinkMeText.append(message + "\n");
-                    }
-                }
+
+
+
+
+
+                } while (cursor.moveToNext());
             } finally {
                 cursor.close();
             }
@@ -734,23 +741,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
             }
-            //UART服务器日志相关，星闪MAC，为防止获取不到先判断
+            //UART服务器日志相关，服务端星闪MAC，为防止获取不到先判断
             if (completeFirstData.contains(ChatUtils.getPrefixLogNearlinkDevicesAddr())) {
                 // 处理采集到星闪MAC地址完成日志
                 if (ChatUtils.isClipMessages()) {
-                    Log.d(TAG, "采集到星闪MAC地址日志：" + completeFirstData + "，将进入剪贴板!");
+                    Log.d(TAG, "采集到服务端星闪MAC地址日志：" + completeFirstData + "，将进入剪贴板!");
                     ChatProcessorForExtract.initializeHandler();
                     ChatProcessorForExtract.processChat(context, completeFirstData);
                 }
 
                 ChatUtils.setShowUartLog(true);
                 if (ChatUtils.isShowUartLog()) {
-                    Log.d(TAG, "采集到星闪MAC地址日志：" + completeFirstData + "，是否显示?:" + true);
+                    Log.d(TAG, "采集到服务端星闪MAC地址日志：" + completeFirstData + "，是否显示?:" + true);
                     if (ChatUtils.isSetDebugLog()) {
-                        Log.d(TAG, "采集到星闪MAC地址日志：" + completeFirstData + "，是否设置打开?:" + true);
+                        Log.d(TAG, "采集到服务端星闪MAC地址日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
-                        Log.d(TAG, "采集到星闪MAC地址日志：" + completeFirstData + "，是否设置打开?:" + false);
+                        Log.d(TAG, "采集到服务端星闪MAC地址日志：" + completeFirstData + "，是否设置打开?:" + false);
                     }
                 }
             }
@@ -831,7 +838,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
             }
-            //UART服务器日志相关，客户端星闪MAC，为防止获取不到先判断
+            //UART服务器日志相关，服务端星闪MAC，为防止获取不到先判断
             if (completeFirstData.contains(ChatUtils.getPrefixLogClientPairComplete())) {
                 // 处理采集到客户端星闪MAC地址完成日志
                 if (ChatUtils.isClipMessages()) {
@@ -869,17 +876,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             //UART客户端日志
             if (completeFirstData.contains(ChatUtils.getPrefixLogSleUartClient())) {
-                Log.d(TAG, "UART客户端日志：" + completeFirstData);
+                Log.d(TAG, "客户端UART客户端日志：" + completeFirstData);
                 // 处理UART服务器日志
 
                 ChatUtils.setShowUartLog(true);
                 if (ChatUtils.isShowUartLog()) {
-                    Log.d(TAG, "UART客户端日志：" + completeFirstData + "，是否显示?:" + true);
+                    Log.d(TAG, "客户端UART客户端日志：" + completeFirstData + "，是否显示?:" + true);
                     if (ChatUtils.isSetDebugLog()) {
-                        Log.d(TAG, "UART客户端日志：" + completeFirstData + "，是否设置打开?:" + true);
+                        Log.d(TAG, "客户端UART客户端日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
-                        Log.d(TAG, "UART客户端日志：" + completeFirstData + "，是否设置打开?:" + false);
+                        Log.d(TAG, "客户端UART客户端日志：" + completeFirstData + "，是否设置打开?:" + false);
                     }
                 }
             }
@@ -918,16 +925,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         clientMessageQueue.poll(); // 移除最早的消息
                     }
                     clientMessageQueue.add(TextOfClient);
-                    //updateClientTextView();
                     clientUpdater.updateTextView();
                     MainAPP.Vibrate(this);
                 } else {
-                    NearLinkMeText.append(messageSend);
-                    if (NearLinkMeText.length() > 2048) {
-                        String str = NearLinkMeText.getText().toString().substring(NearLinkMeText.getText().length() - 1024, NearLinkMeText.getText().length());
-                        NearLinkMeText.setText("");
-                        NearLinkMeText.append(str);
-                    }
+                    clientUpdater.updateTextView();
                     MainAPP.Vibrate(this);
                 }
                 //发送完消息清空待发送文本

@@ -51,19 +51,21 @@ public class ChatUIAlertDialog {
                 .setMessage(message)
                 .setCancelable(false)
                 .setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
                     }
                 })
                 .setNegativeButton(negativeButtonText, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
                     }
                 })
                 .setNeutralButton(neutralButtonText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
+                        //剪贴板功能有待补充
                     }
                 })
                 .show();
