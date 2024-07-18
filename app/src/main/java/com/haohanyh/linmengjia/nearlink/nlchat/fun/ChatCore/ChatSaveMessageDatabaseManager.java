@@ -20,7 +20,9 @@ public class ChatSaveMessageDatabaseManager {
 
         dbHelper = SQLiteDataBaseAPP.SQLiteData();
         dbHelper.CreateSql(context.getFilesDir().getPath());
-        Log.i(TAG,  "当前数据库保存地址：" + context.getFilesDir().getPath()); // 打印储存位置到日志
+
+        if (ChatUtils.isSqlitehistorymanagerlog())
+            Log.i(TAG,  "当前数据库保存地址：" + context.getFilesDir().getPath()); // 打印储存位置到日志
     }
 
     public void saveMessageToDatabase(String timestamp, String message, String sender) {
@@ -31,7 +33,9 @@ public class ChatSaveMessageDatabaseManager {
         //如果有消息再保存，上面是没消息不予保存
         dbHelper.saveMessageToDatabase(message, sender, timestamp);
         dbHelper.saveVersionToDatabase(context.getString(R.string.app_version));
-        Log.i(TAG,  "当前数据库保存内容：\n消息内容" + message + "\n用户名" + sender + "\n时间戳" + timestamp); // 打印内容到日志
+
+        if (ChatUtils.isSqlitehistorymanagerlog())
+            Log.i(TAG,  "当前数据库保存内容：\n消息内容" + message + "\n用户名" + sender + "\n时间戳" + timestamp); // 打印内容到日志
     }
 
     public void saveDebugMessageToDatabase(String timestamp, String message, String sender) {
@@ -41,6 +45,8 @@ public class ChatSaveMessageDatabaseManager {
         }
         //如果有消息再保存，上面是没消息不予保存
         dbHelper.saveDebugToDatabase(message, sender, timestamp);
-        Log.i(TAG,  "当前数据库保存内容：\n消息内容" + message + "\n用户名" + sender + "\n时间戳" + timestamp); // 打印内容到日志
+
+        if (ChatUtils.isSqlitehistorymanagerlog())
+            Log.i(TAG,  "当前数据库保存内容：\n消息内容" + message + "\n用户名" + sender + "\n时间戳" + timestamp); // 打印内容到日志
     }
 }

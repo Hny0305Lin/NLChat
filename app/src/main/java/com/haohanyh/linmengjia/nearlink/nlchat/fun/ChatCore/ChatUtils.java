@@ -10,6 +10,7 @@ public class ChatUtils {
     //这里设置的是数据库相关
     private static boolean sqlitemanager = true; // 控制是否启用SQLite存储功能
     private static boolean sqlitehistory = true; // 控制是否启用SQLite历史记录显示功能
+    private static final boolean sqlitehistorymanagerlog = false; // 控制是否启用SQLite保存存储、历史记录显示Logcat（开发者使用）
     //这里设置的是跟C代码相关的，白名单获取聊天文本，当这些文本出现在串口通讯里面的时候，提取这String后者即可，期间过滤掉前者和大量串口log。
     private static final String PREFIX_SERVER = " Let's start chatting, This is the content of the server:";
     private static final String PREFIX_CLIENT = " Let's start chatting, This is the content of the client:";
@@ -58,7 +59,8 @@ public class ChatUtils {
     public static boolean isSqliteHistory() { return sqlitehistory; }
 
     public static void setSqliteHistory(boolean sqlitehistory) { ChatUtils.sqlitehistory = sqlitehistory; }
-
+    //控制是否启用SQLite保存存储、历史记录显示Logcat
+    public static boolean isSqlitehistorymanagerlog() { return sqlitehistorymanagerlog; }
     //对方为星闪服务端（User）
     public static String getPrefixServer() {
         return PREFIX_SERVER;

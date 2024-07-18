@@ -145,16 +145,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final boolean MobileKeepScreenOn = false;
 
     //聊天相关
-    private Queue<String> serverMessageQueue = new LinkedList<>();
-    private Queue<String> serverDebugQueue = new LinkedList<>();
-    private Queue<String> clientMessageQueue = new LinkedList<>();
-    private static final int MAX_MESSAGES = 8; // 设置最大消息数量
     private ChatMessageQueueUpdater serverUpdater;
     private ChatMessageQueueUpdater serverDebugUpdater;
     private ChatMessageQueueUpdater serverDebugSetColor;
     private ChatMessageQueueUpdater clientUpdater;
     private ChatSaveMessageDatabaseManager chatSaveMessageDatabaseManager;
     private ChatUIUpdater chatUIUpdater;
+    private Queue<String> serverMessageQueue = new LinkedList<>();
+    private Queue<String> serverDebugMessageQueue = new LinkedList<>();
+    private Queue<String> clientMessageQueue = new LinkedList<>();
 
     //聊天时间戳
     private ChatTimestamp chatTimestamp = new ChatTimestamp();
@@ -411,7 +410,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //聊天初始化
         serverUpdater = new ChatMessageQueueUpdater(serverMessageQueue, chatMessages, chatAdapter, "User: ", recyclerView);
-        serverDebugUpdater = new ChatMessageQueueUpdater(serverDebugQueue, chatMessages, chatAdapter, "Debug: ", recyclerView, LogLevel);
+        serverDebugUpdater = new ChatMessageQueueUpdater(serverDebugMessageQueue, chatMessages, chatAdapter, "Debug: ", recyclerView, LogLevel);
         clientUpdater = new ChatMessageQueueUpdater(clientMessageQueue, chatMessages, chatAdapter, "Me: ", recyclerView);
 
         //聊天串口为INFO
@@ -421,7 +420,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //聊天数据库初始化
         chatSaveMessageDatabaseManager = new ChatSaveMessageDatabaseManager(MainActivity.this);
         //聊天核心初始化
-        chatUIUpdater = new ChatUIUpdater(this, chatSaveMessageDatabaseManager, chatTimestamp, serverMessageQueue, serverDebugQueue, serverUpdater, serverDebugUpdater, NearLinkUserText);
+        chatUIUpdater = new ChatUIUpdater(this, chatSaveMessageDatabaseManager, chatTimestamp, serverMessageQueue, serverDebugMessageQueue, serverUpdater, serverDebugUpdater);
 
 
         //星闪网络相关设置初始化，目前多数还不允许UI设置，敬请期待
@@ -614,13 +613,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @SuppressLint("Range") String timestampStr = cursor.getString(cursor.getColumnIndex("timestamp"));
                     @SuppressLint("Range") String message = cursor.getString(cursor.getColumnIndex("message"));
                     @SuppressLint("Range") String sender = cursor.getString(cursor.getColumnIndex("sender"));
-                    Log.d(TAG, "Message: " + message + ", Sender: " + sender + ", Timestamp: " + timestampStr); // 记录调试日志
+                    if (ChatUtils.isSqlitehistorymanagerlog()) {
+                        Log.d(TAG, "Message: " + message + ", Sender: " + sender + ", Timestamp: " + timestampStr); // 记录调试日志
+                    } else {
+                        SnackBarToastForDebug(context,"已开启聊天记录显示，请等待刷新!","谢谢",0,Snackbar.LENGTH_INDEFINITE);
+                    }
                     // 根据sender区分消息显示
-
-
-
-
-
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        if (Objects.equals(sender, "Me")) {
+                            serverMessageQueue.add(message);
+                            serverUpdater.updateTextView();
+                        } else if (Objects.equals(sender, "User")) {
+                            clientMessageQueue.add(message);
+                            clientUpdater.updateTextView();
+                        }
+                    }, 5000);
                 } while (cursor.moveToNext());
             } finally {
                 cursor.close();
@@ -921,7 +928,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 //如果需要UI滚动消息
                 if (ChatUtils.isScrollingMessages()) {
-                    if (clientMessageQueue.size() >= MAX_MESSAGES) {
+                    if (clientMessageQueue.size() >= chatUIUpdater.getMAX_MESSAGES()) {
                         clientMessageQueue.poll(); // 移除最早的消息
                     }
                     clientMessageQueue.add(TextOfClient);

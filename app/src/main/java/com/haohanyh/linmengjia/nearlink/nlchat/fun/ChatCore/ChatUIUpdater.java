@@ -3,7 +3,6 @@ package com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore;
 
 import android.app.Activity;
 import android.content.Context;
-import android.widget.TextView;
 
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.MainAPP;
 
@@ -17,8 +16,7 @@ public class ChatUIUpdater {
     private Queue<String> serverDebugQueue;
     private ChatMessageQueueUpdater serverUpdater;
     private ChatMessageQueueUpdater serverDebugUpdater;
-    private TextView NearLinkUserText;
-    private static final int MAX_MESSAGES = 8; // 假设的最大消息数
+    private final int MAX_MESSAGES = 8; // 假设的最大消息数
 
     public ChatUIUpdater(Context context,
                          ChatSaveMessageDatabaseManager chatSaveMessageDatabaseManager,
@@ -26,8 +24,7 @@ public class ChatUIUpdater {
                          Queue<String> serverMessageQueue,
                          Queue<String> serverDebugQueue,
                          ChatMessageQueueUpdater serverUpdater,
-                         ChatMessageQueueUpdater serverDebugUpdater,
-                         TextView NearLinkUserText) {
+                         ChatMessageQueueUpdater serverDebugUpdater) {
         this.context = context;
         this.chatSaveMessageDatabaseManager = chatSaveMessageDatabaseManager;
         this.chatTimestamp = chatTimestamp;
@@ -35,7 +32,6 @@ public class ChatUIUpdater {
         this.serverDebugQueue = serverDebugQueue;
         this.serverUpdater = serverUpdater;
         this.serverDebugUpdater = serverDebugUpdater;
-        this.NearLinkUserText = NearLinkUserText;
     }
 
     public void updateUI(String processedString) {
@@ -69,14 +65,31 @@ public class ChatUIUpdater {
                     MainAPP.Vibrate(context);
                 }
             } else {
-                NearLinkUserText.append(processedString);
-                if (NearLinkUserText.length() > 2048) {
-                    String str = NearLinkUserText.getText().toString().substring(NearLinkUserText.getText().length() - 1024, NearLinkUserText.getText().length());
-                    NearLinkUserText.setText("");
-                    NearLinkUserText.append(str);
+                if (ChatUtils.isShowUartLog() && ChatUtils.isSetDebugLog()) {
+                    serverDebugQueue.add(processedString);
+                    serverDebugUpdater.updateTextView();
+                    MainAPP.Vibrate(context);
+                } else {
+                    serverMessageQueue.add(processedString);
+                    serverUpdater.updateTextView();
+                    MainAPP.Vibrate(context);
                 }
-                MainAPP.Vibrate(context);
             }
         });
     }
+
+    public final int getMAX_MESSAGES() {
+        return MAX_MESSAGES;
+    }
 }
+
+
+
+//TODO 第一版草稿
+//                NearLinkUserText.append(processedString);
+//                if (NearLinkUserText.length() > 2048) {
+//                    String str = NearLinkUserText.getText().toString().substring(NearLinkUserText.getText().length() - 1024, NearLinkUserText.getText().length());
+//                    NearLinkUserText.setText("");
+//                    NearLinkUserText.append(str);
+//                }
+//                MainAPP.Vibrate(context);

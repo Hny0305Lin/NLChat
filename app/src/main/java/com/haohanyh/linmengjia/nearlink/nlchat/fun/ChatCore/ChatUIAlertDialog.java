@@ -65,7 +65,7 @@ public class ChatUIAlertDialog {
                 .setNeutralButton(neutralButtonText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        //剪贴板功能有待补充
+                        // TODO 剪贴板功能有待补充
                     }
                 })
                 .show();
