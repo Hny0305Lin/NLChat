@@ -4,7 +4,7 @@
 
 | 版本号/功能 | CH340驱动 | 聊天功能 | 中文聊天 | SQLite管理 | 串口处理 | 剪贴板 | 背景运行 | 阅后即焚 | Github CI | 聊天增强 | 缓存内容 |
 | --------- | --------- | -------- | -------- | -------- | -------- | -------- | -------- | ------- | :------: | -------- | -------- |
-| [1.3.300.2024.0720.R](https://github.com/Hny0305Lin/NLChat/tree/v1.3.300.2024.0720.R) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | [✅点我查看](https://github.com/Hny0305Lin/NLChat/actions/runs/10013385737/job/27680873332) | ❌ | ❌ |
+| [1.3.300.2024.0720.R](https://github.com/Hny0305Lin/NLChat/tree/v1.3.300.2024.0720.R) ✅1.3稳定版 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | [✅点我查看](https://github.com/Hny0305Lin/NLChat/actions/runs/10013385737/job/27680873332) | ❌ | ❌ |
 | [1.3.300.2024.0720](https://github.com/Hny0305Lin/NLChat/tree/v1.3.300.2024.0720) | ✅ | ✅ | ✅ | ❌ | ✅ | ✅ | ✅ | ❌ | [✅点我查看](https://github.com/Hny0305Lin/NLChat/actions/runs/10013176781/job/27680216211) | ❌ | ❌ |
 | [1.3.280.2024.0718](https://github.com/Hny0305Lin/NLChat/tree/v1.3.280.2024.0718) | ✅ | ✅预览消息性能问题 | ✅ | ✅SQLite需要优化 | ✅ | ✅ | ✅ | ❌ | [✅点我查看](https://github.com/Hny0305Lin/NLChat/actions/runs/9988892829/job/27606336860) | ❌ | ❌ |
 | [1.3.273.2024.0717.Alpha](https://github.com/Hny0305Lin/NLChat/tree/v1.3.273.2024.0717.Alpha) | ✅ | ✅ | ✅ | ✅SQLite修复中 | ✅ | ✅ | ✅ | ❌ | [✅点我查看](https://github.com/Hny0305Lin/NLChat/actions/runs/9968892336/job/27544892288) | ❌ | ❌ |
