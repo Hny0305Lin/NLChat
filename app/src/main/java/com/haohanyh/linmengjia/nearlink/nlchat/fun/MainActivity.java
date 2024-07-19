@@ -224,6 +224,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // App进入前台，停止服务
         stopService(new Intent(this, MyForegroundService.class));
         handler.removeCallbacks(stopServiceRunnable);
+
+        // 重新打开数据库
+        if (dbHelper != null) {
+            chatMessageDatabaseManager.openDatabase();
+        }
     }
 
     @Override
@@ -232,6 +237,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // App进入后台，启动服务
         startService(new Intent(this, MyForegroundService.class));
         handler.postDelayed(stopServiceRunnable, 10 * 60 * 1000);
+
+        // 关闭数据库
+        if (dbHelper != null) {
+            chatMessageDatabaseManager.closeDatabase();
+        }
     }
 
     @Override

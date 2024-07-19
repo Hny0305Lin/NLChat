@@ -31,12 +31,8 @@ public class ChatMessageDatabaseManager {
             return;
         }
         //如果有消息再保存，上面是没消息不予保存
-        try {
-            dbHelper.saveMessageToDatabase(message, sender, timestamp);
-            dbHelper.saveVersionToDatabase(context.getString(R.string.app_version));
-        } finally {
-            dbHelper.close(); // 确保数据库在操作后关闭
-        }
+        dbHelper.saveMessageToDatabase(message, sender, timestamp);
+        dbHelper.saveVersionToDatabase(context.getString(R.string.app_version));
 
         if (ChatUtils.isSqlitehistorymanagerlog())
             Log.i(TAG,  "当前数据库保存内容：\n消息内容" + message + "\n用户名" + sender + "\n时间戳" + timestamp); // 打印内容到日志
@@ -48,13 +44,19 @@ public class ChatMessageDatabaseManager {
             return;
         }
         //如果有消息再保存，上面是没消息不予保存
-        try {
-            dbHelper.saveDebugToDatabase(message, sender, timestamp);
-        } finally {
-            dbHelper.close(); // 确保数据库在操作后关闭
-        }
+        dbHelper.saveDebugToDatabase(message, sender, timestamp);
 
         if (ChatUtils.isSqlitehistorymanagerlog())
             Log.i(TAG,  "当前数据库保存内容：\n消息内容" + message + "\n用户名" + sender + "\n时间戳" + timestamp); // 打印内容到日志
+    }
+
+    // 在适当的时候（如应用退出时）调用此方法关闭数据库
+    public void closeDatabase() {
+        dbHelper.close();
+    }
+
+    // 新增方法：重新打开数据库
+    public void openDatabase() {
+        dbHelper.CreateSql(context.getFilesDir().getPath());
     }
 }
