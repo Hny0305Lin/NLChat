@@ -61,7 +61,7 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatFileUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessage;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessageQueueUpdater;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatProcessorForExtract;
-import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatSaveMessageDatabaseManager;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessageDatabaseManager;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatTimestamp;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIAlertDialog;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIAnimationUtils;
@@ -145,15 +145,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final boolean MobileKeepScreenOn = false;
 
     //聊天相关
+    private ChatUIUpdater chatUIUpdater;
     private ChatMessageQueueUpdater serverUpdater;
     private ChatMessageQueueUpdater serverDebugUpdater;
     private ChatMessageQueueUpdater serverDebugSetColor;
     private ChatMessageQueueUpdater clientUpdater;
-    private ChatSaveMessageDatabaseManager chatSaveMessageDatabaseManager;
-    private ChatUIUpdater chatUIUpdater;
+    private ChatMessageDatabaseManager chatMessageDatabaseManager;
     private Queue<String> serverMessageQueue = new LinkedList<>();
-    private Queue<String> serverDebugMessageQueue = new LinkedList<>();
     private Queue<String> clientMessageQueue = new LinkedList<>();
+    private Queue<String> serverDebugMessageQueue = new LinkedList<>();
+
+    private ChatMessageQueueUpdater serverHistoryUpdater;
+    private ChatMessageQueueUpdater clientHistoryUpdater;
+    private Queue<String> serverHistoryMessageQueue = new LinkedList<>();
+    private Queue<String> clientHistoryMessageQueue = new LinkedList<>();
+    private Queue<String> serverHistoryTimestampQueue = new LinkedList<>();
+    private Queue<String> clientHistoryTimestampQueue = new LinkedList<>();
 
     //聊天时间戳
     private ChatTimestamp chatTimestamp = new ChatTimestamp();
@@ -407,20 +414,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         chatAdapter = new ChatAdapter(this, chatMessages);
         recyclerView.setAdapter(chatAdapter);
+        recyclerView.setHasFixedSize(true);
 
         //聊天初始化
         serverUpdater = new ChatMessageQueueUpdater(serverMessageQueue, chatMessages, chatAdapter, "User: ", recyclerView);
         serverDebugUpdater = new ChatMessageQueueUpdater(serverDebugMessageQueue, chatMessages, chatAdapter, "Debug: ", recyclerView, LogLevel);
         clientUpdater = new ChatMessageQueueUpdater(clientMessageQueue, chatMessages, chatAdapter, "Me: ", recyclerView);
 
+        serverHistoryUpdater = new ChatMessageQueueUpdater(serverHistoryMessageQueue, chatMessages, chatAdapter, "UserHistory: ", serverHistoryTimestampQueue, recyclerView);
+        clientHistoryUpdater = new ChatMessageQueueUpdater(clientHistoryMessageQueue, chatMessages, chatAdapter, "MeHistory: ", clientHistoryTimestampQueue, recyclerView);
+
         //聊天串口为INFO
 //        serverDebugSetColor = new ChatMessageQueueUpdater(LogLevel);
 //        Log.d(TAG, "日志等级：" + LogLevel + "serverDebugSetColor = new ChatMessageQueueUpdater(LogLevel);");
 
         //聊天数据库初始化
-        chatSaveMessageDatabaseManager = new ChatSaveMessageDatabaseManager(MainActivity.this);
+        chatMessageDatabaseManager = new ChatMessageDatabaseManager(MainActivity.this);
         //聊天核心初始化
-        chatUIUpdater = new ChatUIUpdater(this, chatSaveMessageDatabaseManager, chatTimestamp, serverMessageQueue, serverDebugMessageQueue, serverUpdater, serverDebugUpdater);
+        chatUIUpdater = new ChatUIUpdater(this, chatMessageDatabaseManager, chatTimestamp, serverMessageQueue, serverDebugMessageQueue, serverUpdater, serverDebugUpdater);
 
 
         //星闪网络相关设置初始化，目前多数还不允许UI设置，敬请期待
@@ -515,6 +526,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //初始化完成，软件第一次启动必须提示（这里写的第一次启动是软件启动的第一次，而不是使用频率的第一次
         HhandlerI.sendEmptyMessage(31);
+
         //如果SQLite有记录，可以显示在UI上
         if (ChatUtils.isSqliteHistory()) loadMessagesFromDatabase();
 
@@ -621,13 +633,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // 根据sender区分消息显示
                     new Handler(Looper.getMainLooper()).postDelayed(() -> {
                         if (Objects.equals(sender, "Me")) {
-                            serverMessageQueue.add(message);
-                            serverUpdater.updateTextView();
+                            clientHistoryMessageQueue.add(message);
+                            clientHistoryTimestampQueue.add(timestampStr);
+                            clientHistoryUpdater.updateTextView();
                         } else if (Objects.equals(sender, "User")) {
-                            clientMessageQueue.add(message);
-                            clientUpdater.updateTextView();
+                            serverHistoryMessageQueue.add(message);
+                            serverHistoryTimestampQueue.add(timestampStr);
+                            serverHistoryUpdater.updateTextView();
                         }
-                    }, 5000);
+                        SnackBarToastForDebug(context,"已加载全部聊天记录!","谢谢",0,Snackbar.LENGTH_SHORT);
+                    }, 2000);
                 } while (cursor.moveToNext());
             } finally {
                 cursor.close();
@@ -924,7 +939,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //如果需要存储到数据库中
                 if (ChatUtils.isSqlitemanager()) {
                     String timestamp = chatTimestamp.saveCurrentTimestamp();
-                    chatSaveMessageDatabaseManager.saveMessageToDatabase(timestamp, messageSend, "Me");
+                    chatMessageDatabaseManager.saveMessageToDatabase(timestamp, messageSend, "Me");
                 }
                 //如果需要UI滚动消息
                 if (ChatUtils.isScrollingMessages()) {

@@ -7,8 +7,12 @@ public class ChatMessage {
     private String timestamp;
     private int loglevel;
     private boolean isUser;
-    private boolean isDebug;
     private boolean isMe;
+    private boolean isDebug;
+    private boolean isSQLiteUser;
+    private boolean isSQLiteMe;
+    private boolean isSQLiteDebug;
+
 
     /**
      * 构造方法，适用于User消息
@@ -23,6 +27,18 @@ public class ChatMessage {
     }
 
     /**
+     * 构造方法，适用于Me消息
+     * @param message   Me消息
+     * @param isMe      传参
+     * @param timestamp Me消息时间
+     */
+    public ChatMessage(String message, boolean isMe, String timestamp) {
+        this.message = message;
+        this.timestamp = timestamp;
+        this.isMe = isMe;
+    }
+
+    /**
      * 构造方法，适用于Debug日志消息
      * @param message   Debug日志内容
      * @param isDebug   传参
@@ -34,16 +50,35 @@ public class ChatMessage {
         this.loglevel = loglevel;
     }
 
+
     /**
-     * 构造方法，适用于Me消息
-     * @param message   Me消息
-     * @param isMe      传参
-     * @param timestamp Me消息时间
+     * 构造方法，适用于数据库历史消息
+     * @param message   内容，历史消息
+     * @param timestamp 历史消息时间
+     * @param latest    判断
+     * @param sqlite    识别为who，1为user历史，2为me历史，3为debug历史
      */
-    public ChatMessage(String message, boolean isMe, String timestamp) {
+    public ChatMessage(String message, String timestamp, boolean latest, int sqlite) {
         this.message = message;
         this.timestamp = timestamp;
-        this.isMe = isMe;
+
+        if (sqlite == 1) {
+            isSQLiteUser = latest;
+            isSQLiteMe = false;
+            isSQLiteDebug = false;
+        } else if (sqlite == 2) {
+            isSQLiteUser = false;
+            isSQLiteMe = latest;
+            isSQLiteDebug = false;
+        } else if (sqlite == 3) {
+            isSQLiteUser = false;
+            isSQLiteMe = false;
+            isSQLiteDebug = latest;
+        } else {
+            isSQLiteUser = false;
+            isSQLiteMe = false;
+            isSQLiteDebug = false;
+        }
     }
 
     public String getMessage() {
@@ -62,11 +97,23 @@ public class ChatMessage {
         return isUser;
     }
 
+    public boolean isMe() {
+        return isMe;
+    }
+
     public boolean isDebug() {
         return isDebug;
     }
 
-    public boolean isMe() {
-        return isMe;
+    public boolean isSQLiteUser() {
+        return isSQLiteUser;
+    }
+
+    public boolean isSQLiteMe() {
+        return isSQLiteMe;
+    }
+
+    public boolean isSQLiteDebug() {
+        return isSQLiteDebug;
     }
 }

@@ -7,10 +7,12 @@ package com.haohanyh.linmengjia.nearlink.nlchat.fun.SQLite;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.util.Log;
 
 import io.requery.android.database.sqlite.SQLiteDatabase;
 
 public class SQLiteDataBaseAPP {
+    private static final String TAG = "SQLiteDataBaseAPP & NLChat";
 
     SQLiteDatabase sqLiteDataBaseForAPP;
 
@@ -83,5 +85,16 @@ public class SQLiteDataBaseAPP {
     //获取表中消息，按时间戳升序排序
     public Cursor getAllMessages() {
         return sqLiteDataBaseForAPP.query("messages", null, null, null, null, null, "timestamp ASC");
+    }
+
+    // 关闭数据库连接
+    public void close() {
+        if (sqLiteDataBaseForAPP != null) {
+            try {
+                sqLiteDataBaseForAPP.close();
+            } catch (Exception e) {
+                Log.e(TAG, "关闭数据库时发生错误", e);
+            }
+        }
     }
 }

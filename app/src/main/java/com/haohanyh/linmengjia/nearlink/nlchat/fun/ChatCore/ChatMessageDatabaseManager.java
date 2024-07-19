@@ -7,7 +7,7 @@ import android.util.Log;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.SQLite.SQLiteDataBaseAPP;
 
-public class ChatSaveMessageDatabaseManager {
+public class ChatMessageDatabaseManager {
     private static final String TAG = "ChatSaveMessageDatabaseManager & NLChat";
 
     //调用SQLite
@@ -15,7 +15,7 @@ public class ChatSaveMessageDatabaseManager {
 
     private Context context;
 
-    public ChatSaveMessageDatabaseManager(Context context) {
+    public ChatMessageDatabaseManager(Context context) {
         this.context = context;
 
         dbHelper = SQLiteDataBaseAPP.SQLiteData();
@@ -31,8 +31,12 @@ public class ChatSaveMessageDatabaseManager {
             return;
         }
         //如果有消息再保存，上面是没消息不予保存
-        dbHelper.saveMessageToDatabase(message, sender, timestamp);
-        dbHelper.saveVersionToDatabase(context.getString(R.string.app_version));
+        try {
+            dbHelper.saveMessageToDatabase(message, sender, timestamp);
+            dbHelper.saveVersionToDatabase(context.getString(R.string.app_version));
+        } finally {
+            dbHelper.close(); // 确保数据库在操作后关闭
+        }
 
         if (ChatUtils.isSqlitehistorymanagerlog())
             Log.i(TAG,  "当前数据库保存内容：\n消息内容" + message + "\n用户名" + sender + "\n时间戳" + timestamp); // 打印内容到日志
@@ -44,7 +48,11 @@ public class ChatSaveMessageDatabaseManager {
             return;
         }
         //如果有消息再保存，上面是没消息不予保存
-        dbHelper.saveDebugToDatabase(message, sender, timestamp);
+        try {
+            dbHelper.saveDebugToDatabase(message, sender, timestamp);
+        } finally {
+            dbHelper.close(); // 确保数据库在操作后关闭
+        }
 
         if (ChatUtils.isSqlitehistorymanagerlog())
             Log.i(TAG,  "当前数据库保存内容：\n消息内容" + message + "\n用户名" + sender + "\n时间戳" + timestamp); // 打印内容到日志

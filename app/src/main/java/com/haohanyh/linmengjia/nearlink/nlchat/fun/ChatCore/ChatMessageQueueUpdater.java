@@ -2,6 +2,8 @@
 package com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore;
 
 import android.annotation.SuppressLint;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +25,7 @@ public class ChatMessageQueueUpdater {
     private List<ChatMessage> chatMessages; // 聊天消息列表
     private ChatAdapter chatAdapter; // 聊天适配器
     private String logPrefix; // 日志前缀，用于区分不同的消息队列
+    private Queue<String> timesHistory; // 历史消息时间戳队列，用于打印历史消息时间
     private int loglevel;
     private RecyclerView recyclerView; // RecyclerView实例
 
@@ -54,6 +57,20 @@ public class ChatMessageQueueUpdater {
     }
 
     /**
+     * 构造函数，适用于User和Me历史消息
+     * @param messageQueue 消息队列
+     * @param logPrefix 日志前缀
+     */
+    public ChatMessageQueueUpdater(Queue<String> messageQueue, List<ChatMessage> chatMessages, ChatAdapter chatAdapter, String logPrefix, Queue<String> timesHistory, RecyclerView recyclerView) {
+        this.messageQueue = messageQueue;
+        this.chatMessages = chatMessages;
+        this.chatAdapter = chatAdapter;
+        this.logPrefix = logPrefix;
+        this.timesHistory = timesHistory;
+        this.recyclerView = recyclerView;
+    }
+
+    /**
      * 更新 TextView 的内容，将消息队列中的所有消息显示在 TextView 上。
      * 同时，移除消息队列中的空消息。
      */
@@ -79,23 +96,45 @@ public class ChatMessageQueueUpdater {
         // 新UI处理，将新消息添加到 chatMessages 列表中
         for (String newMessage : newMessages) {
             boolean isUser = logPrefix.equals("User: ");
-            boolean isDebug = logPrefix.equals("Debug: ");
             boolean isMe = logPrefix.equals("Me: ");
+            boolean isDebug = logPrefix.equals("Debug: ");
             Log.v(TAG, "isUser：" + isUser);
-            Log.v(TAG, "isDebug：" + isDebug);
             Log.v(TAG, "isMe：" + isMe);
+            Log.v(TAG, "isDebug：" + isDebug);
+
+            boolean isHistoryUser = logPrefix.equals("UserHistory: ");
+            boolean isHistoryMe = logPrefix.equals("MeHistory: ");
+            boolean isHistoryDebug = logPrefix.equals("DebugHistory: ");
+            Log.v(TAG, "isUser, but History：" + isHistoryUser);
+            Log.v(TAG, "isMe, but History：" + isHistoryMe);
+            Log.v(TAG, "isDebug, but History：" + isHistoryDebug);
+
+
+            String timestamp = chatTimestamp.getCurrentTimestamp(); // 获取当前时间戳，展示在ChatUI上
+            String historyTime = timesHistory != null && !timesHistory.isEmpty() ? timesHistory.poll() : ""; // 获取并移除历史消息记录时间戳队列中的第一个时间数据
 
             if (isUser) {
-                String timestamp = chatTimestamp.getCurrentTimestamp(); // 获取当前时间戳，展示在ChatUI上
                 chatMessages.add(new ChatMessage(newMessage, timestamp, isUser));
+            } else if (isMe) {
+                chatMessages.add(new ChatMessage(newMessage, isMe, timestamp));
             } else if (isDebug) {
                 chatMessages.add(new ChatMessage(newMessage, isDebug, loglevel));
-            } else if (isMe) {
-                String timestamp = chatTimestamp.getCurrentTimestamp(); // 获取当前时间戳，展示在ChatUI上
-                chatMessages.add(new ChatMessage(newMessage, isMe, timestamp));
+            } else if (isHistoryUser) {
+                chatMessages.add(new ChatMessage(newMessage, "History User," + historyTime, true, 1));
+            } else if (isHistoryMe) {
+                chatMessages.add(new ChatMessage(newMessage, "History Me," + historyTime, true, 2));
+            } else if (isHistoryDebug) {
+                chatMessages.add(new ChatMessage(newMessage, "", true, 3));
             }
         }
-        chatAdapter.updateMessages(chatMessages, recyclerView); // 更新消息并滚动到底部
+
+        // 使用Handler在主线程中更新RecyclerView
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                chatAdapter.updateMessages(chatMessages, recyclerView); // 更新消息并滚动到底部
+            }
+        });
 
         // Log.i(TAG, logPrefix + "消息队列有改动");
 

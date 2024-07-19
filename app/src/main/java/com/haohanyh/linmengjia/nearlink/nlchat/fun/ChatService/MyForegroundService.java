@@ -86,14 +86,18 @@ public class MyForegroundService extends Service {
     private void createNotificationChannel() {
         Log.d(TAG, "背景服务通知已创建，可查看Android通知栏");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel serviceChannel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "背景服务通知",
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            if (manager != null) {
-                manager.createNotificationChannel(serviceChannel);
+            try {
+                NotificationChannel serviceChannel = new NotificationChannel(
+                        CHANNEL_ID,
+                        "背景服务通知",
+                        NotificationManager.IMPORTANCE_DEFAULT
+                );
+                NotificationManager manager = getSystemService(NotificationManager.class);
+                if (manager != null) {
+                    manager.createNotificationChannel(serviceChannel);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "创建通知渠道失败", e);
             }
         }
     }

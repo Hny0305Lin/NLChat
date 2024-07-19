@@ -10,7 +10,7 @@ import java.util.Queue;
 
 public class ChatUIUpdater {
     private Context context;
-    private ChatSaveMessageDatabaseManager chatSaveMessageDatabaseManager;
+    private ChatMessageDatabaseManager chatMessageDatabaseManager;
     private ChatTimestamp chatTimestamp;
     private Queue<String> serverMessageQueue;
     private Queue<String> serverDebugQueue;
@@ -19,14 +19,14 @@ public class ChatUIUpdater {
     private final int MAX_MESSAGES = 8; // 假设的最大消息数
 
     public ChatUIUpdater(Context context,
-                         ChatSaveMessageDatabaseManager chatSaveMessageDatabaseManager,
+                         ChatMessageDatabaseManager chatMessageDatabaseManager,
                          ChatTimestamp chatTimestamp,
                          Queue<String> serverMessageQueue,
                          Queue<String> serverDebugQueue,
                          ChatMessageQueueUpdater serverUpdater,
                          ChatMessageQueueUpdater serverDebugUpdater) {
         this.context = context;
-        this.chatSaveMessageDatabaseManager = chatSaveMessageDatabaseManager;
+        this.chatMessageDatabaseManager = chatMessageDatabaseManager;
         this.chatTimestamp = chatTimestamp;
         this.serverMessageQueue = serverMessageQueue;
         this.serverDebugQueue = serverDebugQueue;
@@ -42,9 +42,9 @@ public class ChatUIUpdater {
                 String timestamp = chatTimestamp.saveCurrentTimestamp();
                 if (ChatUtils.isShowUartLog() && ChatUtils.isSetDebugLog()) {
                     // 如果是debuglog，则分开存储
-                    chatSaveMessageDatabaseManager.saveDebugMessageToDatabase(timestamp, processedString, "UserDebug");
+                    chatMessageDatabaseManager.saveDebugMessageToDatabase(timestamp, processedString, "UserDebug");
                 } else {
-                    chatSaveMessageDatabaseManager.saveMessageToDatabase(timestamp, processedString, "User");
+                    chatMessageDatabaseManager.saveMessageToDatabase(timestamp, processedString, "User");
                 }
             }
             // 如果需要UI滚动消息

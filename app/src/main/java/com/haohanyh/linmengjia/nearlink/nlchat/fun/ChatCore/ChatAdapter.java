@@ -3,27 +3,38 @@ package com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R;
-
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.string;
 
 import java.util.List;
+import java.util.Random;
 
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     //Log需要的TAG
     private static final String TAG = "ChatAdapter & NLChat";
 
-    private static final int VIEW_TYPE_MESSAGE_SENT = 1;
-    private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
-    private static final int VIEW_TYPE_DEBUG_RECEIVED = 3;
+    private static final int VIEW_TYPE_MESSAGE_SENT = 1;                                        //正常的消息，发
+    private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;                                    //正常的消息，收
+
+    private static final int VIEW_TYPE_DEBUG_RECEIVED = 3;                                      //Debug消息
+
+    private static final int VIEW_TYPE_MESSAGE_SENT_LATEST = -1;                                //数据库消息记录，发
+    private static final int VIEW_TYPE_MESSAGE_RECEIVED_LATEST = -2;                            //数据库消息记录，收
+
+    private static final int VIEW_TYPE_DEBUG_LATEST = 0;                                        //历史Debug消息
+
+    private static final int VIEW_TYPE_HAOHANYH = 255;                                          //彩蛋Debug
 
     private List<ChatMessage> chatMessages;
     private Context context;
@@ -38,30 +49,57 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         ChatMessage message = chatMessages.get(position);
+
         if (message.isUser()) {
             return VIEW_TYPE_MESSAGE_RECEIVED;
+        } else if (message.isMe()) {
+            return VIEW_TYPE_MESSAGE_SENT;
         } else if (message.isDebug()) {
             return VIEW_TYPE_DEBUG_RECEIVED;
+        } else if (message.isSQLiteUser()) {
+            return VIEW_TYPE_MESSAGE_RECEIVED_LATEST;
+        } else if (message.isSQLiteMe()) {
+            return VIEW_TYPE_MESSAGE_SENT_LATEST;
+        } else if (message.isSQLiteDebug()) {
+            return VIEW_TYPE_DEBUG_LATEST;
         } else {
-            return VIEW_TYPE_MESSAGE_SENT;
+            return VIEW_TYPE_HAOHANYH;
         }
     }
 
     // 创建不同类型的 ViewHolder
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == VIEW_TYPE_MESSAGE_SENT) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_chat_sent, parent, false);
-            return new SentMessageHolder(view);
-        } else if (viewType == VIEW_TYPE_DEBUG_RECEIVED) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_debug, parent, false);
-            return new ReceivedDEBUGMessageHolder(view);
-        } else {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_chat_received, parent, false);
-            return new ReceivedMessageHolder(view);
+        View view;
+        switch (viewType) {
+            case VIEW_TYPE_MESSAGE_RECEIVED:
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_chat_received, parent, false);
+                return new ReceivedMessageHolder(view);
+            case VIEW_TYPE_MESSAGE_SENT:
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_chat_sent, parent, false);
+                return new SentMessageHolder(view);
+            case VIEW_TYPE_DEBUG_RECEIVED:
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_debug, parent, false);
+                return new ReceivedDEBUGMessageHolder(view);
+            case VIEW_TYPE_MESSAGE_RECEIVED_LATEST:
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_chat_received_history, parent, false);
+                return new ReceivedLatestMessageHolder(view);
+            case VIEW_TYPE_MESSAGE_SENT_LATEST:
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_chat_sent_history, parent, false);
+                return new SentLatestMessageHolder(view);
+            case VIEW_TYPE_DEBUG_LATEST:
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_debug, parent, false);
+                return new ReceivedDEBUGMessageHolder(view);
+            default:
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_haohanyh, parent, false);
+                return new HaohanyhMessageHolder(view);
         }
     }
 
@@ -69,12 +107,22 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ChatMessage message = chatMessages.get(position);
-        if (holder.getItemViewType() == VIEW_TYPE_MESSAGE_SENT) {
+        int viewType = holder.getItemViewType();
+
+        if (viewType == VIEW_TYPE_MESSAGE_SENT) {
             ((SentMessageHolder) holder).bind(message);
-        } else if (holder.getItemViewType() == VIEW_TYPE_DEBUG_RECEIVED) {
-            ((ReceivedDEBUGMessageHolder) holder).bind(message);
-        } else {
+        } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
             ((ReceivedMessageHolder) holder).bind(message);
+        } else if (viewType == VIEW_TYPE_DEBUG_RECEIVED) {
+            ((ReceivedDEBUGMessageHolder) holder).bind(message);
+        } else if (viewType == VIEW_TYPE_MESSAGE_SENT_LATEST) {
+            ((SentLatestMessageHolder) holder).bind(message);
+        } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED_LATEST) {
+            ((ReceivedLatestMessageHolder) holder).bind(message);
+        } else if (viewType == VIEW_TYPE_DEBUG_LATEST) {
+            ((ReceivedDEBUGMessageHolder) holder).bind(message);
+        } else if (viewType == VIEW_TYPE_HAOHANYH) {
+            ((HaohanyhMessageHolder) holder).bind(message);
         }
     }
 
@@ -103,6 +151,26 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+    // 接收消息的ViewHolder
+    private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
+        TextView messageText,timestampText;
+
+        ReceivedMessageHolder(View itemView) {
+            super(itemView);
+            messageText = itemView.findViewById(R.id.text_message_body);
+            timestampText = itemView.findViewById(R.id.text_message_time);
+
+            // 设置自定义字体
+            ChatUIFontUtils.applyCustomFont(context, messageText);
+        }
+
+        void bind(ChatMessage message) {
+            messageText.setText(message.getMessage());
+            timestampText.setText(message.getTimestamp());
+        }
+    }
+
+
     // 接收DEBUG消息的ViewHolder
     private class ReceivedDEBUGMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText;
@@ -118,7 +186,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 @Override
                 public boolean onLongClick(View view) {
                     String result = messageText.getText().toString().trim();
-                    
+
                     if (result.equals(ChatUtils.getPrefixLogConnected())) {
                         ChatUIAlertDialog.showSerialLog(context,
                                 ChatUtils.getPrefixLogConnected(),
@@ -211,22 +279,95 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    // 接收消息的ViewHolder
-    private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
+    // 存储于数据库的历史发送消息的ViewHolder
+    private class SentLatestMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText,timestampText;
 
-        ReceivedMessageHolder(View itemView) {
+        SentLatestMessageHolder(@NonNull View itemView) {
             super(itemView);
             messageText = itemView.findViewById(R.id.text_message_body);
             timestampText = itemView.findViewById(R.id.text_message_time);
 
             // 设置自定义字体
-            ChatUIFontUtils.applyCustomFont(context, messageText);
+            ChatUIFontUtils.applyCustomFont(context, messageText, 2);
+
+            // 设置长按监听器
+            timestampText.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Toast.makeText(context, "这个历史消息是:" + messageText.getText().toString() + "\n" + timestampText.getText().toString(), Toast.LENGTH_LONG).show();
+                    return true; // 返回true表示事件已处理
+                }
+            });
+
+            // 设置随机颜色
+            setRandomTextColor(timestampText);
         }
 
         void bind(ChatMessage message) {
             messageText.setText(message.getMessage());
             timestampText.setText(message.getTimestamp());
+        }
+
+        private void setRandomTextColor(TextView textView) {
+            Random random = new Random();
+            int red = random.nextInt(156) + 100; // 100-255
+            int green = random.nextInt(156) + 100; // 100-255
+            int blue = random.nextInt(156) + 100; // 100-255
+            int color = Color.rgb(red, green, blue);
+            textView.setTextColor(color);
+        }
+    }
+
+    // 存储于数据库的历史接收消息的ViewHolder
+    private class ReceivedLatestMessageHolder extends RecyclerView.ViewHolder {
+        TextView messageText,timestampText;
+
+        ReceivedLatestMessageHolder(@NonNull View itemView) {
+            super(itemView);
+            messageText = itemView.findViewById(R.id.text_message_body);
+            timestampText = itemView.findViewById(R.id.text_message_time);
+
+            // 设置自定义字体
+            ChatUIFontUtils.applyCustomFont(context, messageText, 2);
+
+            // 设置长按监听器
+            timestampText.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Toast.makeText(context, "这个历史消息是:" + messageText.getText().toString() + "\n" + timestampText.getText().toString(), Toast.LENGTH_LONG).show();
+                    return true; // 返回true表示事件已处理
+                }
+            });
+
+            // 设置随机颜色
+            setRandomTextColor(timestampText);
+        }
+
+        void bind(ChatMessage message) {
+            messageText.setText(message.getMessage());
+            timestampText.setText(message.getTimestamp());
+        }
+
+        private void setRandomTextColor(TextView textView) {
+            Random random = new Random();
+            int red = random.nextInt(156) + 100; // 100-255
+            int green = random.nextInt(156) + 100; // 100-255
+            int blue = random.nextInt(156) + 100; // 100-255
+            int color = Color.rgb(red, green, blue);
+            textView.setTextColor(color);
+        }
+    }
+
+    // 浩瀚银河预留的ViewHolder
+    private class HaohanyhMessageHolder extends RecyclerView.ViewHolder {
+
+        HaohanyhMessageHolder(@NonNull View itemView) {
+            super(itemView);
+        }
+
+        void bind(ChatMessage message) {
+
         }
     }
 
