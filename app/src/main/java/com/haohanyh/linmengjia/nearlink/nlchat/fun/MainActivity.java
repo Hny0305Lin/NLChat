@@ -466,6 +466,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         if (isChecked) {
                             ChatUtils.setSqliteHistory(true);
                             SnackBarToastForDebug(context,"您已开始展示您的聊天记录啦!","目前为" + ChatUtils.isSqliteHistory(),0,Snackbar.LENGTH_SHORT);
+                            if (ChatUtils.isSqliteHistory() && ChatUtils.isShowSqliteHistory()) {
+                                loadMessagesFromDatabase();
+                                ChatUtils.setShowSqliteHistory(false);  //已经显示一次了
+                            } else if (!ChatUtils.isShowSqliteHistory()){
+                                SnackBarToastForDebug(context,"您已经展示过了，请往上翻阅!", "推荐查阅!",0,Snackbar.LENGTH_SHORT);
+                            }
                         } else {
                             if (ChatUIAlertDialog.showNormal(compoundButton.getContext(), "历史设备记录(SQLite)", "您确定要停止展示聊天数据在UI上吗？", compoundButton))
                                 ChatUtils.setSqliteHistory(false);
@@ -538,7 +544,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         HhandlerI.sendEmptyMessage(31);
 
         //如果SQLite有记录，可以显示在UI上
-        if (ChatUtils.isSqliteHistory()) loadMessagesFromDatabase();
+        if (ChatUtils.isSqliteHistory()) {
+            loadMessagesFromDatabase();
+
+            SettingsForHistory.setChecked(true);
+            ChatUtils.setShowSqliteHistory(false);  //已经显示一次了
+        }
 
         //背景处理
         //注册图片选择器的启动器

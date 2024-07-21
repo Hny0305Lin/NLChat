@@ -120,9 +120,9 @@ public class ChatMessageQueueUpdater {
             } else if (isDebug) {
                 chatMessages.add(new ChatMessage(newMessage, isDebug, loglevel));
             } else if (isHistoryUser) {
-                chatMessages.add(new ChatMessage(newMessage, "History User," + historyTime, true, 1));
+                chatMessages.add(new ChatMessage(newMessage, "History User,\n " + historyTime, true, 1));
             } else if (isHistoryMe) {
-                chatMessages.add(new ChatMessage(newMessage, "History Me," + historyTime, true, 2));
+                chatMessages.add(new ChatMessage(newMessage, "History Me,\n " + historyTime, true, 2));
             } else if (isHistoryDebug) {
                 chatMessages.add(new ChatMessage(newMessage, "", true, 3));
             }
