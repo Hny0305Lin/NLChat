@@ -45,7 +45,7 @@ public class ChatProcessorForExtract {
 
     //处理聊天数据
     public static void processChat(Context context, String string) {
-        if (ChatUtils.isClipMessages()) {
+        if (ChatUtilsForSettings.isClipMessages()) {
             // 清空 extractedNumbers 等String以确保每次都是最新的提取结果
             extractedNumbers.setLength(0);
             extractedUrls.setLength(0);

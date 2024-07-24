@@ -15,7 +15,7 @@ public class ChatUIBackgroundUtils {
 
     // 设置启动时的背景
     public static void setSavedBackground(Context context, View mainUIView) {
-        String backgroundPath = ChatFileUtils.getBackgroundPath(context);
+        String backgroundPath = ChatUtilsForFiles.getBackgroundPath(context);
         if (backgroundPath != null) {
             Uri backgroundUri = Uri.parse(backgroundPath);
             try {

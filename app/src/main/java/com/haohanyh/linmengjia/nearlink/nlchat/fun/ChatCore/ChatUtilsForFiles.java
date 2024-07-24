@@ -9,7 +9,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class ChatFileUtils {
+public class ChatUtilsForFiles {
     private static final String FILE_NAME = "background_path.txt";
 
     public static void saveBackgroundPath(Context context, String path) {

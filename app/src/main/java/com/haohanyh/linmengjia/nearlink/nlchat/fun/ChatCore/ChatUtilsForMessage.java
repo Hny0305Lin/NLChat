@@ -1,11 +1,16 @@
 /* 受Haohanyh Computer Software Products Open Source LICENSE保护 https://github.com/Hny0305Lin/LICENSE/blob/main/LICENSE */
 package com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore;
 
-public class ChatMessage {
+public class ChatUtilsForMessage {
     private static final String TAG = "ChatMessage & NLChat";
+
+    private ChatMessageUUID chatMessageUUID;
+
     private String message;
     private String timestamp;
     private int loglevel;
+    private String uuid;
+
     private boolean isUser;
     private boolean isMe;
     private boolean isDebug;
@@ -20,10 +25,13 @@ public class ChatMessage {
      * @param timestamp User消息时间
      * @param isUser    传参
      */
-    public ChatMessage(String message, String timestamp, boolean isUser) {
+    public ChatUtilsForMessage(String message, String timestamp, boolean isUser, String uuid) {
         this.message = message;
         this.timestamp = timestamp;
         this.isUser = isUser;
+
+        chatMessageUUID = new ChatMessageUUID();
+        chatMessageUUID.setUUID(uuid);
     }
 
     /**
@@ -32,10 +40,13 @@ public class ChatMessage {
      * @param isMe      传参
      * @param timestamp Me消息时间
      */
-    public ChatMessage(String message, boolean isMe, String timestamp) {
+    public ChatUtilsForMessage(String message, boolean isMe, String timestamp, String uuid) {
         this.message = message;
         this.timestamp = timestamp;
         this.isMe = isMe;
+
+        chatMessageUUID = new ChatMessageUUID();
+        chatMessageUUID.setUUID(uuid);
     }
 
     /**
@@ -44,7 +55,7 @@ public class ChatMessage {
      * @param isDebug   传参
      * @param loglevel  日志等级
      */
-    public ChatMessage(String message, boolean isDebug, int loglevel) {
+    public ChatUtilsForMessage(String message, boolean isDebug, int loglevel) {
         this.message = message;
         this.isDebug = isDebug;
         this.loglevel = loglevel;
@@ -58,7 +69,7 @@ public class ChatMessage {
      * @param latest    判断
      * @param sqlite    识别为who，1为user历史，2为me历史，3为debug历史
      */
-    public ChatMessage(String message, String timestamp, boolean latest, int sqlite) {
+    public ChatUtilsForMessage(String message, String timestamp, boolean latest, int sqlite) {
         this.message = message;
         this.timestamp = timestamp;
 

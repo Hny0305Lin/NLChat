@@ -16,6 +16,7 @@ public class ChatUIUpdater {
     private Queue<String> serverDebugQueue;
     private ChatMessageQueueUpdater serverUpdater;
     private ChatMessageQueueUpdater serverDebugUpdater;
+    private ChatMessageUUID chatMessageUUID;
     private final int MAX_MESSAGES = 8; // 假设的最大消息数
 
     public ChatUIUpdater(Context context,
@@ -32,24 +33,27 @@ public class ChatUIUpdater {
         this.serverDebugQueue = serverDebugQueue;
         this.serverUpdater = serverUpdater;
         this.serverDebugUpdater = serverDebugUpdater;
+
+        chatMessageUUID = new ChatMessageUUID();
     }
 
     public void updateUI(String processedString) {
         // 处理完再打印到UI上
         ((Activity) context).runOnUiThread(() -> {
             // 如果需要存储到数据库中
-            if (ChatUtils.isSqlitemanager()) {
+            if (ChatUtilsForSettings.isSqlitemanager()) {
                 String timestamp = chatTimestamp.saveCurrentTimestamp();
-                if (ChatUtils.isShowUartLog() && ChatUtils.isSetDebugLog()) {
+                if (ChatUtilsForSettings.isShowUartLog() && ChatUtilsForSettings.isSetDebugLog()) {
                     // 如果是debuglog，则分开存储
                     chatMessageDatabaseManager.saveDebugMessageToDatabase(timestamp, processedString, "UserDebug");
-                } else {
-                    chatMessageDatabaseManager.saveMessageToDatabase(timestamp, processedString, "User");
                 }
+
+                chatMessageDatabaseManager.saveMessageToDatabase(timestamp, processedString, "User");
+                chatMessageDatabaseManager.saveMessageAndUUIDToDatabase(timestamp, processedString, "User", chatMessageUUID.getUUID());
             }
             // 如果需要UI滚动消息
-            if (ChatUtils.isScrollingMessages()) {
-                if (ChatUtils.isShowUartLog() && ChatUtils.isSetDebugLog()) {
+            if (ChatUtilsForSettings.isScrollingMessages()) {
+                if (ChatUtilsForSettings.isShowUartLog() && ChatUtilsForSettings.isSetDebugLog()) {
                     if (serverDebugQueue.size() >= MAX_MESSAGES) {
                         serverDebugQueue.poll();
                     }
@@ -65,7 +69,7 @@ public class ChatUIUpdater {
                     MainAPP.Vibrate(context);
                 }
             } else {
-                if (ChatUtils.isShowUartLog() && ChatUtils.isSetDebugLog()) {
+                if (ChatUtilsForSettings.isShowUartLog() && ChatUtilsForSettings.isSetDebugLog()) {
                     serverDebugQueue.add(processedString);
                     serverDebugUpdater.updateTextView();
                     MainAPP.Vibrate(context);

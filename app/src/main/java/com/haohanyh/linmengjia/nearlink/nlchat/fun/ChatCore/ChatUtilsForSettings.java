@@ -1,7 +1,7 @@
 /* 受Haohanyh Computer Software Products Open Source LICENSE保护 https://github.com/Hny0305Lin/LICENSE/blob/main/LICENSE */
 package com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore;
 
-public class ChatUtils {
+public class ChatUtilsForSettings {
     //这里设置的是UI相关，是否做到消息滚动展示在UI上，而不是全部展示，全部展示会占用大量UI资源
     private static boolean showUartLog = false; // 控制是否启用显示串口Log，这里设置是没用的（因为不是Final）
     private static final boolean setDebugLog = true; // 控制是否启用显示串口Log，打印在UI上（开发者使用）
@@ -11,7 +11,7 @@ public class ChatUtils {
     private static boolean sqlitemanager = true; // 控制是否启用SQLite存储功能
     private static boolean sqlitehistory = false; // 控制是否启用SQLite历史记录显示功能
     private static boolean showsqlitehistory = true; // 控制是否启用SQLite历史记录显示，这里设置是没用的（因为不是Final）
-    private static final boolean sqlitehistorymanagerlog = false; // 控制是否启用SQLite保存存储、历史记录显示Logcat（开发者使用）
+    private static final boolean sqlitehistorymanagerlog = true; // 控制是否启用SQLite保存存储、历史记录显示Logcat（开发者使用）
     //这里设置的是跟C代码相关的，白名单获取聊天文本，当这些文本出现在串口通讯里面的时候，提取这String后者即可，期间过滤掉前者和大量串口log。
     private static final String PREFIX_SERVER = " Let's start chatting, This is the content of the server:";
     private static final String PREFIX_CLIENT = " Let's start chatting, This is the content of the client:";
@@ -43,7 +43,7 @@ public class ChatUtils {
     // 控制是否启用显示串口Log，打印在UI上（开发者使用）
     public static boolean isShowUartLog() { return showUartLog; }
 
-    public static void setShowUartLog(boolean showUartLog) { ChatUtils.showUartLog = showUartLog; }
+    public static void setShowUartLog(boolean showUartLog) { ChatUtilsForSettings.showUartLog = showUartLog; }
 
     public static boolean isSetDebugLog() { return setDebugLog;}
     //控制是否启用滚动消息功能
@@ -51,19 +51,19 @@ public class ChatUtils {
     //控制是否启用剪贴板功能和设置
     public static boolean isClipMessages() { return clipMessages; }
 
-    public static void setClipMessages(boolean clipMessages) { ChatUtils.clipMessages = clipMessages; }
+    public static void setClipMessages(boolean clipMessages) { ChatUtilsForSettings.clipMessages = clipMessages; }
     //控制是否启用SQLite功能
     public static boolean isSqlitemanager() { return sqlitemanager; }
 
-    public static void setSqlitemanager(boolean sqlitemanager) { ChatUtils.sqlitemanager = sqlitemanager; }
+    public static void setSqlitemanager(boolean sqlitemanager) { ChatUtilsForSettings.sqlitemanager = sqlitemanager; }
     //控制是否启用SQLite历史记录功能
     public static boolean isSqliteHistory() { return sqlitehistory; }
 
-    public static void setSqliteHistory(boolean sqlitehistory) { ChatUtils.sqlitehistory = sqlitehistory; }
+    public static void setSqliteHistory(boolean sqlitehistory) { ChatUtilsForSettings.sqlitehistory = sqlitehistory; }
 
     public static boolean isShowSqliteHistory() { return showsqlitehistory; }
 
-    public static void setShowSqliteHistory(boolean showsqlitehistory) { ChatUtils.showsqlitehistory = showsqlitehistory; }
+    public static void setShowSqliteHistory(boolean showsqlitehistory) { ChatUtilsForSettings.showsqlitehistory = showsqlitehistory; }
     //控制是否启用SQLite保存存储、历史记录显示Logcat
     public static boolean isSqlitehistorymanagerlog() { return sqlitehistorymanagerlog; }
     //对方为星闪服务端（User）

@@ -23,6 +23,7 @@ public class SQLiteDataBaseAPP {
     public void CreateSql(String SDPath) {
         sqLiteDataBaseForAPP = SQLiteDatabase.openOrCreateDatabase(SDPath + "/NLChat.db",null);
         createChatTable();
+        createChatUUIDTable();
         createDebugTable();
         createVersionTable();
     }
@@ -35,6 +36,17 @@ public class SQLiteDataBaseAPP {
                         "message TEXT, " +
                         "sender TEXT, " +
                         "timestamp TEXT);";
+        sqLiteDataBaseForAPP.execSQL(TABLE_CREATE);
+    }
+
+    //创建带UUID的消息表，存储消息、相关用户、聊天时间，绑定UUID
+    private void createChatUUIDTable() {
+        String TABLE_CREATE =
+                "CREATE TABLE IF NOT EXISTS messagesuuid (" +
+                        "message TEXT, " +
+                        "sender TEXT, " +
+                        "timestamp TEXT, " +
+                        "uuid TEXT PRIMARY KEY);"; // 使用 UUID 作为主键
         sqLiteDataBaseForAPP.execSQL(TABLE_CREATE);
     }
 
@@ -64,6 +76,16 @@ public class SQLiteDataBaseAPP {
         values.put("sender", sender);
         values.put("timestamp", timestamp);
         sqLiteDataBaseForAPP.insert("messages", null, values);
+    }
+
+    //保存带UUID消息到数据库
+    public void saveMessageToDatabase(String message, String sender, String timestamp, String uuid) {
+        ContentValues values = new ContentValues();
+        values.put("message", message);
+        values.put("sender", sender);
+        values.put("timestamp", timestamp);
+        values.put("uuid", uuid);
+        sqLiteDataBaseForAPP.insertWithOnConflict("messagesuuid", null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     //保存此时日志到数据库

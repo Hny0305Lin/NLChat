@@ -21,8 +21,10 @@ public class ChatMessageQueueUpdater {
 
     private ChatTimestamp chatTimestamp = new ChatTimestamp(); // 聊天时间戳
 
+    private ChatMessageUUID chatMessageUUID = new ChatMessageUUID(); // UUID 生成器
+
     private Queue<String> messageQueue; // 消息队列
-    private List<ChatMessage> chatMessages; // 聊天消息列表
+    private List<ChatUtilsForMessage> chatUtilsForMessages; // 聊天消息列表
     private ChatAdapter chatAdapter; // 聊天适配器
     private String logPrefix; // 日志前缀，用于区分不同的消息队列
     private Queue<String> timesHistory; // 历史消息时间戳队列，用于打印历史消息时间
@@ -34,9 +36,9 @@ public class ChatMessageQueueUpdater {
      * @param messageQueue 消息队列
      * @param logPrefix 日志前缀
      */
-    public ChatMessageQueueUpdater(Queue<String> messageQueue, List<ChatMessage> chatMessages, ChatAdapter chatAdapter, String logPrefix, RecyclerView recyclerView) {
+    public ChatMessageQueueUpdater(Queue<String> messageQueue, List<ChatUtilsForMessage> chatUtilsForMessages, ChatAdapter chatAdapter, String logPrefix, RecyclerView recyclerView) {
         this.messageQueue = messageQueue;
-        this.chatMessages = chatMessages;
+        this.chatUtilsForMessages = chatUtilsForMessages;
         this.chatAdapter = chatAdapter;
         this.logPrefix = logPrefix;
         this.recyclerView = recyclerView;
@@ -47,9 +49,9 @@ public class ChatMessageQueueUpdater {
      * @param messageQueue 消息队列
      * @param loglevel 日志等级
      */
-    public ChatMessageQueueUpdater(Queue<String> messageQueue, List<ChatMessage> chatMessages, ChatAdapter chatAdapter, String logPrefix, RecyclerView recyclerView, int loglevel) {
+    public ChatMessageQueueUpdater(Queue<String> messageQueue, List<ChatUtilsForMessage> chatUtilsForMessages, ChatAdapter chatAdapter, String logPrefix, RecyclerView recyclerView, int loglevel) {
         this.messageQueue = messageQueue;
-        this.chatMessages = chatMessages;
+        this.chatUtilsForMessages = chatUtilsForMessages;
         this.chatAdapter = chatAdapter;
         this.logPrefix = logPrefix;
         this.recyclerView = recyclerView;
@@ -61,9 +63,9 @@ public class ChatMessageQueueUpdater {
      * @param messageQueue 消息队列
      * @param logPrefix 日志前缀
      */
-    public ChatMessageQueueUpdater(Queue<String> messageQueue, List<ChatMessage> chatMessages, ChatAdapter chatAdapter, String logPrefix, Queue<String> timesHistory, RecyclerView recyclerView) {
+    public ChatMessageQueueUpdater(Queue<String> messageQueue, List<ChatUtilsForMessage> chatUtilsForMessages, ChatAdapter chatAdapter, String logPrefix, Queue<String> timesHistory, RecyclerView recyclerView) {
         this.messageQueue = messageQueue;
-        this.chatMessages = chatMessages;
+        this.chatUtilsForMessages = chatUtilsForMessages;
         this.chatAdapter = chatAdapter;
         this.logPrefix = logPrefix;
         this.timesHistory = timesHistory;
@@ -112,19 +114,20 @@ public class ChatMessageQueueUpdater {
 
             String timestamp = chatTimestamp.getCurrentTimestamp(); // 获取当前时间戳，展示在ChatUI上
             String historyTime = timesHistory != null && !timesHistory.isEmpty() ? timesHistory.poll() : ""; // 获取并移除历史消息记录时间戳队列中的第一个时间数据
+            String uuid = chatMessageUUID.generateUUID(); // 生成UUID
 
             if (isUser) {
-                chatMessages.add(new ChatMessage(newMessage, timestamp, isUser));
+                chatUtilsForMessages.add(new ChatUtilsForMessage(newMessage, timestamp, isUser, uuid));
             } else if (isMe) {
-                chatMessages.add(new ChatMessage(newMessage, isMe, timestamp));
+                chatUtilsForMessages.add(new ChatUtilsForMessage(newMessage, isMe, timestamp, uuid));
             } else if (isDebug) {
-                chatMessages.add(new ChatMessage(newMessage, isDebug, loglevel));
+                chatUtilsForMessages.add(new ChatUtilsForMessage(newMessage, isDebug, loglevel));
             } else if (isHistoryUser) {
-                chatMessages.add(new ChatMessage(newMessage, "History User,\n " + historyTime, true, 1));
+                chatUtilsForMessages.add(new ChatUtilsForMessage(newMessage, "History User,\n " + historyTime, true, 1));
             } else if (isHistoryMe) {
-                chatMessages.add(new ChatMessage(newMessage, "History Me,\n " + historyTime, true, 2));
+                chatUtilsForMessages.add(new ChatUtilsForMessage(newMessage, "History Me,\n " + historyTime, true, 2));
             } else if (isHistoryDebug) {
-                chatMessages.add(new ChatMessage(newMessage, "", true, 3));
+                chatUtilsForMessages.add(new ChatUtilsForMessage(newMessage, "", true, 3));
             }
         }
 
@@ -132,7 +135,7 @@ public class ChatMessageQueueUpdater {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                chatAdapter.updateMessages(chatMessages, recyclerView); // 更新消息并滚动到底部
+                chatAdapter.updateMessages(chatUtilsForMessages, recyclerView); // 更新消息并滚动到底部
             }
         });
 

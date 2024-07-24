@@ -57,8 +57,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.haohanyh.linmengjia.nearlink.nlchat.ch34x.CH34xUARTDriver;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatAdapter;
-import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatFileUtils;
-import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessage;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessageUUID;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtilsForFiles;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtilsForMessage;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessageQueueUpdater;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatProcessorForExtract;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessageDatabaseManager;
@@ -67,7 +68,7 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIAlertDialog;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIAnimationUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIBackgroundUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIUpdater;
-import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtils;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtilsForSettings;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatService.MyForegroundService;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.Premission.NearLinkChatGetSomePermission;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.array;
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AppCompatTextView NearLinkNewUIUserTitle;
     private RecyclerView recyclerView;
     private ChatAdapter chatAdapter;
-    private List<ChatMessage> chatMessages = new ArrayList<>();
+    private List<ChatUtilsForMessage> chatUtilsForMessages = new ArrayList<>();
 
     private Message MessageTV_Text;
     private TextView APPRunResult,MobileUSBResult,UARTResult;
@@ -164,6 +165,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //聊天时间戳
     private ChatTimestamp chatTimestamp = new ChatTimestamp();
+
+    //聊天UUID
+    private ChatMessageUUID chatMessageUUID = new ChatMessageUUID();
 
     //调用SQLite
     private SQLiteDataBaseAPP dbHelper;
@@ -237,11 +241,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // App进入后台，启动服务
         startService(new Intent(this, MyForegroundService.class));
         handler.postDelayed(stopServiceRunnable, 10 * 60 * 1000);
-
-        // 关闭数据库
-        if (dbHelper != null) {
-            chatMessageDatabaseManager.closeDatabase();
-        }
     }
 
     @Override
@@ -249,6 +248,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onDestroy();
         // 注销广播接收器
         unregisterReceiver(finishActivityReceiver);
+
+        // 关闭数据库
+        if (dbHelper != null) {
+            chatMessageDatabaseManager.closeDatabase();
+        }
     }
 
     /**
@@ -269,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (Environment.isExternalStorageManager()) {
                 Log.v(TAG,"Android 10以上设备是否获取最高读写文件权限?:" + Environment.isExternalStorageManager());
                 //既然有权限了，带上数据库初始化
-                if (ChatUtils.isSqlitemanager()) {
+                if (ChatUtilsForSettings.isSqlitemanager()) {
                     dbHelper = SQLiteDataBaseAPP.SQLiteData();
                     dbHelper.CreateSql(getFilesDir().getPath());
                 }
@@ -422,17 +426,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //聊天NewUI
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        chatAdapter = new ChatAdapter(this, chatMessages);
+        chatAdapter = new ChatAdapter(this, chatUtilsForMessages);
         recyclerView.setAdapter(chatAdapter);
         recyclerView.setHasFixedSize(true);
 
         //聊天初始化
-        serverUpdater = new ChatMessageQueueUpdater(serverMessageQueue, chatMessages, chatAdapter, "User: ", recyclerView);
-        serverDebugUpdater = new ChatMessageQueueUpdater(serverDebugMessageQueue, chatMessages, chatAdapter, "Debug: ", recyclerView, LogLevel);
-        clientUpdater = new ChatMessageQueueUpdater(clientMessageQueue, chatMessages, chatAdapter, "Me: ", recyclerView);
+        serverUpdater = new ChatMessageQueueUpdater(serverMessageQueue, chatUtilsForMessages, chatAdapter, "User: ", recyclerView);
+        serverDebugUpdater = new ChatMessageQueueUpdater(serverDebugMessageQueue, chatUtilsForMessages, chatAdapter, "Debug: ", recyclerView, LogLevel);
+        clientUpdater = new ChatMessageQueueUpdater(clientMessageQueue, chatUtilsForMessages, chatAdapter, "Me: ", recyclerView);
 
-        serverHistoryUpdater = new ChatMessageQueueUpdater(serverHistoryMessageQueue, chatMessages, chatAdapter, "UserHistory: ", serverHistoryTimestampQueue, recyclerView);
-        clientHistoryUpdater = new ChatMessageQueueUpdater(clientHistoryMessageQueue, chatMessages, chatAdapter, "MeHistory: ", clientHistoryTimestampQueue, recyclerView);
+        serverHistoryUpdater = new ChatMessageQueueUpdater(serverHistoryMessageQueue, chatUtilsForMessages, chatAdapter, "UserHistory: ", serverHistoryTimestampQueue, recyclerView);
+        clientHistoryUpdater = new ChatMessageQueueUpdater(clientHistoryMessageQueue, chatUtilsForMessages, chatAdapter, "MeHistory: ", clientHistoryTimestampQueue, recyclerView);
 
         //聊天串口为INFO
 //        serverDebugSetColor = new ChatMessageQueueUpdater(LogLevel);
@@ -453,29 +457,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         SnackBarToastForDebug(context,"敬请期待!","如有不适，那没办法，做的慢怪我咯o(*^＠^*)o",0,Snackbar.LENGTH_SHORT);
                     } else if (compoundButton.getId() == id.cbSettingsForSaveSQL) {
                         if (isChecked) {
-                                ChatUtils.setSqlitemanager(true);
-                            SnackBarToastForDebug(context,"您已开始保存您的聊天记录啦!","目前为" + ChatUtils.isSqlitemanager(),0,Snackbar.LENGTH_SHORT);
+                                ChatUtilsForSettings.setSqlitemanager(true);
+                            SnackBarToastForDebug(context,"您已开始保存您的聊天记录啦!","目前为" + ChatUtilsForSettings.isSqlitemanager(),0,Snackbar.LENGTH_SHORT);
                         } else {
                             if (ChatUIAlertDialog.showNormal(compoundButton.getContext(), "聊天保存(SQLite)", "您确定要停止保存聊天数据吗？停止保存您的聊天，将会在接下来聊天时无法保存内容，可能会造成聊天记录丢失。", compoundButton))
-                                ChatUtils.setSqlitemanager(false);
-                            SnackBarToastForDebug(context,"已为您取消保存聊天记录!","目前为" + ChatUtils.isSqlitemanager(),0,Snackbar.LENGTH_SHORT);
+                                ChatUtilsForSettings.setSqlitemanager(false);
+                            SnackBarToastForDebug(context,"已为您取消保存聊天记录!","目前为" + ChatUtilsForSettings.isSqlitemanager(),0,Snackbar.LENGTH_SHORT);
                         }
                     } else if (compoundButton.getId() == id.cbSettingsForDelSQL) {
                         SnackBarToastForDebug(context,"敬请期待!","如有不适，那没办法，做的慢怪我咯o(*^＠^*)o",0,Snackbar.LENGTH_SHORT);
                     } else if (compoundButton.getId() == id.cbSettingsForHistory) {
                         if (isChecked) {
-                            ChatUtils.setSqliteHistory(true);
-                            SnackBarToastForDebug(context,"您已开始展示您的聊天记录啦!","目前为" + ChatUtils.isSqliteHistory(),0,Snackbar.LENGTH_SHORT);
-                            if (ChatUtils.isSqliteHistory() && ChatUtils.isShowSqliteHistory()) {
+                            ChatUtilsForSettings.setSqliteHistory(true);
+                            SnackBarToastForDebug(context,"您已开始展示您的聊天记录啦!","目前为" + ChatUtilsForSettings.isSqliteHistory(),0,Snackbar.LENGTH_SHORT);
+                            if (ChatUtilsForSettings.isSqliteHistory() && ChatUtilsForSettings.isShowSqliteHistory()) {
                                 loadMessagesFromDatabase();
-                                ChatUtils.setShowSqliteHistory(false);  //已经显示一次了
-                            } else if (!ChatUtils.isShowSqliteHistory()){
+                                ChatUtilsForSettings.setShowSqliteHistory(false);  //已经显示一次了
+                            } else if (!ChatUtilsForSettings.isShowSqliteHistory()){
                                 SnackBarToastForDebug(context,"您已经展示过了，请往上翻阅!", "推荐查阅!",0,Snackbar.LENGTH_SHORT);
                             }
                         } else {
                             if (ChatUIAlertDialog.showNormal(compoundButton.getContext(), "历史设备记录(SQLite)", "您确定要停止展示聊天数据在UI上吗？", compoundButton))
-                                ChatUtils.setSqliteHistory(false);
-                            SnackBarToastForDebug(context,"已为您取消展示聊天记录!","目前为" + ChatUtils.isSqliteHistory(),0,Snackbar.LENGTH_SHORT);
+                                ChatUtilsForSettings.setSqliteHistory(false);
+                            SnackBarToastForDebug(context,"已为您取消展示聊天记录!","目前为" + ChatUtilsForSettings.isSqliteHistory(),0,Snackbar.LENGTH_SHORT);
                         }
                     } else if (compoundButton.getId() == id.cbSettingsForClearSCR) {
                         SnackBarToastForDebug(context,"敬请期待!","如有不适，那没办法，做的慢怪我咯o(*^＠^*)o",0,Snackbar.LENGTH_SHORT);
@@ -483,12 +487,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         SnackBarToastForDebug(context,"敬请期待!","如有不适，那没办法，做的慢怪我咯o(*^＠^*)o",0,Snackbar.LENGTH_SHORT);
                     } else if (compoundButton.getId() == id.cbSettingsForClip) {
                         if (isChecked) {
-                            ChatUtils.setClipMessages(true);
-                            SnackBarToastForDebug(context,"您已开启剪贴板功能!","目前为" + ChatUtils.isClipMessages(),0,Snackbar.LENGTH_SHORT);
+                            ChatUtilsForSettings.setClipMessages(true);
+                            SnackBarToastForDebug(context,"您已开启剪贴板功能!","目前为" + ChatUtilsForSettings.isClipMessages(),0,Snackbar.LENGTH_SHORT);
                         } else {
                             if (ChatUIAlertDialog.showNormal(compoundButton.getContext(), "聊天文本进入剪贴板", "您确定要停止剪贴板吗？剪贴板功能可以帮您自动按规则捕获内容，可以很大程度上帮助到您手动任务耗时的情况，取消则需要您自行处理屏幕上的UI信息。", compoundButton))
-                                ChatUtils.setClipMessages(false);
-                            SnackBarToastForDebug(context,"已为您取消剪贴板功能!","目前为" + ChatUtils.isClipMessages(),0,Snackbar.LENGTH_SHORT);
+                                ChatUtilsForSettings.setClipMessages(false);
+                            SnackBarToastForDebug(context,"已为您取消剪贴板功能!","目前为" + ChatUtilsForSettings.isClipMessages(),0,Snackbar.LENGTH_SHORT);
                         }
                     } else if (compoundButton.getId() == id.cbSettingsForPush) {
                         SnackBarToastForDebug(context,"敬请期待!","如有不适，那没办法，做的慢怪我咯o(*^＠^*)o",0,Snackbar.LENGTH_SHORT);
@@ -544,11 +548,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         HhandlerI.sendEmptyMessage(31);
 
         //如果SQLite有记录，可以显示在UI上
-        if (ChatUtils.isSqliteHistory()) {
+        if (ChatUtilsForSettings.isSqliteHistory()) {
             loadMessagesFromDatabase();
 
             SettingsForHistory.setChecked(true);
-            ChatUtils.setShowSqliteHistory(false);  //已经显示一次了
+            ChatUtilsForSettings.setShowSqliteHistory(false);  //已经显示一次了
         }
 
         //背景处理
@@ -561,7 +565,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Drawable drawable = Drawable.createFromStream(inputStream, selectedImageUri.toString());
                     findViewById(R.id.MainUI).setBackground(drawable);
 
-                    ChatFileUtils.saveBackgroundPath(this, selectedImageUri.toString());
+                    ChatUtilsForFiles.saveBackgroundPath(this, selectedImageUri.toString());
 
                     // 设置 新旧聊天卡片布局 CardView 背景为半透明
                     ChatUIBackgroundUtils.setCardViewBackground(findViewById(id.CardIChatNewUI), 0x80FFFFFF);
@@ -646,7 +650,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @SuppressLint("Range") String timestampStr = cursor.getString(cursor.getColumnIndex("timestamp"));
                     @SuppressLint("Range") String message = cursor.getString(cursor.getColumnIndex("message"));
                     @SuppressLint("Range") String sender = cursor.getString(cursor.getColumnIndex("sender"));
-                    if (ChatUtils.isSqlitehistorymanagerlog()) {
+                    if (ChatUtilsForSettings.isSqlitehistorymanagerlog()) {
                         Log.d(TAG, "Message: " + message + ", Sender: " + sender + ", Timestamp: " + timestampStr); // 记录调试日志
                     } else {
                         SnackBarToastForDebug(context,"已开启聊天记录显示，请等待刷新!","谢谢",0,Snackbar.LENGTH_INDEFINITE);
@@ -706,12 +710,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String completeFirstData = string;
             String completeSecondData = "";
             //去掉特定的前缀字符串，然后返回（聊天内容），只有当消息包含特定的前缀时才处理
-            if (completeFirstData.contains(ChatUtils.getPrefixServer()) || completeFirstData.contains(ChatUtils.getPrefixClient())) {
-                if (completeFirstData.startsWith(ChatUtils.getPrefixServer())) {
-                    completeSecondData = completeFirstData.replace(ChatUtils.getPrefixServer(), "").trim();
+            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixServer()) || completeFirstData.contains(ChatUtilsForSettings.getPrefixClient())) {
+                if (completeFirstData.startsWith(ChatUtilsForSettings.getPrefixServer())) {
+                    completeSecondData = completeFirstData.replace(ChatUtilsForSettings.getPrefixServer(), "").trim();
                     Log.v(TAG, "长度：completeSecondData.length="+ completeSecondData.length() + "\t内容：" + completeSecondData);
-                } else if (completeFirstData.startsWith(ChatUtils.getPrefixClient())) {
-                    completeSecondData = completeFirstData.replace(ChatUtils.getPrefixClient(), "").trim();
+                } else if (completeFirstData.startsWith(ChatUtilsForSettings.getPrefixClient())) {
+                    completeSecondData = completeFirstData.replace(ChatUtilsForSettings.getPrefixClient(), "").trim();
                     Log.v(TAG, "长度：completeSecondData.length="+ completeSecondData.length() + "\t内容：" + completeSecondData);
                 }
                 //确保消息以换行符结尾
@@ -720,33 +724,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 //聊天进入剪贴板
-                if (ChatUtils.isClipMessages()) {
+                if (ChatUtilsForSettings.isClipMessages()) {
                     ChatProcessorForExtract.initializeHandler();
                     ChatProcessorForExtract.processChat(context, completeSecondData);
                 }
 
-                ChatUtils.setShowUartLog(false);
-                if (!ChatUtils.isShowUartLog()) {
+                ChatUtilsForSettings.setShowUartLog(false);
+                if (!ChatUtilsForSettings.isShowUartLog()) {
                     return completeSecondData;
                 }
-            } else if (completeFirstData.contains(ChatUtils.getPrefixLogNotConnectedServer())) {
+            } else if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogNotConnectedServer())) {
                 Log.w(TAG, "串口Log内容：" + completeFirstData);
-                if (completeFirstData.startsWith(ChatUtils.getPrefixLogNotConnectedServer()))
-                    if (ChatUtils.isSetDebugLog())
-                        SnackBarToastForDebug(context,"发送失败!\n" + ChatUtils.getPrefixLogNotConnectedServer(),"推荐检查星闪网络",3,Snackbar.LENGTH_SHORT);
+                if (completeFirstData.startsWith(ChatUtilsForSettings.getPrefixLogNotConnectedServer()))
+                    if (ChatUtilsForSettings.isSetDebugLog())
+                        SnackBarToastForDebug(context,"发送失败!\n" + ChatUtilsForSettings.getPrefixLogNotConnectedServer(),"推荐检查星闪网络",3,Snackbar.LENGTH_SHORT);
             } else {
                 Log.d(TAG, "忽略的消息内容：" + completeFirstData);
                 // 处理忽略消息内容
             }
             //连接日志，以下与星闪连接相关
-            if (completeFirstData.contains(ChatUtils.getPrefixLogConnected())) {
+            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogConnected())) {
                 Log.d(TAG, "连接日志：" + completeFirstData);
                 // 处理连接日志
 
-                ChatUtils.setShowUartLog(true);
-                if (ChatUtils.isShowUartLog()) {
+                ChatUtilsForSettings.setShowUartLog(true);
+                if (ChatUtilsForSettings.isShowUartLog()) {
                     Log.d(TAG, "连接日志：" + completeFirstData + "，是否显示?:" + true);
-                    if (ChatUtils.isSetDebugLog()) {
+                    if (ChatUtilsForSettings.isSetDebugLog()) {
                         Log.d(TAG, "连接日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
@@ -754,14 +758,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
             }
-            if (completeFirstData.contains(ChatUtils.getPrefixLogDisconnected())) {
+            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogDisconnected())) {
                 Log.d(TAG, "断开连接日志：" + completeFirstData);
                 // 处理断开连接日志
 
-                ChatUtils.setShowUartLog(true);
-                if (ChatUtils.isShowUartLog()) {
+                ChatUtilsForSettings.setShowUartLog(true);
+                if (ChatUtilsForSettings.isShowUartLog()) {
                     Log.d(TAG, "断开连接日志：" + completeFirstData + "，是否显示?:" + true);
-                    if (ChatUtils.isSetDebugLog()) {
+                    if (ChatUtilsForSettings.isSetDebugLog()) {
                         Log.d(TAG, "断开连接日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
@@ -769,14 +773,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
             }
-            if (completeFirstData.contains(ChatUtils.getPrefixLogAcore())) {
+            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogAcore())) {
                 Log.d(TAG, "ACore日志：" + completeFirstData);
                 // 处理ACore日志
 
-                ChatUtils.setShowUartLog(true);
-                if (ChatUtils.isShowUartLog()) {
+                ChatUtilsForSettings.setShowUartLog(true);
+                if (ChatUtilsForSettings.isShowUartLog()) {
                     Log.d(TAG, "ACore日志：" + completeFirstData + "，是否显示?:" + true);
-                    if (ChatUtils.isSetDebugLog()) {
+                    if (ChatUtilsForSettings.isSetDebugLog()) {
                         Log.d(TAG, "ACore日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
@@ -785,18 +789,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
             //UART服务器日志相关，服务端星闪MAC，为防止获取不到先判断
-            if (completeFirstData.contains(ChatUtils.getPrefixLogNearlinkDevicesAddr())) {
+            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogNearlinkDevicesAddr())) {
                 // 处理采集到星闪MAC地址完成日志
-                if (ChatUtils.isClipMessages()) {
+                if (ChatUtilsForSettings.isClipMessages()) {
                     Log.d(TAG, "采集到服务端星闪MAC地址日志：" + completeFirstData + "，将进入剪贴板!");
                     ChatProcessorForExtract.initializeHandler();
                     ChatProcessorForExtract.processChat(context, completeFirstData);
                 }
 
-                ChatUtils.setShowUartLog(true);
-                if (ChatUtils.isShowUartLog()) {
+                ChatUtilsForSettings.setShowUartLog(true);
+                if (ChatUtilsForSettings.isShowUartLog()) {
                     Log.d(TAG, "采集到服务端星闪MAC地址日志：" + completeFirstData + "，是否显示?:" + true);
-                    if (ChatUtils.isSetDebugLog()) {
+                    if (ChatUtilsForSettings.isSetDebugLog()) {
                         Log.d(TAG, "采集到服务端星闪MAC地址日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
@@ -805,14 +809,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
             //UART服务器日志相关，连接状态
-            if (completeFirstData.contains(ChatUtils.getPrefixLogConnectStateChanged())) {
+            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogConnectStateChanged())) {
                 Log.d(TAG, "连接状态改变日志：" + completeFirstData);
                 // 处理连接状态改变日志
 
-                ChatUtils.setShowUartLog(true);
-                if (ChatUtils.isShowUartLog()) {
+                ChatUtilsForSettings.setShowUartLog(true);
+                if (ChatUtilsForSettings.isShowUartLog()) {
                     Log.d(TAG, "连接状态改变日志：" + completeFirstData + "，是否显示?:" + true);
-                    if (ChatUtils.isSetDebugLog()) {
+                    if (ChatUtilsForSettings.isSetDebugLog()) {
                         Log.d(TAG, "连接状态改变日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
@@ -821,14 +825,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
             //UART服务器日志
-            if (completeFirstData.contains(ChatUtils.getPrefixLogSleUartServer())) {
+            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSleUartServer())) {
                 Log.d(TAG, "UART服务器日志：" + completeFirstData);
                 // 处理UART服务器日志
 
-                ChatUtils.setShowUartLog(true);
-                if (ChatUtils.isShowUartLog()) {
+                ChatUtilsForSettings.setShowUartLog(true);
+                if (ChatUtilsForSettings.isShowUartLog()) {
                     Log.d(TAG, "UART服务器日志：" + completeFirstData + "，是否显示?:" + true);
-                    if (ChatUtils.isSetDebugLog()) {
+                    if (ChatUtilsForSettings.isSetDebugLog()) {
                         Log.d(TAG, "UART服务器日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
@@ -836,14 +840,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
             }
-            if (completeFirstData.contains(ChatUtils.getPrefixLogPairComplete())) {
+            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogPairComplete())) {
                 Log.d(TAG, "配对完成日志：" + completeFirstData);
                 // 处理配对完成日志
 
-                ChatUtils.setShowUartLog(true);
-                if (ChatUtils.isShowUartLog()) {
+                ChatUtilsForSettings.setShowUartLog(true);
+                if (ChatUtilsForSettings.isShowUartLog()) {
                     Log.d(TAG, "配对完成日志：" + completeFirstData + "，是否显示?:" + true);
-                    if (ChatUtils.isSetDebugLog()) {
+                    if (ChatUtilsForSettings.isSetDebugLog()) {
                         Log.d(TAG, "配对完成日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
@@ -851,14 +855,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
             }
-            if (completeFirstData.contains(ChatUtils.getPrefixLogSsapsMtuChanged())) {
+            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSsapsMtuChanged())) {
                 Log.d(TAG, "MTU改变日志：" + completeFirstData);
                 // 处理MTU改变日志
 
-                ChatUtils.setShowUartLog(true);
-                if (ChatUtils.isShowUartLog()) {
+                ChatUtilsForSettings.setShowUartLog(true);
+                if (ChatUtilsForSettings.isShowUartLog()) {
                     Log.d(TAG, "MTU改变日志：" + completeFirstData + "，是否显示?:" + true);
-                    if (ChatUtils.isSetDebugLog()) {
+                    if (ChatUtilsForSettings.isSetDebugLog()) {
                         Log.d(TAG, "MTU改变日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
@@ -866,14 +870,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
             }
-            if (completeFirstData.contains(ChatUtils.getPrefixLogSleAnnounceEnableCallback())) {
+            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSleAnnounceEnableCallback())) {
                 Log.d(TAG, "启用回调日志：" + completeFirstData);
                 // 处理启用回调日志
 
-                ChatUtils.setShowUartLog(true);
-                if (ChatUtils.isShowUartLog()) {
+                ChatUtilsForSettings.setShowUartLog(true);
+                if (ChatUtilsForSettings.isShowUartLog()) {
                     Log.d(TAG, "启用回调日志：" + completeFirstData + "，是否显示?:" + true);
-                    if (ChatUtils.isSetDebugLog()) {
+                    if (ChatUtilsForSettings.isSetDebugLog()) {
                         Log.d(TAG, "启用回调日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
@@ -882,18 +886,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
             //UART服务器日志相关，服务端星闪MAC，为防止获取不到先判断
-            if (completeFirstData.contains(ChatUtils.getPrefixLogClientPairComplete())) {
+            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogClientPairComplete())) {
                 // 处理采集到客户端星闪MAC地址完成日志
-                if (ChatUtils.isClipMessages()) {
+                if (ChatUtilsForSettings.isClipMessages()) {
                     Log.d(TAG, "采集到客户端星闪MAC地址日志：" + completeFirstData + "，将进入剪贴板!");
                     ChatProcessorForExtract.initializeHandler();
                     ChatProcessorForExtract.processChat(context, completeFirstData);
                 }
 
-                ChatUtils.setShowUartLog(true);
-                if (ChatUtils.isShowUartLog()) {
+                ChatUtilsForSettings.setShowUartLog(true);
+                if (ChatUtilsForSettings.isShowUartLog()) {
                     Log.d(TAG, "采集到客户端星闪MAC地址日志：" + completeFirstData + "，是否显示?:" + true);
-                    if (ChatUtils.isSetDebugLog()) {
+                    if (ChatUtilsForSettings.isSetDebugLog()) {
                         Log.d(TAG, "采集到客户端星闪MAC地址日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
@@ -902,14 +906,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
             //UART客户端日志相关，连接状态
-            if (completeFirstData.contains(ChatUtils.getPrefixLogClientConnectStateChanged())) {
+            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogClientConnectStateChanged())) {
                 Log.d(TAG, "客户端连接状态改变日志：" + completeFirstData);
                 // 处理连接状态改变日志
 
-                ChatUtils.setShowUartLog(true);
-                if (ChatUtils.isShowUartLog()) {
+                ChatUtilsForSettings.setShowUartLog(true);
+                if (ChatUtilsForSettings.isShowUartLog()) {
                     Log.d(TAG, "客户端连接状态改变日志：" + completeFirstData + "，是否显示?:" + true);
-                    if (ChatUtils.isSetDebugLog()) {
+                    if (ChatUtilsForSettings.isSetDebugLog()) {
                         Log.d(TAG, "客户端连接状态改变日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
@@ -918,14 +922,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
             //UART客户端日志
-            if (completeFirstData.contains(ChatUtils.getPrefixLogSleUartClient())) {
+            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSleUartClient())) {
                 Log.d(TAG, "客户端UART客户端日志：" + completeFirstData);
                 // 处理UART服务器日志
 
-                ChatUtils.setShowUartLog(true);
-                if (ChatUtils.isShowUartLog()) {
+                ChatUtilsForSettings.setShowUartLog(true);
+                if (ChatUtilsForSettings.isShowUartLog()) {
                     Log.d(TAG, "客户端UART客户端日志：" + completeFirstData + "，是否显示?:" + true);
-                    if (ChatUtils.isSetDebugLog()) {
+                    if (ChatUtilsForSettings.isSetDebugLog()) {
                         Log.d(TAG, "客户端UART客户端日志：" + completeFirstData + "，是否设置打开?:" + true);
                         return completeFirstData;
                     } else {
@@ -958,12 +962,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String TextOfClient = CH34xProcessingForSendData(messageSend);
             runOnUiThread(() -> {
                 //如果需要存储到数据库中
-                if (ChatUtils.isSqlitemanager()) {
+                if (ChatUtilsForSettings.isSqlitemanager()) {
                     String timestamp = chatTimestamp.saveCurrentTimestamp();
                     chatMessageDatabaseManager.saveMessageToDatabase(timestamp, messageSend, "Me");
+                    chatMessageDatabaseManager.saveMessageAndUUIDToDatabase(timestamp, messageSend, "Me", chatMessageUUID.getUUID());
                 }
                 //如果需要UI滚动消息
-                if (ChatUtils.isScrollingMessages()) {
+                if (ChatUtilsForSettings.isScrollingMessages()) {
                     if (clientMessageQueue.size() >= chatUIUpdater.getMAX_MESSAGES()) {
                         clientMessageQueue.poll(); // 移除最早的消息
                     }

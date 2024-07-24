@@ -36,19 +36,19 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int VIEW_TYPE_HAOHANYH = 255;                                          //彩蛋Debug
 
-    private List<ChatMessage> chatMessages;
+    private List<ChatUtilsForMessage> chatUtilsForMessages;
     private Context context;
 
     // 构造函数，初始化消息列表
-    public ChatAdapter(Context context, List<ChatMessage> chatMessages) {
+    public ChatAdapter(Context context, List<ChatUtilsForMessage> chatUtilsForMessages) {
         this.context = context;
-        this.chatMessages = chatMessages;
+        this.chatUtilsForMessages = chatUtilsForMessages;
     }
 
     // 根据消息的发送者类型返回不同的视图类型
     @Override
     public int getItemViewType(int position) {
-        ChatMessage message = chatMessages.get(position);
+        ChatUtilsForMessage message = chatUtilsForMessages.get(position);
 
         if (message.isUser()) {
             return VIEW_TYPE_MESSAGE_RECEIVED;
@@ -106,7 +106,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     // 绑定数据到 ViewHolder
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ChatMessage message = chatMessages.get(position);
+        ChatUtilsForMessage message = chatUtilsForMessages.get(position);
         int viewType = holder.getItemViewType();
 
         if (viewType == VIEW_TYPE_MESSAGE_SENT) {
@@ -129,7 +129,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     // 返回消息列表的大小
     @Override
     public int getItemCount() {
-        return chatMessages.size();
+        return chatUtilsForMessages.size();
     }
 
     // 发送消息的ViewHolder
@@ -145,7 +145,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ChatUIFontUtils.applyCustomFont(context, messageText);
         }
 
-        void bind(ChatMessage message) {
+        void bind(ChatUtilsForMessage message) {
             messageText.setText(message.getMessage());
             timestampText.setText(message.getTimestamp());
         }
@@ -164,7 +164,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ChatUIFontUtils.applyCustomFont(context, messageText);
         }
 
-        void bind(ChatMessage message) {
+        void bind(ChatUtilsForMessage message) {
             messageText.setText(message.getMessage());
             timestampText.setText(message.getTimestamp());
         }
@@ -187,55 +187,55 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 public boolean onLongClick(View view) {
                     String result = messageText.getText().toString().trim();
 
-                    if (result.equals(ChatUtils.getPrefixLogConnected())) {
+                    if (result.equals(ChatUtilsForSettings.getPrefixLogConnected())) {
                         ChatUIAlertDialog.showSerialLog(context,
-                                ChatUtils.getPrefixLogConnected(),
+                                ChatUtilsForSettings.getPrefixLogConnected(),
                                 context.getString(string.prefixLogConnected),
                                 "推荐开始聊天", "取消显示", "复制进剪贴板");
-                    } else if (result.equals(ChatUtils.getPrefixLogDisconnected())) {
+                    } else if (result.equals(ChatUtilsForSettings.getPrefixLogDisconnected())) {
                         ChatUIAlertDialog.showSerialLog(context,
-                                ChatUtils.getPrefixLogDisconnected(),
+                                ChatUtilsForSettings.getPrefixLogDisconnected(),
                                 context.getString(string.prefixLogDisConnected),
                                 "推荐重启软件和星闪板", "取消显示", "复制进剪贴板");
-                    } else if (result.equals(ChatUtils.getPrefixLogAcore())) {
+                    } else if (result.equals(ChatUtilsForSettings.getPrefixLogAcore())) {
                         //ACore暂时不写
-                    } else if (result.startsWith(ChatUtils.getPrefixLogConnectStateChanged())) {
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogConnectStateChanged())) {
                         ChatUIAlertDialog.showSerialLog(context,
-                                ChatUtils.getPrefixLogConnectStateChanged(),
+                                ChatUtilsForSettings.getPrefixLogConnectStateChanged(),
                                 context.getString(string.prefixLogConnectStateChanged),
                                 "推荐检查", "取消显示", "复制进剪贴板");
-                    } else if (result.startsWith(ChatUtils.getPrefixLogNearlinkDevicesAddr())) {
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogNearlinkDevicesAddr())) {
                         ChatUIAlertDialog.showSerialLog(context,
-                                ChatUtils.getPrefixLogNearlinkDevicesAddr(),
+                                ChatUtilsForSettings.getPrefixLogNearlinkDevicesAddr(),
                                 context.getString(string.prefixLogNearlinkDevicesAddr),
                                 "推荐开始聊天", "取消显示", "复制进剪贴板");
-                    } else if (result.startsWith(ChatUtils.getPrefixLogPairComplete())) {
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogPairComplete())) {
                         ChatUIAlertDialog.showSerialLog(context,
-                                ChatUtils.getPrefixLogPairComplete(),
+                                ChatUtilsForSettings.getPrefixLogPairComplete(),
                                 context.getString(string.prefixLogPairComplete),
                                 "推荐开始聊天", "取消显示", "复制进剪贴板");
-                    } else if (result.startsWith(ChatUtils.getPrefixLogSsapsMtuChanged())) {
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogSsapsMtuChanged())) {
                         //服务板MTU暂时不写
-                    } else if (result.startsWith(ChatUtils.getPrefixLogSleAnnounceEnableCallback())) {
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogSleAnnounceEnableCallback())) {
                         //服务板CallBack暂时不写
-                    } else if (result.startsWith(ChatUtils.getPrefixLogClientConnectStateChanged())) {
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogClientConnectStateChanged())) {
                         ChatUIAlertDialog.showSerialLog(context,
-                                ChatUtils.getPrefixLogClientConnectStateChanged(),
+                                ChatUtilsForSettings.getPrefixLogClientConnectStateChanged(),
                                 context.getString(string.prefixLogClientConnectStateChanged),
                                 "推荐检查", "取消显示", "复制进剪贴板");
-                    } else if (result.startsWith(ChatUtils.getPrefixLogClientNearlinkDevicesAddr())) {
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogClientNearlinkDevicesAddr())) {
                         ChatUIAlertDialog.showSerialLog(context,
-                                ChatUtils.getPrefixLogClientNearlinkDevicesAddr(),
+                                ChatUtilsForSettings.getPrefixLogClientNearlinkDevicesAddr(),
                                 context.getString(string.prefixLogClientNearlinkDevicesAddr),
                                 "推荐开始聊天", "取消显示", "复制进剪贴板");
-                    } else if (result.startsWith(ChatUtils.getPrefixLogClientPairComplete())) {
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogClientPairComplete())) {
                         ChatUIAlertDialog.showSerialLog(context,
-                                ChatUtils.getPrefixLogClientPairComplete(),
+                                ChatUtilsForSettings.getPrefixLogClientPairComplete(),
                                 context.getString(string.prefixLogClientPairComplete),
                                 "推荐开始聊天", "取消显示", "复制进剪贴板");
-                    } else if (result.startsWith(ChatUtils.getPrefixLogClientMtu())) {
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogClientMtu())) {
                         //客户板MTU暂时不写
-                    } else if (result.startsWith(ChatUtils.getPrefixLogClientSleAnnounceEnableCallback())) {
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogClientSleAnnounceEnableCallback())) {
                         //客户板CallBack暂时不写
                     }
 
@@ -247,7 +247,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             });
         }
 
-        void bind(ChatMessage message) {
+        void bind(ChatUtilsForMessage message) {
             messageText.setText(message.getMessage());
 
             switch (message.getLoglevel()) {
@@ -304,7 +304,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             setRandomTextColor(timestampText);
         }
 
-        void bind(ChatMessage message) {
+        void bind(ChatUtilsForMessage message) {
             messageText.setText(message.getMessage());
             timestampText.setText(message.getTimestamp());
         }
@@ -344,7 +344,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             setRandomTextColor(timestampText);
         }
 
-        void bind(ChatMessage message) {
+        void bind(ChatUtilsForMessage message) {
             messageText.setText(message.getMessage());
             timestampText.setText(message.getTimestamp());
         }
@@ -366,16 +366,16 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             super(itemView);
         }
 
-        void bind(ChatMessage message) {
+        void bind(ChatUtilsForMessage message) {
 
         }
     }
 
     // 更新消息列表并滚动到底部
     @SuppressLint("NotifyDataSetChanged")
-    public void updateMessages(List<ChatMessage> newMessages, RecyclerView recyclerView) {
-        this.chatMessages = newMessages;
+    public void updateMessages(List<ChatUtilsForMessage> newMessages, RecyclerView recyclerView) {
+        this.chatUtilsForMessages = newMessages;
         notifyDataSetChanged();
-        recyclerView.scrollToPosition(chatMessages.size() - 1);
+        recyclerView.scrollToPosition(chatUtilsForMessages.size() - 1);
     }
 }
