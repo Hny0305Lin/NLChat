@@ -168,7 +168,7 @@ public class ChatProcessorForExtract {
                     @Override
                     public void run() {
                         AppCompatTextView compatTextView = ((Activity) context).findViewById(R.id.userTitleNewUI);
-                        compatTextView.setText("New UI, opposite mac" + extractedLogForNearLinkAddr.toString().trim());
+                        compatTextView.setText("NLChat, connected mac" + extractedLogForNearLinkAddr.toString().trim());
                     }
                 });
 

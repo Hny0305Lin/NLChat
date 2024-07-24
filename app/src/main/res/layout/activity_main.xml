@@ -147,7 +147,7 @@
                         android:layout_marginTop="15dp"
                         android:layout_marginEnd="5dp"
                         android:layout_marginBottom="15dp"
-                        android:text="New UI"
+                        android:text="NLChat"
                         android:fontFamily="sans-serif-medium"
                         android:textColor="@color/blue_biaozhun"
                         tools:ignore="HardcodedText" />
