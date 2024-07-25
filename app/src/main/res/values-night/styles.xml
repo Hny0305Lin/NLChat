@@ -18,8 +18,8 @@
     </style>
 
     <!--夜间模式适配-->
-    <style name="CardViewDay">
-        <item name="cardBackgroundColor">@color/cardview_light_background</item>
+    <style name="CardViewNight">
+        <item name="cardBackgroundColor">@color/cardview_dark_background</item>
         <item name="cardCornerRadius">4dp</item>
         <item name="cardElevation">18dp</item>
     </style>

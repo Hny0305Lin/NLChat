@@ -25,6 +25,12 @@
     <color name="snackbar_log_i">#00CC66</color>
     <color name="snackbar_log_w">#CC9966</color>
     <color name="snackbar_log_e">#CC0066</color>
+    <color name="snackbar_log_v_night">#330033</color>
+    <color name="snackbar_log_d_night">#0099FF</color>
+    <color name="snackbar_log_i_night">#00CC66</color>
+    <color name="snackbar_log_w_night">#CC9966</color>
+    <color name="snackbar_log_e_night">#CC0066</color>
+    <color name="blue_biaozhun_logowai_transparent_night">#0099FF</color>
 
     <color name="newui_log_v">#8D090009</color>
     <color name="newui_log_d">#860099FF</color>
@@ -33,4 +39,7 @@
     <color name="newui_log_w">#86DC9854</color>
 
     <color name="newui_time">#aaa</color>
+
+    <color name="cardview_light_background">#FFFFFFFF</color>
+    <color name="cardview_dark_background">#151515</color>
 </resources>

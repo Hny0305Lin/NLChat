@@ -4,13 +4,12 @@ package com.haohanyh.linmengjia.nearlink.nlchat.fun;
 import static com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIToast.SnackBarToastForDebug;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -24,8 +23,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -44,8 +41,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.cardview.widget.CardView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -57,17 +54,18 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.haohanyh.linmengjia.nearlink.nlchat.ch34x.CH34xUARTDriver;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatAdapter;
-import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessageUUID;
-import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtilsForFiles;
-import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtilsForMessage;
-import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessageQueueUpdater;
-import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatProcessorForExtract;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessageDatabaseManager;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessageQueueUpdater;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatMessageUUID;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatProcessorForExtract;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatTimestamp;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIAlertDialog;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIAnimationUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIBackgroundUtils;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIEgg;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIUpdater;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtilsForFiles;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtilsForMessage;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtilsForSettings;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatService.MyForegroundService;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.Premission.NearLinkChatGetSomePermission;
@@ -75,8 +73,6 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.array;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.color;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.drawable;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.id;
-import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.string;
-import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.style;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.SQLite.SQLiteDataBaseAPP;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.String.StringUtils;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.WCHUart.WCHUartSettings;
@@ -98,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //CH34X相关
     private static final String ACTION_USB_PERMISSION = "cn.wch.wchusbdriver.USB_PERMISSION";
     //主要控件
+    private CoordinatorLayout coord;
     private FloatingActionButton btnGO;
     private FloatingActionMenu btnMenu;
     private com.github.clans.fab.FloatingActionButton btnNearLinkStatus,btnNearLinkSettings,btnNearLinkUIChanges,btnNearlinkUart,btnNearlinkDev;
@@ -140,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AppCompatCheckBox SettingsForShowLog,SettingsForSaveSQL,SettingsForDelSQL,SettingsForHistory,SettingsForClearSCR,SettingsForEncryption,SettingsForClip,SettingsForPush,SettingsForBackground,SettingsForBackup,SettingsForNFC;
 
     //Context
-    private Context context = MainActivity.this;
+    private final Context context = MainActivity.this;
 
     //手机常量，代码里设置
     private final boolean MobileKeepScreenOn = false;
@@ -193,6 +190,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
+    //APP夜间白天切换线程
+    private final Handler handlerForNightMode = new Handler();
+    private Runnable nightModeRunnable;
+
     /**
      *
      * @param savedInstanceState
@@ -229,6 +230,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         stopService(new Intent(this, MyForegroundService.class));
         handler.removeCallbacks(stopServiceRunnable);
 
+        // App检测是否为夜间模式
+        nightModeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+                    CNearLinkStatus.setCardBackgroundColor(getResources().getColor(R.color.cardview_dark_background));
+                    CNearlinkUart.setCardBackgroundColor(getResources().getColor(R.color.cardview_dark_background));
+                    CNearLinkSettings.setCardBackgroundColor(getResources().getColor(R.color.cardview_dark_background));
+                    CNearlinkDev.setCardBackgroundColor(getResources().getColor(R.color.cardview_dark_background));
+                    CTHANKS.setCardBackgroundColor(getResources().getColor(R.color.cardview_dark_background));
+
+                    CNearLinkChatNewUI.setCardBackgroundColor(getResources().getColor(R.color.cardview_dark_background));
+
+                    findViewById(R.id.MainUI).getBackground().setAlpha(96);
+
+                } else {
+                    CNearLinkStatus.setCardBackgroundColor(getResources().getColor(R.color.cardview_light_background));
+                    CNearlinkUart.setCardBackgroundColor(getResources().getColor(R.color.cardview_light_background));
+                    CNearLinkSettings.setCardBackgroundColor(getResources().getColor(R.color.cardview_light_background));
+                    CNearlinkDev.setCardBackgroundColor(getResources().getColor(R.color.cardview_light_background));
+                    CTHANKS.setCardBackgroundColor(getResources().getColor(R.color.cardview_light_background));
+
+                    CNearLinkChatNewUI.setCardBackgroundColor(getResources().getColor(R.color.cardview_light_background));
+
+                    findViewById(R.id.MainUI).getBackground().setAlpha(255);
+                }
+                handlerForNightMode.postDelayed(this, 1000); // 每秒检测一次
+            }
+        };
+        handlerForNightMode.post(nightModeRunnable);
+
         // 重新打开数据库
         if (dbHelper != null) {
             chatMessageDatabaseManager.openDatabase();
@@ -241,6 +274,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // App进入后台，启动服务
         startService(new Intent(this, MyForegroundService.class));
         handler.postDelayed(stopServiceRunnable, 10 * 60 * 1000);
+
+        // App检测是否为夜间模式
+        handler.removeCallbacks(nightModeRunnable);
     }
 
     @Override
@@ -306,19 +342,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnNearlinkDev = findViewById(id.menu_labels_right_btn_nearlink_dev);
         btnNearlinkDev.setOnClickListener(this);
         clickCountButton_btnNearLinkStatus = 0;
-        btnNearLinkStatus.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_done_all_24));
         btnNearLinkStatus.setImageResource(drawable.ic_baseline_done_all_24);
         clickCountButton_btnNearLinkUIChanges = 0;
-        btnNearLinkUIChanges.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_nearlink_done_24));
         btnNearLinkUIChanges.setImageResource(drawable.ic_baseline_nearlink_done_24);
         clickCountButton_btnNearLinkUart = 1;
-        btnNearlinkUart.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_close_24));
         btnNearlinkUart.setImageResource(drawable.ic_baseline_close_24);
         clickCountButton_btnNearLinkSettings = 1;
-        btnNearLinkSettings.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_close_24));
         btnNearLinkSettings.setImageResource(drawable.ic_baseline_close_24);
         clickCountButton_btnNearLinkDev = 1;
-        btnNearlinkDev.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_close_24));
         btnNearlinkDev.setImageResource(drawable.ic_baseline_close_24);
         CNearLinkStatus = findViewById(id.CardI);
         CNearLinkStatus.setVisibility(View.VISIBLE);
@@ -445,7 +476,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //聊天数据库初始化
         chatMessageDatabaseManager = new ChatMessageDatabaseManager(MainActivity.this);
         //聊天核心初始化
-        chatUIUpdater = new ChatUIUpdater(this, chatMessageDatabaseManager, chatTimestamp, serverMessageQueue, serverDebugMessageQueue, serverUpdater, serverDebugUpdater);
+        chatUIUpdater = new ChatUIUpdater(this, chatMessageDatabaseManager, chatTimestamp, clientMessageQueue, serverMessageQueue, serverDebugMessageQueue, clientUpdater, serverUpdater, serverDebugUpdater);
 
 
         //星闪网络相关设置初始化，目前多数还不允许UI设置，敬请期待
@@ -691,7 +722,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //进行文本处理
             String processedString = CH34xProcessingForReadData(string);
             // 使用ChatUIUpdater更新UI
-            chatUIUpdater.updateUI(processedString);
+            chatUIUpdater.updateUserUI(processedString);
         });
     }
 
@@ -960,25 +991,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             SnackBarToastForDebug(context,"向对方发送数据失败!","推荐重新配置",3,Snackbar.LENGTH_SHORT);
         } else {
             String TextOfClient = CH34xProcessingForSendData(messageSend);
+
+            // 使用ChatUIUpdater更新UI
+            chatUIUpdater.updateMeUI(TextOfClient);
             runOnUiThread(() -> {
-                //如果需要存储到数据库中
-                if (ChatUtilsForSettings.isSqlitemanager()) {
-                    String timestamp = chatTimestamp.saveCurrentTimestamp();
-                    chatMessageDatabaseManager.saveMessageToDatabase(timestamp, messageSend, "Me");
-                    chatMessageDatabaseManager.saveMessageAndUUIDToDatabase(timestamp, messageSend, "Me", chatMessageUUID.getUUID());
-                }
-                //如果需要UI滚动消息
-                if (ChatUtilsForSettings.isScrollingMessages()) {
-                    if (clientMessageQueue.size() >= chatUIUpdater.getMAX_MESSAGES()) {
-                        clientMessageQueue.poll(); // 移除最早的消息
-                    }
-                    clientMessageQueue.add(TextOfClient);
-                    clientUpdater.updateTextView();
-                    MainAPP.Vibrate(this);
-                } else {
-                    clientUpdater.updateTextView();
-                    MainAPP.Vibrate(this);
-                }
                 //发送完消息清空待发送文本
                 EditChatSendNewUI.setText("");
             });
@@ -1039,13 +1055,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (clickCountButton_btnNearLinkStatus % 2 == 0) {
                 CNearLinkStatus.setVisibility(View.GONE);
                 btnGO.setVisibility(View.GONE);
-                btnNearLinkStatus.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_close_24));
                 btnNearLinkStatus.setImageResource(drawable.ic_baseline_close_24);
                 clickCountButton_btnNearLinkStatus = clickCountButton_btnNearLinkStatus + 1;
             } else {
                 CNearLinkStatus.setVisibility(View.VISIBLE);
                 btnGO.setVisibility(View.VISIBLE);
-                btnNearLinkStatus.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_done_all_24));
                 btnNearLinkStatus.setImageResource(drawable.ic_baseline_done_all_24);
                 clickCountButton_btnNearLinkStatus = 0;
             }
@@ -1055,13 +1069,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 CNearLinkChatNewUI.setVisibility(View.GONE);
                 EditChatSendNewUI.setText("");
 
-                btnNearLinkUIChanges.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_close_24));
                 btnNearLinkUIChanges.setImageResource(drawable.ic_baseline_close_24);
                 clickCountButton_btnNearLinkUIChanges = clickCountButton_btnNearLinkUIChanges + 1;
             } else {
                 CNearLinkChatNewUI.setVisibility(View.VISIBLE);
 
-                btnNearLinkUIChanges.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_nearlink_done_24));
                 btnNearLinkUIChanges.setImageResource(drawable.ic_baseline_nearlink_done_24);
                 clickCountButton_btnNearLinkUIChanges = 0;
             }
@@ -1069,12 +1081,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             MainAPP.Vibrate(this);
             if (clickCountButton_btnNearLinkSettings % 2 == 0) {
                 CNearLinkSettings.setVisibility(View.GONE);
-                btnNearLinkSettings.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_close_24));
                 btnNearLinkSettings.setImageResource(drawable.ic_baseline_close_24);
                 clickCountButton_btnNearLinkSettings = clickCountButton_btnNearLinkSettings + 1;
             } else {
                 CNearLinkSettings.setVisibility(View.VISIBLE);
-                btnNearLinkSettings.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_done_all_24));
                 btnNearLinkSettings.setImageResource(drawable.ic_baseline_done_all_24);
                 clickCountButton_btnNearLinkSettings = 0;
             }
@@ -1083,12 +1093,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             MainAPP.Vibrate(this);
             if (clickCountButton_btnNearLinkUart % 2 == 0) {
                 CNearlinkUart.setVisibility(View.GONE);
-                btnNearlinkUart.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_close_24));
                 btnNearlinkUart.setImageResource(drawable.ic_baseline_close_24);
                 clickCountButton_btnNearLinkUart = clickCountButton_btnNearLinkUart + 1;
             } else {
                 CNearlinkUart.setVisibility(View.VISIBLE);
-                btnNearlinkUart.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_done_all_24));
                 btnNearlinkUart.setImageResource(drawable.ic_baseline_done_all_24);
                 clickCountButton_btnNearLinkUart = 0;
             }
@@ -1097,12 +1105,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             MainAPP.Vibrate(this);
             if (clickCountButton_btnNearLinkDev % 2 == 0) {
                 CNearlinkDev.setVisibility(View.GONE);
-                btnNearlinkDev.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_close_24));
                 btnNearlinkDev.setImageResource(drawable.ic_baseline_close_24);
                 clickCountButton_btnNearLinkDev = clickCountButton_btnNearLinkDev + 1;
             } else {
                 CNearlinkDev.setVisibility(View.VISIBLE);
-                btnNearlinkDev.setImageDrawable(getResources().getDrawable(drawable.ic_baseline_done_all_24));
                 btnNearlinkDev.setImageResource(drawable.ic_baseline_done_all_24);
                 clickCountButton_btnNearLinkDev = 0;
             }
@@ -1117,69 +1123,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @return 返回一个 CompoundButton.OnCheckedChangeListener 对象。
      */
     private CompoundButton.OnCheckedChangeListener createCheckedChangeListener(final int index, final String type) {
-        return new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    switch (type) {
-                        case "BaudRate":
-                            wchUartSettings.setBaudRate(Integer.parseInt(UartSettingsBaud[index]));
-                            SnackBarToastForDebug(context,"已设置波特率" + wchUartSettings.getBaudRate() + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
-                            break;
-                        case "DataBit":
-                            wchUartSettings.setDataBit(Byte.parseByte(UartSettingsData[index]));
-                            SnackBarToastForDebug(context,"已设置数据位" + wchUartSettings.getDataBit() + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
-                            break;
-                        case "StopBit":
-                            wchUartSettings.setStopBit(Byte.parseByte(UartSettingsStop[index]));
-                            SnackBarToastForDebug(context,"已设置停止位" + wchUartSettings.getStopBit() + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
-                            break;
-                        case "Parity":
-                            wchUartSettings.setParity(Byte.parseByte(UartSettingsParityII[index]));
-                            SnackBarToastForDebug(context,"已设置校验位" + wchUartSettings.getParity() + UartSettingsParity[index] + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
-                            break;
-                    }
-                } else {
-                    if (CheckBoxUartWarn.isChecked())
-                        Toast.makeText(context, "更改" + type + "中", Toast.LENGTH_SHORT).show();
+        return (compoundButton, isChecked) -> {
+            if (isChecked) {
+                switch (type) {
+                    case "BaudRate":
+                        wchUartSettings.setBaudRate(Integer.parseInt(UartSettingsBaud[index]));
+                        SnackBarToastForDebug(context,"已设置波特率" + wchUartSettings.getBaudRate() + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
+                        break;
+                    case "DataBit":
+                        wchUartSettings.setDataBit(Byte.parseByte(UartSettingsData[index]));
+                        SnackBarToastForDebug(context,"已设置数据位" + wchUartSettings.getDataBit() + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
+                        break;
+                    case "StopBit":
+                        wchUartSettings.setStopBit(Byte.parseByte(UartSettingsStop[index]));
+                        SnackBarToastForDebug(context,"已设置停止位" + wchUartSettings.getStopBit() + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
+                        break;
+                    case "Parity":
+                        wchUartSettings.setParity(Byte.parseByte(UartSettingsParityII[index]));
+                        SnackBarToastForDebug(context,"已设置校验位" + wchUartSettings.getParity() + UartSettingsParity[index] + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
+                        break;
                 }
+            } else {
+                if (CheckBoxUartWarn.isChecked())
+                    Toast.makeText(context, "更改" + type + "中", Toast.LENGTH_SHORT).show();
             }
         };
     }
 
-    //没有人能够熄灭满天的星光，每一个开发者都是华为要汇聚的星星之火。星星之火，可以燎原。
     @SuppressLint("SetTextI18n")
     public void thanks3q(View view) {
-        TextView textView = new TextView(this);
-        textView.setText("Egg~");
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-        textView.setPadding(16, 16, 0, 8);
-        textView.setGravity(Gravity.LEFT);
-        textView.setTextColor(ContextCompat.getColor(this, color.Pink_is_fancy));
-        AlertDialog.Builder builder = new AlertDialog.Builder(this,style.HaohanyhDialog)
-                .setMessage(string.egg)
-                .setCustomTitle(textView)
-                .setNegativeButton("确定!", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                })
-                .setPositiveButton("取消!", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                })
-                .setNeutralButton("备用!", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-        Objects.requireNonNull(alertDialog.getWindow()).setLayout(900,900);
-        //Objects.requireNonNull(alertDialog.getWindow()).setLayout(900,1600);
+        ChatUIEgg chatUIEgg = new ChatUIEgg();
+        chatUIEgg.thanks3q(context);
     }
 }

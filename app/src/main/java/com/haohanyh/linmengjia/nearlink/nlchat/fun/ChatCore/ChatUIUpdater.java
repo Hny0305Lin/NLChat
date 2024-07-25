@@ -12,8 +12,10 @@ public class ChatUIUpdater {
     private Context context;
     private ChatMessageDatabaseManager chatMessageDatabaseManager;
     private ChatTimestamp chatTimestamp;
+    private Queue<String> clientMessageQueue;
     private Queue<String> serverMessageQueue;
     private Queue<String> serverDebugQueue;
+    private ChatMessageQueueUpdater clientUpdater;
     private ChatMessageQueueUpdater serverUpdater;
     private ChatMessageQueueUpdater serverDebugUpdater;
     private ChatMessageUUID chatMessageUUID;
@@ -22,22 +24,26 @@ public class ChatUIUpdater {
     public ChatUIUpdater(Context context,
                          ChatMessageDatabaseManager chatMessageDatabaseManager,
                          ChatTimestamp chatTimestamp,
+                         Queue<String> clientMessageQueue,
                          Queue<String> serverMessageQueue,
                          Queue<String> serverDebugQueue,
+                         ChatMessageQueueUpdater clientUpdater,
                          ChatMessageQueueUpdater serverUpdater,
                          ChatMessageQueueUpdater serverDebugUpdater) {
         this.context = context;
         this.chatMessageDatabaseManager = chatMessageDatabaseManager;
         this.chatTimestamp = chatTimestamp;
+        this.clientMessageQueue = clientMessageQueue;
         this.serverMessageQueue = serverMessageQueue;
         this.serverDebugQueue = serverDebugQueue;
+        this.clientUpdater = clientUpdater;
         this.serverUpdater = serverUpdater;
         this.serverDebugUpdater = serverDebugUpdater;
 
         chatMessageUUID = new ChatMessageUUID();
     }
 
-    public void updateUI(String processedString) {
+    public void updateUserUI(String processedString) {
         // 处理完再打印到UI上
         ((Activity) context).runOnUiThread(() -> {
             // 如果需要存储到数据库中
@@ -82,8 +88,27 @@ public class ChatUIUpdater {
         });
     }
 
-    public final int getMAX_MESSAGES() {
-        return MAX_MESSAGES;
+    public void updateMeUI(String processedString) {
+        ((Activity) context).runOnUiThread(() -> {
+            // 如果需要存储到数据库中
+            if (ChatUtilsForSettings.isSqlitemanager()) {
+                String timestamp = chatTimestamp.saveCurrentTimestamp();
+                chatMessageDatabaseManager.saveMessageToDatabase(timestamp, processedString, "Me");
+                chatMessageDatabaseManager.saveMessageAndUUIDToDatabase(timestamp, processedString, "Me", chatMessageUUID.getUUID());
+            }
+            //如果需要UI滚动消息
+            if (ChatUtilsForSettings.isScrollingMessages()) {
+                if (clientMessageQueue.size() >= MAX_MESSAGES) {
+                    clientMessageQueue.poll(); // 移除最早的消息
+                }
+                clientMessageQueue.add(processedString);
+                clientUpdater.updateTextView();
+                MainAPP.Vibrate(context);
+            } else {
+                clientUpdater.updateTextView();
+                MainAPP.Vibrate(context);
+            }
+        });
     }
 }
 

@@ -32,8 +32,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int VIEW_TYPE_MESSAGE_SENT_LATEST = -1;                                //数据库消息记录，发
     private static final int VIEW_TYPE_MESSAGE_RECEIVED_LATEST = -2;                            //数据库消息记录，收
 
-    private static final int VIEW_TYPE_DEBUG_LATEST = 0;                                        //历史Debug消息
-
     private static final int VIEW_TYPE_HAOHANYH = 255;                                          //彩蛋Debug
 
     private List<ChatUtilsForMessage> chatUtilsForMessages;
@@ -60,8 +58,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return VIEW_TYPE_MESSAGE_RECEIVED_LATEST;
         } else if (message.isSQLiteMe()) {
             return VIEW_TYPE_MESSAGE_SENT_LATEST;
-        } else if (message.isSQLiteDebug()) {
-            return VIEW_TYPE_DEBUG_LATEST;
         } else {
             return VIEW_TYPE_HAOHANYH;
         }
@@ -92,10 +88,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_chat_sent_history, parent, false);
                 return new SentLatestMessageHolder(view);
-            case VIEW_TYPE_DEBUG_LATEST:
-                view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.item_debug, parent, false);
-                return new ReceivedDEBUGMessageHolder(view);
             default:
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_haohanyh, parent, false);
@@ -119,8 +111,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((SentLatestMessageHolder) holder).bind(message);
         } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED_LATEST) {
             ((ReceivedLatestMessageHolder) holder).bind(message);
-        } else if (viewType == VIEW_TYPE_DEBUG_LATEST) {
-            ((ReceivedDEBUGMessageHolder) holder).bind(message);
         } else if (viewType == VIEW_TYPE_HAOHANYH) {
             ((HaohanyhMessageHolder) holder).bind(message);
         }
