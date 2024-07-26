@@ -1,0 +1,1149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/MainUI"
+    android:fitsSystemWindows="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/NLChat_MainUI_NestedScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:id="@+id/NLChat_MainUI_LinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/CardI"
+                    android:layout_width="360dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:visibility="visible"
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="18dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical|bottom"
+                                android:layout_margin="10dp"
+                                android:layout_weight="1.0"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/nearlinkI"
+                                android:textColor="@color/Pink_is_fancy"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical|bottom"
+                                android:layout_margin="10dp"
+                                android:layout_weight="1.0"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/nearlinkII"
+                                android:textColor="@color/Pink_is_fancy"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical|bottom"
+                                android:layout_margin="10dp"
+                                android:layout_weight="1.0"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/nearlinkIII"
+                                android:textColor="@color/Pink_is_fancy"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/appResult"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical|bottom"
+                                android:layout_margin="10dp"
+                                android:layout_weight="1.0"
+                                android:fontFamily="sans-serif-medium"
+                                android:textColor="@color/Pink_is_fancy"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/mobileUsbResult"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical|bottom"
+                                android:layout_margin="10dp"
+                                android:layout_weight="1.0"
+                                android:fontFamily="sans-serif-medium"
+                                android:textColor="@color/Pink_is_fancy"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/uartResult"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical|bottom"
+                                android:layout_margin="10dp"
+                                android:layout_weight="1.0"
+                                android:fontFamily="sans-serif-medium"
+                                android:textColor="@color/Pink_is_fancy"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/CardIChatNewUI"
+                    android:layout_width="360dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:visibility="visible"
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="18dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/userTitleNewUI"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginEnd="5dp"
+                            android:layout_marginBottom="15dp"
+                            android:text="NLChat"
+                            android:fontFamily="sans-serif-medium"
+                            android:textColor="@color/blue_biaozhun"
+                            tools:ignore="HardcodedText" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recycler_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="380dp"
+                            android:padding="8dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <EditText
+                                android:id="@+id/editChatSendNewUI"
+                                android:layout_width="wrap_content"
+                                android:layout_height="100dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:layout_marginBottom="10dp"
+                                android:layout_weight="8"
+                                android:textColor="@color/blue_biaozhun_logowai"
+                                android:singleLine="true"
+                                tools:ignore="HardcodedText" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/sendDataBtn"
+                                android:layout_width="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:onClick="NearLinkChatSendData"
+                                android:text="@string/nearlinkChatSend"
+                                android:textColor="#FFFFFFFF"
+                                app:backgroundTint="@color/Pink_is_fancy"
+                                app:cornerRadius="10dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/CardII"
+                    android:layout_width="360dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:visibility="visible"
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="18dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkUartSettingWarn"
+                                android:textColor="@color/teal_700"
+                                android:textSize="14sp" />
+
+                            <androidx.appcompat.widget.AppCompatCheckBox
+                                android:id="@+id/cbUartWarn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:checked="false"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkUartSettingWord"
+                                android:textColor="@color/Pink_is_fancy"
+                                android:textSize="16sp"
+                                android:theme="@style/MyCheckBox" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiBaud"
+                                android:textColor="@color/teal_200"
+                                android:textSize="14sp" />
+
+                            <HorizontalScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="5dp"
+                                android:layout_marginEnd="3dp">
+
+                                <RadioGroup
+                                    android:id="@+id/rgBaud"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:id="@+id/rbBaud4800"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="20dp"
+                                        android:checked="false"
+                                        android:text="4800"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                    <RadioButton
+                                        android:id="@+id/rbBaud9600"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="20dp"
+                                        android:checked="false"
+                                        android:text="9600"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                    <RadioButton
+                                        android:id="@+id/rbBaud19200"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="20dp"
+                                        android:checked="false"
+                                        android:text="19200"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                    <RadioButton
+                                        android:id="@+id/rbBaud38400"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="20dp"
+                                        android:checked="false"
+                                        android:text="38400"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                    <RadioButton
+                                        android:id="@+id/rbBaud57600"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="20dp"
+                                        android:checked="false"
+                                        android:text="57600"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                    <RadioButton
+                                        android:id="@+id/rbBaud115200"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="20dp"
+                                        android:checked="true"
+                                        android:text="115200"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                    <RadioButton
+                                        android:id="@+id/rbBaud230400"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="20dp"
+                                        android:checked="false"
+                                        android:text="230400"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                    <RadioButton
+                                        android:id="@+id/rbBaud921600"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="20dp"
+                                        android:checked="false"
+                                        android:text="921600"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                    <RadioButton
+                                        android:id="@+id/rbBaud1000000"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="20dp"
+                                        android:checked="false"
+                                        android:text="1000000"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                    <RadioButton
+                                        android:id="@+id/rbBaud2000000"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="20dp"
+                                        android:checked="false"
+                                        android:text="2000000"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+                                </RadioGroup>
+
+                            </HorizontalScrollView>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiData"
+                                android:textColor="@color/teal_200"
+                                android:textSize="14sp" />
+
+                            <HorizontalScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="5dp"
+                                android:layout_marginEnd="3dp">
+
+                                <RadioGroup
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:id="@+id/rbData5"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="10dp"
+                                        android:checked="false"
+                                        android:text="5"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                    <RadioButton
+                                        android:id="@+id/rbData6"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="10dp"
+                                        android:checked="false"
+                                        android:text="6"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                    <RadioButton
+                                        android:id="@+id/rbData7"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="10dp"
+                                        android:checked="false"
+                                        android:text="7"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                    <RadioButton
+                                        android:id="@+id/rbData8"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="10dp"
+                                        android:checked="true"
+                                        android:text="8"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                </RadioGroup>
+
+                            </HorizontalScrollView>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiStop"
+                                android:textColor="@color/teal_200"
+                                android:textSize="14sp" />
+
+                            <HorizontalScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="5dp"
+                                android:layout_marginEnd="3dp">
+
+                                <RadioGroup
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:id="@+id/rbStop1"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="10dp"
+                                        android:checked="true"
+                                        android:text="1"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                    <RadioButton
+                                        android:id="@+id/rbStop2"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="10dp"
+                                        android:checked="false"
+                                        android:text="2"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                </RadioGroup>
+
+                            </HorizontalScrollView>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiParity"
+                                android:textColor="@color/teal_200"
+                                android:textSize="14sp" />
+
+                            <HorizontalScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="5dp"
+                                android:layout_marginEnd="3dp">
+
+                                <RadioGroup
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <RadioButton
+                                        android:id="@+id/rbParityNone"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="20dp"
+                                        android:checked="true"
+                                        android:text="无"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                    <RadioButton
+                                        android:id="@+id/rbParityOdd"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="20dp"
+                                        android:checked="false"
+                                        android:text="奇校验"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                    <RadioButton
+                                        android:id="@+id/rbParityEven"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="20dp"
+                                        android:checked="false"
+                                        android:text="偶校验"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                    <RadioButton
+                                        android:id="@+id/rbParityMark"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="20dp"
+                                        android:checked="false"
+                                        android:text="标志位"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                    <RadioButton
+                                        android:id="@+id/rbParitySpace"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="20dp"
+                                        android:checked="false"
+                                        android:text="空白位"
+                                        android:textColor="@color/nearlinkgreen"
+                                        android:theme="@style/MyRadiobutton"
+                                        tools:ignore="HardcodedText,RtlHardcoded" />
+
+                                </RadioGroup>
+
+                            </HorizontalScrollView>
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/CardIII"
+                    android:layout_width="360dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:visibility="visible"
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="18dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_margin="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForShowLog"
+                                android:textColor="@color/teal_700"
+                                android:textSize="14sp" />
+
+                            <androidx.appcompat.widget.AppCompatCheckBox
+                                android:id="@+id/cbSettingsForShowLog"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:checked="false"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForWord"
+                                android:textColor="@color/Pink_is_fancy"
+                                android:textSize="16sp"
+                                android:theme="@style/MyCheckBox" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_margin="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForSaveSQL"
+                                android:textColor="@color/teal_700"
+                                android:textSize="14sp" />
+
+                            <androidx.appcompat.widget.AppCompatCheckBox
+                                android:id="@+id/cbSettingsForSaveSQL"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:checked="false"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForWord"
+                                android:textColor="@color/Pink_is_fancy"
+                                android:textSize="16sp"
+                                android:theme="@style/MyCheckBox" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_margin="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForDelSQL"
+                                android:textColor="@color/teal_700"
+                                android:textSize="14sp" />
+
+                            <androidx.appcompat.widget.AppCompatCheckBox
+                                android:id="@+id/cbSettingsForDelSQL"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:checked="false"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForWord"
+                                android:textColor="@color/Pink_is_fancy"
+                                android:textSize="16sp"
+                                android:theme="@style/MyCheckBox" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_margin="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForHistory"
+                                android:textColor="@color/teal_700"
+                                android:textSize="14sp" />
+
+                            <androidx.appcompat.widget.AppCompatCheckBox
+                                android:id="@+id/cbSettingsForHistory"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:checked="false"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForWord"
+                                android:textColor="@color/Pink_is_fancy"
+                                android:textSize="16sp"
+                                android:theme="@style/MyCheckBox" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_margin="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForClearSCR"
+                                android:textColor="@color/teal_700"
+                                android:textSize="14sp" />
+
+                            <androidx.appcompat.widget.AppCompatCheckBox
+                                android:id="@+id/cbSettingsForClearSCR"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:checked="false"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForWord"
+                                android:textColor="@color/Pink_is_fancy"
+                                android:textSize="16sp"
+                                android:theme="@style/MyCheckBox" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_margin="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForEncryption"
+                                android:textColor="@color/teal_700"
+                                android:textSize="14sp" />
+
+                            <androidx.appcompat.widget.AppCompatCheckBox
+                                android:id="@+id/cbSettingsForEncryption"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:checked="false"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForWord"
+                                android:textColor="@color/Pink_is_fancy"
+                                android:textSize="16sp"
+                                android:theme="@style/MyCheckBox" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_margin="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForClip"
+                                android:textColor="@color/teal_700"
+                                android:textSize="14sp" />
+
+                            <androidx.appcompat.widget.AppCompatCheckBox
+                                android:id="@+id/cbSettingsForClip"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:checked="false"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForWord"
+                                android:textColor="@color/Pink_is_fancy"
+                                android:textSize="16sp"
+                                android:theme="@style/MyCheckBox" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_margin="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForPush"
+                                android:textColor="@color/teal_700"
+                                android:textSize="14sp" />
+
+                            <androidx.appcompat.widget.AppCompatCheckBox
+                                android:id="@+id/cbSettingsForPush"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:checked="false"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForWord"
+                                android:textColor="@color/Pink_is_fancy"
+                                android:textSize="16sp"
+                                android:theme="@style/MyCheckBox" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_margin="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForBackground"
+                                android:textColor="@color/teal_700"
+                                android:textSize="14sp" />
+
+                            <androidx.appcompat.widget.AppCompatCheckBox
+                                android:id="@+id/cbSettingsForBackground"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:checked="false"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForWord"
+                                android:textColor="@color/Pink_is_fancy"
+                                android:textSize="16sp"
+                                android:theme="@style/MyCheckBox" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_margin="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForBackup"
+                                android:textColor="@color/teal_700"
+                                android:textSize="14sp" />
+
+                            <androidx.appcompat.widget.AppCompatCheckBox
+                                android:id="@+id/cbSettingsForBackup"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:checked="false"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForWord"
+                                android:textColor="@color/Pink_is_fancy"
+                                android:textSize="16sp"
+                                android:theme="@style/MyCheckBox" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginStart="5dp"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_margin="10dp"
+                                android:layout_marginEnd="5dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForNFC"
+                                android:textColor="@color/teal_700"
+                                android:textSize="14sp" />
+
+                            <androidx.appcompat.widget.AppCompatCheckBox
+                                android:id="@+id/cbSettingsForNFC"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:checked="false"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="@string/uiNearLinkSettingsForWord"
+                                android:textColor="@color/Pink_is_fancy"
+                                android:textSize="16sp"
+                                android:theme="@style/MyCheckBox" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/CardIV"
+                    android:layout_width="360dp"
+                    android:layout_height="150dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:visibility="visible"
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="18dp">
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/CardAPP"
+                    android:layout_width="360dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="35dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:visibility="visible"
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="18dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center|top"
+                            android:layout_margin="10dp"
+                            android:layout_weight="1.0"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="@string/appwarn"
+                            android:textColor="@color/Pink_is_fancy"
+                            android:textSize="14sp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:layout_weight="1.0"
+                            android:fontFamily="sans-serif-medium"
+                            android:onClick="thanks3q"
+                            android:text="@string/thanks3q"
+                            android:textColor="#FFFFFFFF"
+                            app:backgroundTint="@color/Pink_is_fancy"
+                            app:cornerRadius="10dp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+        </HorizontalScrollView>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnGO"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="18dp"
+        android:src="@drawable/ic_baseline_nearlink_96"
+        app:backgroundTint="@color/Pink_is_fancy"
+        app:fabSize="auto"
+        app:hoveredFocusedTranslationZ="10dp"
+        app:layout_anchor="@id/CardI"
+        app:layout_anchorGravity="bottom|right"
+        app:rippleColor="@color/nearlinkgreen"
+        android:contentDescription="TODO"
+        tools:ignore="ContentDescription,HardcodedText,MissingConstraints" />
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/menu_labels_right"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:visibility="visible"
+        app:layout_anchor="@+id/NLChat_MainUI_NestedScrollView"
+        app:layout_anchorGravity="center"
+        app:menu_backgroundColor="#CCFEC0CB"
+        app:menu_colorNormal="@color/Pink_is_justice"
+        app:menu_colorPressed="@color/Pink_is_fancy"
+        app:menu_icon="@drawable/ic_baseline_favorite_border_24"
+        app:menu_labels_ellipsize="marquee"
+        app:menu_labels_position="right"
+        app:menu_labels_singleLine="true"
+        app:menu_shadowColor="@color/blue_biaozhun_logowai_transparent">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_labels_right_btn_nearlink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_done_all_24"
+            app:fab_colorNormal="@color/blue_biaozhun_logowai_transparent"
+            app:fab_colorPressed="@color/blue_biaozhun_logowai"
+            app:fab_label="NearLink 星闪状态"
+            app:fab_shadowColor="@color/Pink_is_fancy"
+            app:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_labels_right_btn_nearlink_uichanges"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_nearlink_done_24"
+            app:fab_colorNormal="@color/blue_biaozhun_logowai_transparent"
+            app:fab_colorPressed="@color/blue_biaozhun_logowai"
+            app:fab_label="ChatUI 聊天UI"
+            app:fab_shadowColor="@color/Pink_is_fancy"
+            app:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_labels_right_btn_nearlink_uart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_done_all_24"
+            app:fab_colorNormal="@color/blue_biaozhun_logowai_transparent"
+            app:fab_colorPressed="@color/blue_biaozhun_logowai"
+            app:fab_label="UartManager 串口管理"
+            app:fab_shadowColor="@color/Pink_is_fancy"
+            app:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_labels_right_btn_nearlink_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_done_all_24"
+            app:fab_colorNormal="@color/blue_biaozhun_logowai_transparent"
+            app:fab_colorPressed="@color/blue_biaozhun_logowai"
+            app:fab_label="Settings 星闪网络设置"
+            app:fab_shadowColor="@color/Pink_is_fancy"
+            app:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/menu_labels_right_btn_nearlink_dev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_done_all_24"
+            app:fab_colorNormal="@color/blue_biaozhun_logowai_transparent"
+            app:fab_colorPressed="@color/blue_biaozhun_logowai"
+            app:fab_label="Develop 开发者设置"
+            app:fab_shadowColor="@color/Pink_is_fancy"
+            app:fab_size="mini" />
+
+    </com.github.clans.fab.FloatingActionMenu>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

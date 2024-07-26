@@ -12,6 +12,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.hardware.usb.UsbManager;
 import android.net.Uri;
@@ -197,6 +198,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final Handler handlerForNightMode = new Handler();
     private Runnable nightModeRunnable;
 
+    //APP是否为平板或其余设备
+    private boolean isTablet = false;
+    private int orientation = 1;
+
     /**
      *
      * @param savedInstanceState
@@ -206,7 +211,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+
+        //检测是否为平板等大尺寸设备 和 屏幕朝向
+        isTablet = (getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+        orientation = getResources().getConfiguration().orientation;
+
+        // 根据设备类型和屏幕方向加载不同的布局
+        // TODO 初版，先用
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (isTablet) {
+                setContentView(R.layout.activity_main_tablet_landscape);                        //平板横屏
+            } else {
+                setContentView(R.layout.activity_main_phone_landscape);                         //手机横屏
+            }
+        } else {
+            setContentView(R.layout.activity_main);                                             //默认的竖屏
+        }
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(id.MainUI), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -246,7 +269,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     CTHANKS.setCardBackgroundColor(getResources().getColor(R.color.cardview_dark_background));
                     CNearLinkChatNewUI.setCardBackgroundColor(getResources().getColor(R.color.cardview_dark_background));
 
-                    findViewById(R.id.MainUI).getBackground().setAlpha(96);
+                    if (coord != null) {
+                        Drawable background = coord.getBackground();
+                        if (background != null) { background.setAlpha(96);
+                        } else {
+                            coord.setBackgroundColor(Color.BLACK); // 例如，设置为黑色背景
+                            coord.getBackground().setAlpha(96);
+                        }
+                    }
 
                     ButtonForSendData.setBackgroundColor(getResources().getColor(color.Pink_is_justice_night));
                 } else {
@@ -257,7 +287,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     CTHANKS.setCardBackgroundColor(getResources().getColor(R.color.cardview_light_background));
                     CNearLinkChatNewUI.setCardBackgroundColor(getResources().getColor(R.color.cardview_light_background));
 
-                    findViewById(R.id.MainUI).getBackground().setAlpha(255);
+                    if (coord != null) {
+                        Drawable background = coord.getBackground();
+                        if (background != null) { background.setAlpha(255);
+                        } else {
+                            coord.setBackgroundResource(R.drawable.app_background); // 例如，设置为黑色背景
+                            coord.getBackground().setAlpha(255);
+                        }
+                    }
 
                     ButtonForSendData.setBackgroundColor(getResources().getColor(color.Pink_is_justice));
                 }
@@ -331,6 +368,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             MainAPP.CH34X.closeDevice();
         });
         //软件控件开始做处理
+        coord = findViewById(id.MainUI);
+
         btnGO = findViewById(id.btnGO);
         btnGO.setOnClickListener(this);
         btnGO.setEnabled(true);
