@@ -177,6 +177,7 @@
                             tools:ignore="HardcodedText" />
 
                         <com.google.android.material.button.MaterialButton
+                            android:id="@+id/sendDataBtn"
                             android:layout_width="wrap_content"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"

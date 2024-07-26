@@ -11,8 +11,8 @@
         <item name="statusBarForeground">?attr/colorPrimary</item>
         <item name="android:windowLightStatusBar">true</item-->
 
-        <!-- Status bar color. 状态栏不显示>
-        <item name="android:windowFullscreen">true</item-->
+        <!-- Status bar color. 状态栏不显示-->
+        <item name="android:windowFullscreen">true</item>
 
     </style>
 

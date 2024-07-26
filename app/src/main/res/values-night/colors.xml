@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="Pink_is_justice_night">#DFA4AE</color>
+    <color name="Pink_is_fancy_night">#E3B5BC</color>
+
+    <color name="blue_biaozhun_night">#0d6ba8</color>
+    <color name="blue_biaozhun_logowai_night">#007299</color>
+    <color name="blue_biaozhun_logowai_transparent_night">#45007299</color>
+
     <color name="snackbar_log_v_night">#660066</color> <!-- 深紫色 -->
     <color name="snackbar_log_d_night">#003366</color> <!-- 深蓝色 -->
     <color name="snackbar_log_i_night">#006633</color> <!-- 深绿色 -->
     <color name="snackbar_log_w_night">#663300</color> <!-- 深橙色 -->
     <color name="snackbar_log_e_night">#660033</color> <!-- 深红色 -->
-    <color name="blue_biaozhun_logowai_transparent_night">#003366</color> <!-- 深蓝色 -->
 
     <color name="cardview_dark_background">#151515</color>
 </resources>

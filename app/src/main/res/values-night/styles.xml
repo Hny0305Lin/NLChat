@@ -9,12 +9,12 @@
         <item name="android:windowBackground">#48007FFC</item>
     </style>
     <style name="MyCheckBox" parent="Theme.AppCompat.Light">
-        <item name="colorControlNormal">@color/blue_biaozhun_logowai</item>
-        <item name="colorControlActivated">@color/Pink_is_fancy</item>
+        <item name="colorControlNormal">@color/blue_biaozhun_logowai_night</item>
+        <item name="colorControlActivated">@color/Pink_is_fancy_night</item>
     </style>
     <style name="MyRadiobutton" parent="Theme.AppCompat.Light">
         <item name="colorControlNormal">@color/nearlinkgreen</item>
-        <item name="colorControlActivated">@color/blue_biaozhun_logowai</item>
+        <item name="colorControlActivated">@color/blue_biaozhun_logowai_night</item>
     </style>
 
     <!--夜间模式适配-->

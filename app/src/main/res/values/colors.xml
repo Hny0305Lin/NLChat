@@ -11,10 +11,15 @@
 
     <color name="Pink_is_justice">#FFFEC0CB</color>
     <color name="Pink_is_fancy">#FFFFB6C1</color>
+    <color name="Pink_is_justice_night">#DFA4AE</color>
+    <color name="Pink_is_fancy_night">#E3B5BC</color>
 
     <color name="blue_biaozhun">#1296db</color>
     <color name="blue_biaozhun_logowai">#00CEFC</color>
     <color name="blue_biaozhun_logowai_transparent">#4500CEFC</color>
+    <color name="blue_biaozhun_night">#0d6ba8</color>
+    <color name="blue_biaozhun_logowai_night">#007299</color>
+    <color name="blue_biaozhun_logowai_transparent_night">#45007299</color>
 
     <color name="nearlinkgreen">#00C08B</color>
     <color name="nearlinkgreen_deep">#FF00C08B</color>
@@ -30,7 +35,6 @@
     <color name="snackbar_log_i_night">#00CC66</color>
     <color name="snackbar_log_w_night">#CC9966</color>
     <color name="snackbar_log_e_night">#CC0066</color>
-    <color name="blue_biaozhun_logowai_transparent_night">#0099FF</color>
 
     <color name="newui_log_v">#8D090009</color>
     <color name="newui_log_d">#860099FF</color>

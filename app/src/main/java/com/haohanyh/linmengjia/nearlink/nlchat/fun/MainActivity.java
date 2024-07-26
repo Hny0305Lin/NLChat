@@ -50,6 +50,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.clans.fab.FloatingActionMenu;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.haohanyh.linmengjia.nearlink.nlchat.ch34x.CH34xUARTDriver;
@@ -114,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Message MessageTV_Text;
     private TextView APPRunResult,MobileUSBResult,UARTResult;
     private EditText EditChatSendNewUI;
+
+    private MaterialButton ButtonForSendData;
 
     /* TODO 1.4版本前，务必把这个TextView未参与初始化和聊天核心内容，进行修改，目前是可以正常使用了。 */
     private TextView NearLinkUserText,NearLinkMeText;
@@ -241,21 +244,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     CNearLinkSettings.setCardBackgroundColor(getResources().getColor(R.color.cardview_dark_background));
                     CNearlinkDev.setCardBackgroundColor(getResources().getColor(R.color.cardview_dark_background));
                     CTHANKS.setCardBackgroundColor(getResources().getColor(R.color.cardview_dark_background));
-
                     CNearLinkChatNewUI.setCardBackgroundColor(getResources().getColor(R.color.cardview_dark_background));
 
                     findViewById(R.id.MainUI).getBackground().setAlpha(96);
 
+                    ButtonForSendData.setBackgroundColor(getResources().getColor(color.Pink_is_justice_night));
                 } else {
                     CNearLinkStatus.setCardBackgroundColor(getResources().getColor(R.color.cardview_light_background));
                     CNearlinkUart.setCardBackgroundColor(getResources().getColor(R.color.cardview_light_background));
                     CNearLinkSettings.setCardBackgroundColor(getResources().getColor(R.color.cardview_light_background));
                     CNearlinkDev.setCardBackgroundColor(getResources().getColor(R.color.cardview_light_background));
                     CTHANKS.setCardBackgroundColor(getResources().getColor(R.color.cardview_light_background));
-
                     CNearLinkChatNewUI.setCardBackgroundColor(getResources().getColor(R.color.cardview_light_background));
 
                     findViewById(R.id.MainUI).getBackground().setAlpha(255);
+
+                    ButtonForSendData.setBackgroundColor(getResources().getColor(color.Pink_is_justice));
                 }
                 handlerForNightMode.postDelayed(this, 1000); // 每秒检测一次
             }
@@ -398,6 +402,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         EditChatSendNewUI = findViewById(id.editChatSendNewUI);
         EditChatSendNewUI.setOnEditorActionListener(editorActionListenerForChatSend);
 
+        ButtonForSendData = findViewById(id.sendDataBtn);
 
         CheckBoxUartWarn = findViewById(id.cbUartWarn);
         NearLinkUartWarnToast = CheckBoxUartWarn.isChecked();
