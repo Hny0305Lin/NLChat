@@ -1060,12 +1060,13 @@
         app:hoveredFocusedTranslationZ="10dp"
         app:layout_anchor="@id/CardI"
         app:layout_anchorGravity="bottom|right"
-        app:rippleColor="@color/nearlinkgreen"
         android:contentDescription="TODO"
         tools:ignore="ContentDescription,HardcodedText,MissingConstraints" />
 
+    <!--app:rippleColor="@color/nearlinkgreen"-->
+
     <com.github.clans.fab.FloatingActionMenu
-        android:id="@+id/menu_labels_right"
+        android:id="@+id/menu_labels_left"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
@@ -1085,7 +1086,7 @@
         app:menu_shadowColor="@color/blue_biaozhun_logowai_transparent">
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/menu_labels_right_btn_nearlink"
+            android:id="@+id/menu_labels_left_btn_nearlink"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_baseline_done_all_24"
@@ -1096,7 +1097,7 @@
             app:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/menu_labels_right_btn_nearlink_uichanges"
+            android:id="@+id/menu_labels_left_btn_nearlink_uichanges"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_baseline_nearlink_done_24"
@@ -1107,7 +1108,7 @@
             app:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/menu_labels_right_btn_nearlink_uart"
+            android:id="@+id/menu_labels_left_btn_nearlink_uart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_baseline_done_all_24"
@@ -1118,7 +1119,7 @@
             app:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/menu_labels_right_btn_nearlink_settings"
+            android:id="@+id/menu_labels_left_btn_nearlink_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_baseline_done_all_24"
@@ -1129,7 +1130,7 @@
             app:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/menu_labels_right_btn_nearlink_dev"
+            android:id="@+id/menu_labels_left_btn_nearlink_dev"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_baseline_done_all_24"

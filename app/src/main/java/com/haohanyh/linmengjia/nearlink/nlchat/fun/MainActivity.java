@@ -202,10 +202,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean isTablet = false;
     private int orientation = 1;
 
-    /**
-     *
-     * @param savedInstanceState
-     */
     @SuppressLint({"ObsoleteSdkInt", "InlinedApi"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -255,6 +251,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // App进入前台，停止服务
         stopService(new Intent(this, MyForegroundService.class));
         handler.removeCallbacks(stopServiceRunnable);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
 
         // App检测是否为夜间模式
         nightModeRunnable = new Runnable() {
@@ -364,8 +362,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ACTION_USB_PERMISSION);
         //设置关闭监听器并合并 close 方法的逻辑
         MainAPP.CH34X.setCloseListener(() -> {
-            SnackBarToastForDebug(context,"检测到USB已接入，请完成初始化后使用!","推荐初始化操作",1,Snackbar.LENGTH_SHORT);
+            //汇报并执行
+            SnackBarToastForDebug(context,"出现问题，请完成初始化后使用!","推荐初始化操作",1,Snackbar.LENGTH_SHORT);
             MainAPP.CH34X.closeDevice();
+
+            //没启动
+            btnGO.setEnabled(true);
+            btnGO.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(color.nearlinkerror_deep)));
+            ChatUIAnimationUtils.animateBackgroundColorChange(MainActivity.this, btnGO, color.nearlinkerror_deep, color.nearlinkerror_light);
         });
         //软件控件开始做处理
         coord = findViewById(id.MainUI);
@@ -373,16 +377,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnGO = findViewById(id.btnGO);
         btnGO.setOnClickListener(this);
         btnGO.setEnabled(true);
-        btnMenu = findViewById(id.menu_labels_right);
-        btnNearLinkStatus = findViewById(id.menu_labels_right_btn_nearlink);
+        btnMenu = findViewById(R.id.menu_labels_left);
+        btnNearLinkStatus = findViewById(id.menu_labels_left_btn_nearlink);
         btnNearLinkStatus.setOnClickListener(this);
-        btnNearLinkSettings = findViewById(id.menu_labels_right_btn_nearlink_settings);
+        btnNearLinkSettings = findViewById(id.menu_labels_left_btn_nearlink_settings);
         btnNearLinkSettings.setOnClickListener(this);
-        btnNearLinkUIChanges = findViewById(id.menu_labels_right_btn_nearlink_uichanges);
+        btnNearLinkUIChanges = findViewById(id.menu_labels_left_btn_nearlink_uichanges);
         btnNearLinkUIChanges.setOnClickListener(this);
-        btnNearlinkUart = findViewById(id.menu_labels_right_btn_nearlink_uart);
+        btnNearlinkUart = findViewById(id.menu_labels_left_btn_nearlink_uart);
         btnNearlinkUart.setOnClickListener(this);
-        btnNearlinkDev = findViewById(id.menu_labels_right_btn_nearlink_dev);
+        btnNearlinkDev = findViewById(id.menu_labels_left_btn_nearlink_dev);
         btnNearlinkDev.setOnClickListener(this);
         clickCountButton_btnNearLinkStatus = 0;
         btnNearLinkStatus.setImageResource(drawable.ic_baseline_done_all_24);
@@ -705,14 +709,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         NearLinkChatReadData();//配置成功后读数据
                         HhandlerI.sendEmptyMessage(30);
                         SnackBarToastForDebug(context,"请主动发送数据或静待接收数据!","谢谢",0,Snackbar.LENGTH_SHORT);
+
+                        //配置成功
+                        btnGO.setEnabled(false);//已经把星闪网络给启动了
+                        btnGO.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(color.nearlinkgreen_deep)));
+                        ChatUIAnimationUtils.animateBackgroundColorChange(MainActivity.this, btnGO, color.nearlinkgreen_deep, color.nearlinkgreen_light);
                     } else {
                         HhandlerI.sendEmptyMessage(32);
                         HhandlerI.sendEmptyMessage(11);
+
+                        //配置失败
+                        btnGO.setEnabled(true);
+                        btnGO.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(color.nearlinkerror_deep)));
+                        ChatUIAnimationUtils.animateBackgroundColorChange(MainActivity.this, btnGO, color.nearlinkerror_deep, color.nearlinkerror_light);
                     }
                 }
             } else {
                 HhandlerI.sendEmptyMessage(21);
                 HhandlerI.sendEmptyMessage(11);
+
+                //出错误
+                btnGO.setEnabled(true);
+                btnGO.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(color.nearlinkerror_deep)));
+                ChatUIAnimationUtils.animateBackgroundColorChange(MainActivity.this, btnGO, color.nearlinkerror_deep, color.nearlinkerror_light);
             }
         }
     }
@@ -1090,11 +1109,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         MainAPP.Vibrate(this);
         if (view.getId() == id.btnGO) {
             MainAPP.Vibrate(this);
-            btnGO.setEnabled(false);//一次点击后不可再次点击，因为已经把星闪网络给启动了
-            btnGO.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(color.nearlinkgreen_deep)));
-            ChatUIAnimationUtils.animateBackgroundColorChange(MainActivity.this, btnGO, color.nearlinkgreen_deep, color.nearlinkgreen_light);
             InitToOpen();
-        } else if (view.getId() == id.menu_labels_right_btn_nearlink) {
+        } else if (view.getId() == id.menu_labels_left_btn_nearlink) {
             MainAPP.Vibrate(this);
             if (clickCountButton_btnNearLinkStatus % 2 == 0) {
                 CNearLinkStatus.setVisibility(View.GONE);
@@ -1107,7 +1123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btnNearLinkStatus.setImageResource(drawable.ic_baseline_done_all_24);
                 clickCountButton_btnNearLinkStatus = 0;
             }
-        } else if (view.getId() == id.menu_labels_right_btn_nearlink_uichanges) {
+        } else if (view.getId() == id.menu_labels_left_btn_nearlink_uichanges) {
             MainAPP.Vibrate(this);
             if (clickCountButton_btnNearLinkUIChanges % 2 == 0) {
                 CNearLinkChatNewUI.setVisibility(View.GONE);
@@ -1121,7 +1137,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btnNearLinkUIChanges.setImageResource(drawable.ic_baseline_nearlink_done_24);
                 clickCountButton_btnNearLinkUIChanges = 0;
             }
-        } else if (view.getId() == id.menu_labels_right_btn_nearlink_settings) {
+        } else if (view.getId() == id.menu_labels_left_btn_nearlink_settings) {
             MainAPP.Vibrate(this);
             if (clickCountButton_btnNearLinkSettings % 2 == 0) {
                 CNearLinkSettings.setVisibility(View.GONE);
@@ -1133,7 +1149,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 clickCountButton_btnNearLinkSettings = 0;
             }
 
-        } else if (view.getId() == id.menu_labels_right_btn_nearlink_uart) {
+        } else if (view.getId() == id.menu_labels_left_btn_nearlink_uart) {
             MainAPP.Vibrate(this);
             if (clickCountButton_btnNearLinkUart % 2 == 0) {
                 CNearlinkUart.setVisibility(View.GONE);
@@ -1145,7 +1161,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 clickCountButton_btnNearLinkUart = 0;
             }
 
-        } else if (view.getId() == id.menu_labels_right_btn_nearlink_dev) {
+        } else if (view.getId() == id.menu_labels_left_btn_nearlink_dev) {
             MainAPP.Vibrate(this);
             if (clickCountButton_btnNearLinkDev % 2 == 0) {
                 CNearlinkDev.setVisibility(View.GONE);
