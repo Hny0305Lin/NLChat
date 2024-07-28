@@ -87,7 +87,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Queue;
 
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     //Log需要的TAG
     private static final String TAG = "MainActivity & NLChat";
@@ -201,6 +200,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //APP是否为平板或其余设备
     private boolean isTablet = false;
     private int orientation = 1;
+
+    //APP是否为华为手机运行
+
 
     @SuppressLint({"ObsoleteSdkInt", "InlinedApi"})
     @Override

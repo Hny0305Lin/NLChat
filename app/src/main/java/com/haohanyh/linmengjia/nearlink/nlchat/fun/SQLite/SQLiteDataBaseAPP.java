@@ -5,6 +5,7 @@
  */
 package com.haohanyh.linmengjia.nearlink.nlchat.fun.SQLite;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.util.Log;
@@ -108,6 +109,31 @@ public class SQLiteDataBaseAPP {
     public Cursor getAllMessages() {
         return sqLiteDataBaseForAPP.query("messages", null, null, null, null, null, "timestamp ASC");
     }
+
+    //获取表中聊天信息捆绑的UUID
+    @SuppressLint("Range")
+    public String getUUIDForMessage(String message, String sender, String timestamp) {
+        String uuid = null;
+        Cursor cursor = null;
+        try {
+            String[] columns = {"uuid"};
+            String selection = "message = ? AND sender = ? AND timestamp = ?";
+            String[] selectionArgs = {message, sender, timestamp};
+            cursor = sqLiteDataBaseForAPP.query("messagesuuid", columns, selection, selectionArgs, null, null, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                uuid = cursor.getString(cursor.getColumnIndex("uuid"));
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "查找UUID时发生错误", e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return uuid;
+    }
+
 
     // 关闭数据库连接
     public void close() {

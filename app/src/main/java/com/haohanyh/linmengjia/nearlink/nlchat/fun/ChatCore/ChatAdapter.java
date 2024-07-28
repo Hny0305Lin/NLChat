@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.string;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.SQLite.SQLiteDataBaseAPP;
 
 import java.util.List;
 import java.util.Random;
@@ -122,6 +123,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return chatUtilsForMessages.size();
     }
 
+    // todo 发送消息和接收消息每一方，如果消息有特殊情况比如enter，uuid会查询不到，目前这个bug打算后续修复。
+
     // 发送消息的ViewHolder
     private class SentMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText,timestampText;
@@ -133,6 +136,36 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             // 设置自定义字体
             ChatUIFontUtils.applyCustomFont(context, messageText);
+
+            messageText.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    Toast.makeText(context, messageText.getText().toString(), Toast.LENGTH_SHORT).show();
+
+                    String message = messageText.getText().toString();
+                    String sender = "Me";                                                   // 这里需要替换为实际的发送者
+
+                    String timestamp = ChatTimestamp.getLastTimestamp();                    // 获取缓存的时间戳
+
+                    SQLiteDataBaseAPP dbApp = SQLiteDataBaseAPP.SQLiteData();
+                    String uuid = dbApp.getUUIDForMessage(message, sender, timestamp);
+
+                    String messageToShow = message;
+                    if (uuid != null) {
+                        messageToShow += "\nUUID: " + uuid;
+                    } else {
+                        messageToShow += "\nUUID not found.";
+                    }
+
+                    String burn = "阅后即焚:" + ChatUtilsForSettings.isBurnmessage();
+
+                    ChatUIAlertDialog.showMessageLog(context,
+                            "消息信息(Dev,仅开发者使用)",
+                            messageToShow + "\n" + burn,
+                            "推荐开发者使用", "取消显示", "复制进剪贴板");
+                    return false;
+                }
+            });
         }
 
         void bind(ChatUtilsForMessage message) {
@@ -152,6 +185,36 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             // 设置自定义字体
             ChatUIFontUtils.applyCustomFont(context, messageText);
+
+            messageText.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    Toast.makeText(context, messageText.getText().toString(), Toast.LENGTH_SHORT).show();
+
+                    String message = messageText.getText().toString();
+                    String sender = "User";                                                 // 这里需要替换为实际的发送者
+
+                    String timestamp = ChatTimestamp.getLastTimestamp();                    // 获取缓存的时间戳
+
+                    SQLiteDataBaseAPP dbApp = SQLiteDataBaseAPP.SQLiteData();
+                    String uuid = dbApp.getUUIDForMessage(message, sender, timestamp);
+
+                    String messageToShow = message;
+                    if (uuid != null) {
+                        messageToShow += "\nUUID: " + uuid;
+                    } else {
+                        messageToShow += "\nUUID not found.";
+                    }
+
+                    String burn = "阅后即焚:" + ChatUtilsForSettings.isBurnmessage();
+
+                    ChatUIAlertDialog.showMessageLog(context,
+                            "消息信息(Dev,仅开发者使用)",
+                            messageToShow + "\n" + burn,
+                            "推荐开发者使用", "取消显示", "复制进剪贴板");
+                    return false;
+                }
+            });
         }
 
         void bind(ChatUtilsForMessage message) {

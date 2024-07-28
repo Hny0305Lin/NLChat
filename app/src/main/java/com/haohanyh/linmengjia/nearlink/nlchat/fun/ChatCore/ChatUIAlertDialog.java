@@ -1,9 +1,12 @@
 /* 受Haohanyh Computer Software Products Open Source LICENSE保护 https://github.com/Hny0305Lin/LICENSE/blob/main/LICENSE */
 package com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -65,9 +68,52 @@ public class ChatUIAlertDialog {
                 .setNeutralButton(neutralButtonText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        // TODO 剪贴板功能有待补充
+                        copyToClipboard(context, message);
                     }
                 })
                 .show();
+    }
+
+    /**
+     * 常用于ChatAdapter，展示聊天开发者内容，并做出开发者功能以助于下一步处理
+     * @param context   上下文，捆绑MainActivity
+     * @param title     标题
+     * @param message       捆绑UI内消息
+     * @param positiveButtonText    普遍为对话框Yes按钮
+     * @param negativeButtonText    普遍为对话框No按钮
+     * @param neutralButtonText     普通按钮，这里做剪贴板功能
+     */
+    public static void showMessageLog(Context context, String title, String message, String positiveButtonText, String negativeButtonText, String neutralButtonText) {
+        new AlertDialog.Builder(context, R.style.HaohanyhDialog)
+                .setTitle(title)
+                .setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // Positive button action
+                    }
+                })
+                .setNegativeButton(negativeButtonText, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // Negative button action
+                    }
+                })
+                .setNeutralButton(neutralButtonText, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // 复制进剪贴板
+                        copyToClipboard(context, message);
+                    }
+                })
+                .show();
+    }
+
+    private static void copyToClipboard(Context context, String text) {
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("Copied Text", text);
+        clipboard.setPrimaryClip(clip);
+        Toast.makeText(context, "已复制到剪贴板", Toast.LENGTH_SHORT).show();
     }
 }
