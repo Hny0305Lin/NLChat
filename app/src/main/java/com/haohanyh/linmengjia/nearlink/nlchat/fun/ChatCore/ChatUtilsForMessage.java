@@ -9,7 +9,6 @@ public class ChatUtilsForMessage {
     private String message;
     private String timestamp;
     private int loglevel;
-    private String uuid;
 
     private boolean isUser;
     private boolean isMe;
@@ -17,6 +16,8 @@ public class ChatUtilsForMessage {
     private boolean isSQLiteUser;
     private boolean isSQLiteMe;
     private boolean isSQLiteDebug;
+    private boolean isUserBurn;
+    private boolean isMeBurn;
 
     /**
      * 构造方法，适用于User消息
@@ -46,12 +47,12 @@ public class ChatUtilsForMessage {
      * 构造方法，适用于User消息（阅后即焚）
      * @param message   User消息
      * @param timestamp User消息时间
-     * @param isUser    传参
+     * @param isUserBurn    传参
      */
-    public ChatUtilsForMessage(String message, String timestamp, boolean isUser, String uuid) {
+    public ChatUtilsForMessage(String message, String timestamp, boolean isUserBurn, String uuid) {
         this.message = message;
         this.timestamp = timestamp;
-        this.isUser = isUser;
+        this.isUserBurn = isUserBurn;
 
         chatMessageUUID = new ChatMessageUUID();
         chatMessageUUID.setUUID(uuid);
@@ -60,13 +61,13 @@ public class ChatUtilsForMessage {
     /**
      * 构造方法，适用于Me消息（阅后即焚）
      * @param message   Me消息
-     * @param isMe      传参
+     * @param isMeBurn    传参
      * @param timestamp Me消息时间
      */
-    public ChatUtilsForMessage(String message, boolean isMe, String timestamp, String uuid) {
+    public ChatUtilsForMessage(String message, boolean isMeBurn, String timestamp, String uuid) {
         this.message = message;
         this.timestamp = timestamp;
-        this.isMe = isMe;
+        this.isMeBurn = isMeBurn;
 
         chatMessageUUID = new ChatMessageUUID();
         chatMessageUUID.setUUID(uuid);
@@ -148,5 +149,13 @@ public class ChatUtilsForMessage {
 
     public boolean isSQLiteDebug() {
         return isSQLiteDebug;
+    }
+
+    public boolean isUserBurn() {
+        return isUserBurn;
+    }
+
+    public boolean isMeBurn() {
+        return isMeBurn;
     }
 }

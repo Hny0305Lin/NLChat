@@ -25,16 +25,16 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     //Log需要的TAG
     private static final String TAG = "ChatAdapter & NLChat";
 
-    private static final int VIEW_TYPE_MESSAGE_SENT = 1;                                        //正常的消息，发
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;                                    //正常的消息，收
+    private static final int VIEW_TYPE_MESSAGE_SENT = 1;                                        //正常的消息，发
 
-    private static final int VIEW_TYPE_MESSAGE_SENT_BURN = 3;                                   //正常的消息，发，阅后即焚
     private static final int VIEW_TYPE_MESSAGE_RECEIVED_BURN = 4;                               //正常的消息，收，阅后即焚
+    private static final int VIEW_TYPE_MESSAGE_SENT_BURN = 3;                                   //正常的消息，发，阅后即焚
 
     private static final int VIEW_TYPE_DEBUG_RECEIVED = 5;                                      //Debug消息
 
-    private static final int VIEW_TYPE_MESSAGE_SENT_LATEST = -1;                                //数据库消息记录，发
     private static final int VIEW_TYPE_MESSAGE_RECEIVED_LATEST = -2;                            //数据库消息记录，收
+    private static final int VIEW_TYPE_MESSAGE_SENT_LATEST = -1;                                //数据库消息记录，发
 
     private static final int VIEW_TYPE_HAOHANYH = 255;                                          //彩蛋Debug
 
@@ -56,6 +56,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return VIEW_TYPE_MESSAGE_RECEIVED;
         } else if (message.isMe()) {
             return VIEW_TYPE_MESSAGE_SENT;
+        } else if (message.isUserBurn()) {
+            return VIEW_TYPE_MESSAGE_RECEIVED_BURN;
+        } else if (message.isMeBurn()) {
+            return VIEW_TYPE_MESSAGE_SENT_BURN;
         } else if (message.isDebug()) {
             return VIEW_TYPE_DEBUG_RECEIVED;
         } else if (message.isSQLiteUser()) {
@@ -80,6 +84,14 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_chat_sent, parent, false);
                 return new SentMessageHolder(view);
+            case VIEW_TYPE_MESSAGE_RECEIVED_BURN:
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_chat_received, parent, false);
+                return new ReceivedMessageBurnHolder(view);
+            case VIEW_TYPE_MESSAGE_SENT_BURN:
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_chat_sent, parent, false);
+                return new SentMessageBurnHolder(view);
             case VIEW_TYPE_DEBUG_RECEIVED:
                 view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_debug, parent, false);
@@ -104,11 +116,16 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ChatUtilsForMessage message = chatUtilsForMessages.get(position);
         int viewType = holder.getItemViewType();
+        Log.d(TAG, "绑定数据到 ViewHolder: viewType = " + viewType + ", holder class = " + holder.getClass().getName());
 
-        if (viewType == VIEW_TYPE_MESSAGE_SENT) {
-            ((SentMessageHolder) holder).bind(message);
-        } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
+        if (viewType == VIEW_TYPE_MESSAGE_RECEIVED) {
             ((ReceivedMessageHolder) holder).bind(message);
+        } else if (viewType == VIEW_TYPE_MESSAGE_SENT) {
+            ((SentMessageHolder) holder).bind(message);
+        } else if (viewType == VIEW_TYPE_MESSAGE_RECEIVED_BURN) {
+            ((ReceivedMessageBurnHolder) holder).bind(message);
+        } else if (viewType == VIEW_TYPE_MESSAGE_SENT_BURN) {
+            ((SentMessageBurnHolder) holder).bind(message);
         } else if (viewType == VIEW_TYPE_DEBUG_RECEIVED) {
             ((ReceivedDEBUGMessageHolder) holder).bind(message);
         } else if (viewType == VIEW_TYPE_MESSAGE_SENT_LATEST) {
@@ -128,6 +145,25 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     // todo 发送消息和接收消息每一方，如果消息有特殊情况比如enter，uuid会查询不到，目前这个bug打算后续修复。
 
+    // 接收消息的ViewHolder
+    private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
+        TextView messageText,timestampText;
+
+        ReceivedMessageHolder(View itemView) {
+            super(itemView);
+            messageText = itemView.findViewById(R.id.text_message_body);
+            timestampText = itemView.findViewById(R.id.text_message_time);
+
+            // 设置自定义字体
+            ChatUIFontUtils.applyCustomFont(context, messageText);
+        }
+
+        void bind(ChatUtilsForMessage message) {
+            messageText.setText(message.getMessage());
+            timestampText.setText(message.getTimestamp());
+        }
+    }
+
     // 发送消息的ViewHolder
     private class SentMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText,timestampText;
@@ -139,36 +175,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             // 设置自定义字体
             ChatUIFontUtils.applyCustomFont(context, messageText);
-
-            messageText.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    Toast.makeText(context, messageText.getText().toString(), Toast.LENGTH_SHORT).show();
-
-                    String message = messageText.getText().toString();
-                    String sender = "Me";                                                   // 这里需要替换为实际的发送者
-
-                    String timestamp = ChatTimestamp.getLastTimestamp();                    // 获取缓存的时间戳
-
-                    SQLiteDataBaseAPP dbApp = SQLiteDataBaseAPP.SQLiteData();
-                    String uuid = dbApp.getUUIDForMessage(message, sender, timestamp);
-
-                    String messageToShow = "\n消息内容: " + message;
-                    if (uuid != null) {
-                        messageToShow += "\nUUID: " + uuid;
-                    } else {
-                        messageToShow += "\nUUID: UUID not found.";
-                    }
-
-                    String burn = "\n阅后即焚:" + ChatUtilsForSettings.isBurnmessage();
-
-                    ChatUIAlertDialog.showMessageLog(context,
-                            "消息信息(Dev,仅开发者使用)",
-                            messageToShow + "\n" + burn,
-                            "推荐开发者使用", "取消显示", "复制进剪贴板");
-                    return false;
-                }
-            });
         }
 
         void bind(ChatUtilsForMessage message) {
@@ -177,11 +183,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
-    // 接收消息的ViewHolder
-    private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
+    // 接收消息的ViewHolder（阅后即焚）
+    private class ReceivedMessageBurnHolder extends RecyclerView.ViewHolder {
         TextView messageText,timestampText;
 
-        ReceivedMessageHolder(View itemView) {
+        ReceivedMessageBurnHolder(View itemView) {
             super(itemView);
             messageText = itemView.findViewById(R.id.text_message_body);
             timestampText = itemView.findViewById(R.id.text_message_time);
@@ -226,6 +232,54 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+    // 发送消息的ViewHolder（阅后即焚）
+    private class SentMessageBurnHolder extends RecyclerView.ViewHolder {
+        TextView messageText,timestampText;
+
+        SentMessageBurnHolder(View itemView) {
+            super(itemView);
+            messageText = itemView.findViewById(R.id.text_message_body);
+            timestampText = itemView.findViewById(R.id.text_message_time);
+
+            // 设置自定义字体
+            ChatUIFontUtils.applyCustomFont(context, messageText);
+
+            messageText.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    Toast.makeText(context, messageText.getText().toString(), Toast.LENGTH_SHORT).show();
+
+                    String message = messageText.getText().toString();
+                    String sender = "Me";                                                   // 这里需要替换为实际的发送者
+
+                    String timestamp = ChatTimestamp.getLastTimestamp();                    // 获取缓存的时间戳
+
+                    SQLiteDataBaseAPP dbApp = SQLiteDataBaseAPP.SQLiteData();
+                    String uuid = dbApp.getUUIDForMessage(message, sender, timestamp);
+
+                    String messageToShow = "\n消息内容: " + message;
+                    if (uuid != null) {
+                        messageToShow += "\nUUID: " + uuid;
+                    } else {
+                        messageToShow += "\nUUID: UUID not found.";
+                    }
+
+                    String burn = "\n阅后即焚:" + ChatUtilsForSettings.isBurnmessage();
+
+                    ChatUIAlertDialog.showMessageLog(context,
+                            "消息信息(Dev,仅开发者使用)",
+                            messageToShow + "\n" + burn,
+                            "推荐开发者使用", "取消显示", "复制进剪贴板");
+                    return false;
+                }
+            });
+        }
+
+        void bind(ChatUtilsForMessage message) {
+            messageText.setText(message.getMessage());
+            timestampText.setText(message.getTimestamp());
+        }
+    }
 
     // 接收DEBUG消息的ViewHolder
     private class ReceivedDEBUGMessageHolder extends RecyclerView.ViewHolder {

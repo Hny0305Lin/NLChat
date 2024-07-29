@@ -910,7 +910,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:checked="false"
+                            android:checked="true"
                             android:fontFamily="sans-serif-medium"
                             android:text="@string/uiNearLinkSettingsForWord"
                             android:textColor="@color/Pink_is_fancy"
