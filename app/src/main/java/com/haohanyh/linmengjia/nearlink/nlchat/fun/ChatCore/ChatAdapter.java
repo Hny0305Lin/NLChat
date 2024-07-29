@@ -28,7 +28,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;                                        //正常的消息，发
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;                                    //正常的消息，收
 
-    private static final int VIEW_TYPE_DEBUG_RECEIVED = 3;                                      //Debug消息
+    private static final int VIEW_TYPE_MESSAGE_SENT_BURN = 3;                                   //正常的消息，发，阅后即焚
+    private static final int VIEW_TYPE_MESSAGE_RECEIVED_BURN = 4;                               //正常的消息，收，阅后即焚
+
+    private static final int VIEW_TYPE_DEBUG_RECEIVED = 5;                                      //Debug消息
 
     private static final int VIEW_TYPE_MESSAGE_SENT_LATEST = -1;                                //数据库消息记录，发
     private static final int VIEW_TYPE_MESSAGE_RECEIVED_LATEST = -2;                            //数据库消息记录，收
@@ -150,14 +153,14 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     SQLiteDataBaseAPP dbApp = SQLiteDataBaseAPP.SQLiteData();
                     String uuid = dbApp.getUUIDForMessage(message, sender, timestamp);
 
-                    String messageToShow = message;
+                    String messageToShow = "\n消息内容: " + message;
                     if (uuid != null) {
                         messageToShow += "\nUUID: " + uuid;
                     } else {
-                        messageToShow += "\nUUID not found.";
+                        messageToShow += "\nUUID: UUID not found.";
                     }
 
-                    String burn = "阅后即焚:" + ChatUtilsForSettings.isBurnmessage();
+                    String burn = "\n阅后即焚:" + ChatUtilsForSettings.isBurnmessage();
 
                     ChatUIAlertDialog.showMessageLog(context,
                             "消息信息(Dev,仅开发者使用)",
@@ -199,14 +202,14 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     SQLiteDataBaseAPP dbApp = SQLiteDataBaseAPP.SQLiteData();
                     String uuid = dbApp.getUUIDForMessage(message, sender, timestamp);
 
-                    String messageToShow = message;
+                    String messageToShow = "\n消息内容: " + message;
                     if (uuid != null) {
                         messageToShow += "\nUUID: " + uuid;
                     } else {
-                        messageToShow += "\nUUID not found.";
+                        messageToShow += "\nUUID: UUID not found.";
                     }
 
-                    String burn = "阅后即焚:" + ChatUtilsForSettings.isBurnmessage();
+                    String burn = "\n阅后即焚:" + ChatUtilsForSettings.isBurnmessage();
 
                     ChatUIAlertDialog.showMessageLog(context,
                             "消息信息(Dev,仅开发者使用)",

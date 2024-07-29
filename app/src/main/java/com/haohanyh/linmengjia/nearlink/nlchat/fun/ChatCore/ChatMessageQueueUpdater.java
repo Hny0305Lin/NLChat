@@ -117,9 +117,17 @@ public class ChatMessageQueueUpdater {
             String uuid = chatMessageUUID.generateUUID(); // 生成UUID
 
             if (isUser) {
-                chatUtilsForMessages.add(new ChatUtilsForMessage(newMessage, timestamp, isUser, uuid));
+                if (ChatUtilsForSettings.isBurnmessage()) {
+                    chatUtilsForMessages.add(new ChatUtilsForMessage(newMessage, timestamp, isUser, uuid));
+                } else {
+                    chatUtilsForMessages.add(new ChatUtilsForMessage(newMessage, timestamp, isUser));
+                }
             } else if (isMe) {
-                chatUtilsForMessages.add(new ChatUtilsForMessage(newMessage, isMe, timestamp, uuid));
+                if (ChatUtilsForSettings.isBurnmessage()) {
+                    chatUtilsForMessages.add(new ChatUtilsForMessage(newMessage, isMe, timestamp, uuid));
+                } else {
+                    chatUtilsForMessages.add(new ChatUtilsForMessage(newMessage, isMe, timestamp));
+                }
             } else if (isDebug) {
                 chatUtilsForMessages.add(new ChatUtilsForMessage(newMessage, isDebug, loglevel));
             } else if (isHistoryUser) {

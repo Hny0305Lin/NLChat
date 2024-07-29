@@ -563,7 +563,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             SnackBarToastForDebug(context,"已为您取消展示聊天记录!","目前为" + ChatUtilsForSettings.isSqliteHistory(),0,Snackbar.LENGTH_SHORT);
                         }
                     } else if (compoundButton.getId() == id.cbSettingsForClearSCR) {
-                        SnackBarToastForDebug(context,"敬请期待!","如有不适，那没办法，做的慢怪我咯o(*^＠^*)o",0,Snackbar.LENGTH_SHORT);
+                        if (isChecked) {
+                                ChatUtilsForSettings.setBurnmessage(true);
+                            SnackBarToastForDebug(context,"您已开始消息阅后即焚啦!","目前为" + ChatUtilsForSettings.isBurnmessage(),0,Snackbar.LENGTH_SHORT);
+                        } else {
+                            if (ChatUIAlertDialog.showNormal(compoundButton.getContext(), "阅后即焚(默认2分钟清)", "您确定要停止阅后即焚这个功能吗？", compoundButton))
+                                ChatUtilsForSettings.setBurnmessage(false);
+                            SnackBarToastForDebug(context,"已为您取消消息阅后即焚!","目前为" + ChatUtilsForSettings.isBurnmessage(),0,Snackbar.LENGTH_SHORT);
+                        }
                     } else if (compoundButton.getId() == id.cbSettingsForEncryption) {
                         SnackBarToastForDebug(context,"敬请期待!","如有不适，那没办法，做的慢怪我咯o(*^＠^*)o",0,Snackbar.LENGTH_SHORT);
                     } else if (compoundButton.getId() == id.cbSettingsForClip) {
@@ -603,7 +610,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SettingsForHistory.setChecked(false);
         SettingsForHistory.setOnCheckedChangeListener(SettingsChangeListener);
         SettingsForClearSCR = findViewById(id.cbSettingsForClearSCR);
-        SettingsForClearSCR.setEnabled(false);
+        SettingsForClearSCR.setEnabled(true);
         SettingsForClearSCR.setOnCheckedChangeListener(SettingsChangeListener);
         SettingsForEncryption = findViewById(id.cbSettingsForEncryption);
         SettingsForEncryption.setEnabled(false);

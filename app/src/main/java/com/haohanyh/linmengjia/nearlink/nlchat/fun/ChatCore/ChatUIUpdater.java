@@ -54,8 +54,12 @@ public class ChatUIUpdater {
                     chatMessageDatabaseManager.saveDebugMessageToDatabase(timestamp, processedString, "UserDebug");
                 }
 
-                chatMessageDatabaseManager.saveMessageToDatabase(timestamp, processedString, "User");
-                chatMessageDatabaseManager.saveMessageAndUUIDToDatabase(timestamp, processedString, "User", chatMessageUUID.getUUID());
+                //阅后即焚功能判断是否需要开启
+                if (ChatUtilsForSettings.isBurnmessage()) {
+                    chatMessageDatabaseManager.saveMessageAndUUIDToDatabase(timestamp, processedString, "User", chatMessageUUID.getUUID());
+                } else {
+                    chatMessageDatabaseManager.saveMessageToDatabase(timestamp, processedString, "User");
+                }
             }
             // 如果需要UI滚动消息
             if (ChatUtilsForSettings.isScrollingMessages()) {
@@ -93,8 +97,13 @@ public class ChatUIUpdater {
             // 如果需要存储到数据库中
             if (ChatUtilsForSettings.isSqlitemanager()) {
                 String timestamp = chatTimestamp.saveCurrentTimestamp();
-                chatMessageDatabaseManager.saveMessageToDatabase(timestamp, processedString, "Me");
-                chatMessageDatabaseManager.saveMessageAndUUIDToDatabase(timestamp, processedString, "Me", chatMessageUUID.getUUID());
+
+                //阅后即焚功能判断是否需要开启
+                if (ChatUtilsForSettings.isBurnmessage()) {
+                    chatMessageDatabaseManager.saveMessageAndUUIDToDatabase(timestamp, processedString, "Me", chatMessageUUID.getUUID());
+                } else {
+                    chatMessageDatabaseManager.saveMessageToDatabase(timestamp, processedString, "Me");
+                }
             }
             //如果需要UI滚动消息
             if (ChatUtilsForSettings.isScrollingMessages()) {

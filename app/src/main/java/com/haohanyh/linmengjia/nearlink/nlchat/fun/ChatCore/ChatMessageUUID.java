@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class ChatMessageUUID {
+    private static final String TAG = "ChatMessageUUID & NLChat";
     private List<String> uuidList;
     private String uuid;
 
@@ -16,6 +17,7 @@ public class ChatMessageUUID {
     public String generateUUID() {
         uuid = UUID.randomUUID().toString();
         uuidList.add(uuid);
+
         return uuid;
     }
 

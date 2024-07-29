@@ -18,9 +18,32 @@ public class ChatUtilsForMessage {
     private boolean isSQLiteMe;
     private boolean isSQLiteDebug;
 
-
     /**
      * 构造方法，适用于User消息
+     * @param message   User消息
+     * @param timestamp User消息时间
+     * @param isUser    传参
+     */
+    public ChatUtilsForMessage(String message, String timestamp, boolean isUser) {
+        this.message = message;
+        this.timestamp = timestamp;
+        this.isUser = isUser;
+    }
+
+    /**
+     * 构造方法，适用于Me消息
+     * @param message   Me消息
+     * @param isMe      传参
+     * @param timestamp Me消息时间
+     */
+    public ChatUtilsForMessage(String message, boolean isMe, String timestamp) {
+        this.message = message;
+        this.timestamp = timestamp;
+        this.isMe = isMe;
+    }
+
+    /**
+     * 构造方法，适用于User消息（阅后即焚）
      * @param message   User消息
      * @param timestamp User消息时间
      * @param isUser    传参
@@ -35,7 +58,7 @@ public class ChatUtilsForMessage {
     }
 
     /**
-     * 构造方法，适用于Me消息
+     * 构造方法，适用于Me消息（阅后即焚）
      * @param message   Me消息
      * @param isMe      传参
      * @param timestamp Me消息时间
@@ -60,7 +83,6 @@ public class ChatUtilsForMessage {
         this.isDebug = isDebug;
         this.loglevel = loglevel;
     }
-
 
     /**
      * 构造方法，适用于数据库历史消息
