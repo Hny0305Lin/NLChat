@@ -4,6 +4,7 @@ package com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,11 +87,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 return new SentMessageHolder(view);
             case VIEW_TYPE_MESSAGE_RECEIVED_BURN:
                 view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.item_chat_received, parent, false);
+                        .inflate(R.layout.item_chat_received_burn, parent, false);
                 return new ReceivedMessageBurnHolder(view);
             case VIEW_TYPE_MESSAGE_SENT_BURN:
                 view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.item_chat_sent, parent, false);
+                        .inflate(R.layout.item_chat_sent_burn, parent, false);
                 return new SentMessageBurnHolder(view);
             case VIEW_TYPE_DEBUG_RECEIVED:
                 view = LayoutInflater.from(parent.getContext())
@@ -144,6 +145,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     // todo 发送消息和接收消息每一方，如果消息有特殊情况比如enter，uuid会查询不到，目前这个bug打算后续修复。
+    // todo 小熊派群员:阅后即焚可以做个动画，提示密信，点开弹窗，关闭不见
 
     // 接收消息的ViewHolder
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
@@ -185,12 +187,15 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     // 接收消息的ViewHolder（阅后即焚）
     private class ReceivedMessageBurnHolder extends RecyclerView.ViewHolder {
-        TextView messageText,timestampText;
+        TextView messageText,timestampText,emojiText;
+        private EmojiTimer emojiTimer;
+        private boolean isTimerRunning = false;
 
         ReceivedMessageBurnHolder(View itemView) {
             super(itemView);
             messageText = itemView.findViewById(R.id.text_message_body);
             timestampText = itemView.findViewById(R.id.text_message_time);
+            emojiText = itemView.findViewById(R.id.text_message_emoji);
 
             // 设置自定义字体
             ChatUIFontUtils.applyCustomFont(context, messageText);
@@ -201,7 +206,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     Toast.makeText(context, messageText.getText().toString(), Toast.LENGTH_SHORT).show();
 
                     String message = messageText.getText().toString();
-                    String sender = "User";                                                 // 这里需要替换为实际的发送者
+                    String sender = "User";                                                   // 这里需要替换为实际的发送者
 
                     String timestamp = ChatTimestamp.getLastTimestamp();                    // 获取缓存的时间戳
 
@@ -224,22 +229,55 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     return false;
                 }
             });
+
         }
 
         void bind(ChatUtilsForMessage message) {
             messageText.setText(message.getMessage());
             timestampText.setText(message.getTimestamp());
+
+            // 启动Emoji计时器
+            if (!isTimerRunning) {
+                if (emojiTimer != null) {
+                    emojiTimer.stopTimer();
+                }
+                emojiTimer = new EmojiTimer(emojiText);
+                emojiTimer.startTimer(ChatUtilsForSettings.getBurntimer()); // 2分钟倒计时
+                isTimerRunning = true;
+            }
+
+            // 设置消息2分钟后从数据源中删除并更新UI
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //Log
+                    Log.d(TAG, "ReceivedMessageBurnHandler is running");
+                    // 检查当前消息是否仍在数据源中
+                    int currentIndex = chatUtilsForMessages.indexOf(message);
+                    if (currentIndex != -1) {
+                        // 从数据源中删除消息
+                        chatUtilsForMessages.remove(currentIndex);
+                        // 通知RecyclerView某项已被删除
+                        notifyItemRemoved(currentIndex);
+                        // 通知RecyclerView更新位置，防止位置错乱
+                        notifyItemRangeChanged(currentIndex, chatUtilsForMessages.size());
+                    }
+                }
+            }, ChatUtilsForSettings.getBurntimer()); // 延迟时间为120000毫秒，即2分钟
         }
     }
 
     // 发送消息的ViewHolder（阅后即焚）
     private class SentMessageBurnHolder extends RecyclerView.ViewHolder {
-        TextView messageText,timestampText;
+        TextView messageText, timestampText, emojiText;
+        private EmojiTimer emojiTimer;
+        private boolean isTimerRunning = false;
 
         SentMessageBurnHolder(View itemView) {
             super(itemView);
             messageText = itemView.findViewById(R.id.text_message_body);
             timestampText = itemView.findViewById(R.id.text_message_time);
+            emojiText = itemView.findViewById(R.id.text_message_emoji);
 
             // 设置自定义字体
             ChatUIFontUtils.applyCustomFont(context, messageText);
@@ -250,9 +288,9 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     Toast.makeText(context, messageText.getText().toString(), Toast.LENGTH_SHORT).show();
 
                     String message = messageText.getText().toString();
-                    String sender = "Me";                                                   // 这里需要替换为实际的发送者
+                    String sender = "Me"; // 这里需要替换为实际的发送者
 
-                    String timestamp = ChatTimestamp.getLastTimestamp();                    // 获取缓存的时间戳
+                    String timestamp = ChatTimestamp.getLastTimestamp(); // 获取缓存的时间戳
 
                     SQLiteDataBaseAPP dbApp = SQLiteDataBaseAPP.SQLiteData();
                     String uuid = dbApp.getUUIDForMessage(message, sender, timestamp);
@@ -278,8 +316,38 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         void bind(ChatUtilsForMessage message) {
             messageText.setText(message.getMessage());
             timestampText.setText(message.getTimestamp());
+
+            // 启动Emoji计时器
+            if (!isTimerRunning) {
+                if (emojiTimer != null) {
+                    emojiTimer.stopTimer();
+                }
+                emojiTimer = new EmojiTimer(emojiText);
+                emojiTimer.startTimer(ChatUtilsForSettings.getBurntimer()); // 2分钟倒计时
+                isTimerRunning = true;
+            }
+
+            // 设置消息2分钟后从数据源中删除并更新UI
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //Log
+                    Log.d(TAG, "SentMessageBurnHandler is running");
+                    // 检查当前消息是否仍在数据源中
+                    int currentIndex = chatUtilsForMessages.indexOf(message);
+                    if (currentIndex != -1) {
+                        // 从数据源中删除消息
+                        chatUtilsForMessages.remove(currentIndex);
+                        // 通知RecyclerView某项已被删除
+                        notifyItemRemoved(currentIndex);
+                        // 通知RecyclerView更新位置，防止位置错乱
+                        notifyItemRangeChanged(currentIndex, chatUtilsForMessages.size());
+                    }
+                }
+            }, ChatUtilsForSettings.getBurntimer()); // 延迟时间为120000毫秒，即2分钟
         }
     }
+
 
     // 接收DEBUG消息的ViewHolder
     private class ReceivedDEBUGMessageHolder extends RecyclerView.ViewHolder {

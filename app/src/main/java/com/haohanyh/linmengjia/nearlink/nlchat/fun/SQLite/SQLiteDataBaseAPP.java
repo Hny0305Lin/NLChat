@@ -10,6 +10,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtilsForSettings;
+
 import io.requery.android.database.sqlite.SQLiteDatabase;
 
 public class SQLiteDataBaseAPP {
@@ -81,6 +83,11 @@ public class SQLiteDataBaseAPP {
 
     //保存带UUID消息到数据库
     public void saveMessageToDatabase(String message, String sender, String timestamp, String uuid) {
+        // 检查消息是否包含特定字符串
+        if (message.contains(ChatUtilsForSettings.getPrefixLogSleUartServer())) {
+            return; // 如果包含，直接返回不执行保存
+        }
+
         ContentValues values = new ContentValues();
         values.put("message", message);
         values.put("sender", sender);

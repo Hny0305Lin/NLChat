@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:padding="3dp"
+    android:gravity="start">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/text_message_body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_chat_bubble_wechat_burn_received"
+            android:gravity="start"
+            android:breakStrategy="simple"
+            android:hyphenationFrequency="none"
+            android:maxWidth="220dp"
+            android:padding="10dp"
+            android:text="Hello, this is a received message! Test!"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toStartOf="@+id/text_message_time"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/text_message_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:fontFamily="monospace"
+            android:textSize="10sp"
+            android:text="12:00 PM"
+            android:textColor="@color/newui_time"
+            app:layout_constraintStart_toEndOf="@id/text_message_body"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_message_emoji"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="monospace"
+            android:textSize="10sp"
+            android:text="2:00"
+            android:textColor="@color/newui_time"
+            app:layout_constraintBottom_toBottomOf="@id/text_message_body"
+            app:layout_constraintStart_toEndOf="@id/text_message_body"
+            tools:ignore="MissingConstraints" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

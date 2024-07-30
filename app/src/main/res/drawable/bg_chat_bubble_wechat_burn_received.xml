@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 原背景层 -->
+    <item>
+        <layer-list>
+            <item android:left="8dp">
+                <shape>
+                    <corners android:radius="4dp" />
+                    <solid android:color="@color/purple_200" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+
+    <!-- 旋转的形状 -->
+    <item
+        android:gravity="left|center">
+        <rotate
+            android:fromDegrees="45"
+            android:pivotX="50%"
+            android:pivotY="125%">
+            <shape android:shape="rectangle">
+                <size
+                    android:width="8dp"
+                    android:height="8dp" />
+                <solid android:color="@color/purple_200" />
+            </shape>
+        </rotate>
+    </item>
+</layer-list>
