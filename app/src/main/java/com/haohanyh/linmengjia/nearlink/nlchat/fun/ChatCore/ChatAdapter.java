@@ -15,10 +15,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.Emoji.EmojiTimerManager;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.string;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.SQLite.SQLiteDataBaseAPP;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Random;
 
@@ -185,11 +187,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+
+    private EmojiTimerManager emojiTimerManager = new EmojiTimerManager();
+
     // 接收消息的ViewHolder（阅后即焚）
     private class ReceivedMessageBurnHolder extends RecyclerView.ViewHolder {
         TextView messageText,timestampText,emojiText;
-        private EmojiTimer emojiTimer;
-        private boolean isTimerRunning = false;
 
         ReceivedMessageBurnHolder(View itemView) {
             super(itemView);
@@ -236,42 +239,50 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             messageText.setText(message.getMessage());
             timestampText.setText(message.getTimestamp());
 
-            // 启动Emoji计时器
-            if (!isTimerRunning) {
-                if (emojiTimer != null) {
-                    emojiTimer.stopTimer();
-                }
-                emojiTimer = new EmojiTimer(emojiText);
-                emojiTimer.startTimer(ChatUtilsForSettings.getBurntimer()); // 2分钟倒计时
-                isTimerRunning = true;
-            }
+            // 使用EmojiTimerManager来管理和启动计时器
+            emojiTimerManager.startTimer(emojiText, ChatUtilsForSettings.getBurntimer()); // 2分钟倒计时
+
+            // 使用同一个Handler来处理UI更新和消息删除
+            Handler messageHandler = new Handler();
+            ReceivedMessageBurnHandler burnHandler = new ReceivedMessageBurnHandler(this, message);
 
             // 设置消息2分钟后从数据源中删除并更新UI
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    //Log
-                    Log.d(TAG, "ReceivedMessageBurnHandler is running");
-                    // 检查当前消息是否仍在数据源中
-                    int currentIndex = chatUtilsForMessages.indexOf(message);
-                    if (currentIndex != -1) {
-                        // 从数据源中删除消息
-                        chatUtilsForMessages.remove(currentIndex);
-                        // 通知RecyclerView某项已被删除
-                        notifyItemRemoved(currentIndex);
-                        // 通知RecyclerView更新位置，防止位置错乱
-                        notifyItemRangeChanged(currentIndex, chatUtilsForMessages.size());
-                    }
+            messageHandler.postDelayed(burnHandler, ChatUtilsForSettings.getBurntimer()); // 延迟时间为120000毫秒，即2分钟
+        }
+    }
+
+    private class ReceivedMessageBurnHandler implements Runnable {
+        private final WeakReference<ReceivedMessageBurnHolder> holderWeakReference;
+        private final ChatUtilsForMessage message;
+
+        ReceivedMessageBurnHandler(ReceivedMessageBurnHolder holder, ChatUtilsForMessage message) {
+            this.holderWeakReference = new WeakReference<>(holder);
+            this.message = message;
+        }
+
+        @Override
+        public void run() {
+            ReceivedMessageBurnHolder holder = holderWeakReference.get();
+            if (holder != null && message != null) {
+                //Log
+                Log.d(TAG, "ReceivedMessageBurnHandler is running");
+                // 检查当前消息是否仍在数据源中
+                int currentIndex = chatUtilsForMessages.indexOf(message);
+                if (currentIndex != -1) {
+                    // 从数据源中删除消息
+                    chatUtilsForMessages.remove(currentIndex);
+                    // 通知RecyclerView某项已被删除
+                    notifyItemRemoved(currentIndex);
+                    // 通知RecyclerView更新位置，防止位置错乱
+                    notifyItemRangeChanged(currentIndex, chatUtilsForMessages.size());
                 }
-            }, ChatUtilsForSettings.getBurntimer()); // 延迟时间为120000毫秒，即2分钟
+            }
         }
     }
 
     // 发送消息的ViewHolder（阅后即焚）
     private class SentMessageBurnHolder extends RecyclerView.ViewHolder {
         TextView messageText, timestampText, emojiText;
-        private EmojiTimer emojiTimer;
-        private boolean isTimerRunning = false;
 
         SentMessageBurnHolder(View itemView) {
             super(itemView);
@@ -317,34 +328,44 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             messageText.setText(message.getMessage());
             timestampText.setText(message.getTimestamp());
 
-            // 启动Emoji计时器
-            if (!isTimerRunning) {
-                if (emojiTimer != null) {
-                    emojiTimer.stopTimer();
-                }
-                emojiTimer = new EmojiTimer(emojiText);
-                emojiTimer.startTimer(ChatUtilsForSettings.getBurntimer()); // 2分钟倒计时
-                isTimerRunning = true;
-            }
+            // 使用EmojiTimerManager来管理和启动计时器
+            emojiTimerManager.startTimer(emojiText, ChatUtilsForSettings.getBurntimer()); // 2分钟倒计时
+
+            // 使用同一个Handler来处理UI更新和消息删除
+            Handler messageHandler = new Handler();
+            SentMessageBurnHandler burnHandler = new SentMessageBurnHandler(this, message);
 
             // 设置消息2分钟后从数据源中删除并更新UI
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    //Log
-                    Log.d(TAG, "SentMessageBurnHandler is running");
-                    // 检查当前消息是否仍在数据源中
-                    int currentIndex = chatUtilsForMessages.indexOf(message);
-                    if (currentIndex != -1) {
-                        // 从数据源中删除消息
-                        chatUtilsForMessages.remove(currentIndex);
-                        // 通知RecyclerView某项已被删除
-                        notifyItemRemoved(currentIndex);
-                        // 通知RecyclerView更新位置，防止位置错乱
-                        notifyItemRangeChanged(currentIndex, chatUtilsForMessages.size());
-                    }
+            messageHandler.postDelayed(burnHandler, ChatUtilsForSettings.getBurntimer()); // 延迟时间为120000毫秒，即2分钟
+        }
+    }
+
+    private class SentMessageBurnHandler implements Runnable {
+        private final WeakReference<SentMessageBurnHolder> holderWeakReference;
+        private final ChatUtilsForMessage message;
+
+        SentMessageBurnHandler(SentMessageBurnHolder holder, ChatUtilsForMessage message) {
+            this.holderWeakReference = new WeakReference<>(holder);
+            this.message = message;
+        }
+
+        @Override
+        public void run() {
+            SentMessageBurnHolder holder = holderWeakReference.get();
+            if (holder != null && message != null) {
+                //Log
+                Log.d(TAG, "SentMessageBurnHandler is running");
+                // 检查当前消息是否仍在数据源中
+                int currentIndex = chatUtilsForMessages.indexOf(message);
+                if (currentIndex != -1) {
+                    // 从数据源中删除消息
+                    chatUtilsForMessages.remove(currentIndex);
+                    // 通知RecyclerView某项已被删除
+                    notifyItemRemoved(currentIndex);
+                    // 通知RecyclerView更新位置，防止位置错乱
+                    notifyItemRangeChanged(currentIndex, chatUtilsForMessages.size());
                 }
-            }, ChatUtilsForSettings.getBurntimer()); // 延迟时间为120000毫秒，即2分钟
+            }
         }
     }
 
@@ -553,7 +574,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @SuppressLint("NotifyDataSetChanged")
     public void updateMessages(List<ChatUtilsForMessage> newMessages, RecyclerView recyclerView) {
         this.chatUtilsForMessages = newMessages;
-        notifyDataSetChanged();
+        //notifyDataSetChanged();
         recyclerView.scrollToPosition(chatUtilsForMessages.size() - 1);
     }
 }

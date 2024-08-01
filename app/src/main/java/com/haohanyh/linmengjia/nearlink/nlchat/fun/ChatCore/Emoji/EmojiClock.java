@@ -1,4 +1,4 @@
-package com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore;
+package com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.Emoji;
 
 public class EmojiClock {
 
