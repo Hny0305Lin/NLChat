@@ -14,6 +14,7 @@ public class ChatUtilsForSettings {
     private static final boolean sqlitehistorymanagerlog = true; // 控制是否启用SQLite保存存储、历史记录显示Logcat（开发者使用）
     //这里设置的是阅后即焚功能相关
     private static boolean burnmessage = false; // 控制是否启用阅后即焚聊天功能
+    private static final boolean burnalertdialog = false; // 控制是否启用阅后即焚AliertDialog（开发者使用，false为长按消失消息，true为长按显示开发者信息）
     private static final int burntimer = 120000; // 控制阅后即焚的时间（2分钟,120000.如为开发者推荐全局2秒钟,2000）
     //这里设置的是跟C代码相关的，白名单获取聊天文本，当这些文本出现在串口通讯里面的时候，提取这String后者即可，期间过滤掉前者和大量串口log。
     private static final String PREFIX_SERVER = " Let's start chatting, This is the content of the server:";
@@ -71,6 +72,8 @@ public class ChatUtilsForSettings {
     public static boolean isSqlitehistorymanagerlog() { return sqlitehistorymanagerlog; }
     //控制是否启动阅后即焚功能
     public static boolean isBurnmessage() { return burnmessage; }
+
+    public static boolean isBurnalertdialog() { return burnalertdialog; }
 
     public static void setBurnmessage(boolean burnmessage) { ChatUtilsForSettings.burnmessage = burnmessage; }
 

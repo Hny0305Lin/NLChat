@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">NLChat</string>
     <string name="app_package">com.haohanyh.linmengjia.nearlink.nlchat.fun</string>
-    <string name="app_version">1.3.350.2024.0801</string>
+    <string name="app_version">1.3.352.2024.0803</string>
 
     <string name="appwarn">NLChat，浩瀚银河宗旨为用爱和魔法创造Android APP。</string>
     <string name="thanks3q">友情感谢</string>
@@ -131,6 +131,8 @@
         我们建议您，在使用本款软件时，请打开存储权限、弹窗时的USB权限请确认等等操作。
         \n
         本款软件需要配合我们的开源仓库魔改方案使用，详情请见Github搜索Hny0305Lin，可找到\"BearPi_Hi2821_Pico_NLChat\"仓库
+        \n
+        后续适配更多型号，让更多星闪设备可以在非星闪搭载设备上体验使用。
         \n
         目前仅为SLE_UART透传方案，仅支持互传文本，需要后续功能可以敬请期待。
         \n
