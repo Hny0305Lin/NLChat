@@ -220,6 +220,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             // 设置消息2分钟后从数据源中删除并更新UI
             messageHandler.postDelayed(burnHandler, ChatUtilsForSettings.getBurntimer()); // 延迟时间为120000毫秒，即2分钟
 
+            // 新增点击显示3秒钟文字（后续做出
+            messageText.setOnClickListener(v -> {
+                Toast.makeText(context, message.getMessage(), Toast.LENGTH_SHORT).show();
+            });
+
             // 新增长按可以在2分钟内看完后手动删除密聊
             messageText.setOnLongClickListener(v -> {
                 if (!ChatUtilsForSettings.isBurnalertdialog()) {
@@ -313,6 +318,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             // 设置消息2分钟后从数据源中删除并更新UI
             messageHandler.postDelayed(burnHandler, ChatUtilsForSettings.getBurntimer()); // 延迟时间为120000毫秒，即2分钟
+
+            // 新增点击显示3秒钟文字（后续做出
+            messageText.setOnClickListener(v -> {
+                Toast.makeText(context, message.getMessage(), Toast.LENGTH_SHORT).show();
+            });
 
             // 新增长按可以在2分钟内看完后手动删除密聊
             messageText.setOnLongClickListener(v -> {
