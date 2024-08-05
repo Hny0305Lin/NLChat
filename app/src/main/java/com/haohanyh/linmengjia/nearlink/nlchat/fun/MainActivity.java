@@ -25,6 +25,7 @@ import android.os.Message;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
@@ -116,6 +117,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView APPRunResult,MobileUSBResult,UARTResult;
     private EditText EditChatSendNewUI;
 
+    private long startTime;
+    private boolean isEmojiMode = false;
+    private static final int LONG_PRESS_TIME = 500; // 长按时间阈值，单位毫秒
     private MaterialButton ButtonForSendData;
 
     /* TODO 1.4版本前，务必把这个TextView未参与初始化和聊天核心内容，进行修改，目前是可以正常使用了。 */
@@ -447,7 +451,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         EditChatSendNewUI = findViewById(id.editChatSendNewUI);
         EditChatSendNewUI.setOnEditorActionListener(editorActionListenerForChatSend);
 
+        View.OnTouchListener touchListenerForSend = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startTime = System.currentTimeMillis();
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        long duration = System.currentTimeMillis() - startTime;
+                        if (duration >= LONG_PRESS_TIME) {
+                            isEmojiMode = true;
+                            NearLinkChatSendEmoji(view);
+                        } else {
+                            if (isEmojiMode) {
+                                isEmojiMode = false;
+                            }
+                            NearLinkChatSendData(view);
+                        }
+                        return true;
+                    case MotionEvent.ACTION_CANCEL:
+                        // 重置状态
+                        startTime = 0;
+                        return true;
+                }
+                return false;
+            }
+        };
         ButtonForSendData = findViewById(id.sendDataBtn);
+        ButtonForSendData.setOnTouchListener(touchListenerForSend);
 
         CheckBoxUartWarn = findViewById(id.cbUartWarn);
         NearLinkUartWarnToast = CheckBoxUartWarn.isChecked();
@@ -1048,28 +1080,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void NearLinkChatSendData(View view) {
-        HhandlerI.sendEmptyMessage(10);
-        //这里写的是用户是否使用新UI和旧UI。
+        //HhandlerI.sendEmptyMessage(10);
+        ButtonForSendData.setText(R.string.nearlinkChatSend);
+
         byte[] to_send;
         String messageSend;
 
         //新UI处理发送，以字符串方式发送
-        messageSend = EditChatSendNewUI.getText().toString();
-        to_send = StringUtils.needProcess().toByteArrayII(EditChatSendNewUI.getText().toString());
+        if (!EditChatSendNewUI.getText().toString().isEmpty()) {
+            messageSend = EditChatSendNewUI.getText().toString();
+            to_send = StringUtils.needProcess().toByteArrayII(EditChatSendNewUI.getText().toString());
 
-        //byte[] to_send = StringUtils.needProcess().toByteArray(String.valueOf(EditChatSend.getText()));		//以字符串方式发送
-        int retval = MainAPP.CH34X.writeData(to_send, to_send.length);//写数据，第一个参数为需要发送的字节数组，第二个参数为需要发送的字节长度，返回实际发送的字节长度
-        if (retval < 0) {
-            SnackBarToastForDebug(context,"向对方发送数据失败!","推荐重新配置",3,Snackbar.LENGTH_SHORT);
-        } else {
-            String TextOfClient = CH34xProcessingForSendData(messageSend);
+            //byte[] to_send = StringUtils.needProcess().toByteArray(String.valueOf(EditChatSend.getText()));		//以字符串方式发送
+            int retval = MainAPP.CH34X.writeData(to_send, to_send.length);//写数据，第一个参数为需要发送的字节数组，第二个参数为需要发送的字节长度，返回实际发送的字节长度
+            if (retval < 0) {
+                SnackBarToastForDebug(context,"向对方发送数据失败!","推荐重新配置",3,Snackbar.LENGTH_SHORT);
+            } else {
+                String TextOfClient = CH34xProcessingForSendData(messageSend);
 
-            // 使用ChatUIUpdater更新UI
-            chatUIUpdater.updateMeUI(TextOfClient);
-            runOnUiThread(() -> {
-                //发送完消息清空待发送文本
-                EditChatSendNewUI.setText("");
-            });
+                // 使用ChatUIUpdater更新UI
+                chatUIUpdater.updateMeUI(TextOfClient);
+                runOnUiThread(() -> {
+                    //发送完消息清空待发送文本
+                    EditChatSendNewUI.setText("");
+                });
+            }
+        }
+    }
+
+    public void NearLinkChatSendEmoji(View view) {
+        //HhandlerI.sendEmptyMessage(10);
+        ButtonForSendData.setText(R.string.nearlinkChatEmoji);
+
+        //todo 目前这里先这么做，后续表情包喂上来了添加
+        //新UI处理发送，目前这里先这么做
+        if (!EditChatSendNewUI.getText().toString().isEmpty()) {
+            SnackBarToastForDebug(context,"表情相关功能正在制作，敬请期待!","推荐长按返回模式",3,Snackbar.LENGTH_SHORT);
         }
     }
 

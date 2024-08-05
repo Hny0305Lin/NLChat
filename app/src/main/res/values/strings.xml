@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">NLChat</string>
     <string name="app_package">com.haohanyh.linmengjia.nearlink.nlchat.fun</string>
-    <string name="app_version">1.3.352.2024.0803</string>
+    <string name="app_version">1.3.352.2024.0805</string>
 
     <string name="appwarn">NLChat，浩瀚银河宗旨为用爱和魔法创造Android APP。</string>
     <string name="thanks3q">友情感谢</string>
@@ -11,6 +11,7 @@
 
 
     <string name="nearlinkChatSend">发送消息</string>
+    <string name="nearlinkChatEmoji">发送Emoji</string>
 
     <string name="uiNearLinkUartSettingWarn">星闪串口设置提示 </string>
     <string name="uiNearLinkUartSettingWord">确认开启</string>
@@ -138,4 +139,5 @@
         \n
         该软件开源，二次创作等请署名\"浩瀚银河\"四字，请遵守我们公开的开源协议！
     </string>
+
 </resources>
