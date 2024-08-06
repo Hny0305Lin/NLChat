@@ -39,8 +39,9 @@ jobs:
         echo "JAVA_HOME=${JAVA_HOME}"  # 确认 JAVA_HOME 已设置
         cd NLChat
         ./gradlew assembleRelease
+        ./gradlew bundleRelease
 
-    - name: Sign
+    - name: Sign APK
       uses: r0adkll/sign-android-release@v1
       id: sign_app
       with:
@@ -52,14 +53,35 @@ jobs:
       env:
         BUILD_TOOLS_VERSION: "34.0.0"
 
-    - name: List files in release directory
+    - name: Sign AAB
+      uses: r0adkll/sign-android-release@v1
+      id: sign_aab
+      with:
+        releaseDirectory: NLChat/app/build/outputs/bundle/release  # 修改路径为 AAB 文件目录
+        signingKeyBase64: ${{ secrets.SIGING_KEY }}
+        alias: ${{ secrets.ALIAS }}
+        keyStorePassword: ${{ secrets.KEY_PASSWORD }}
+        keyPassword: ${{ secrets.KEY_PASSWORD }}
+      env:
+        BUILD_TOOLS_VERSION: "34.0.0"
+
+    - name: List files in APK release directory
       run: ls -R NLChat/app/build/outputs/apk/release
+
+    - name: List files in AAB release directory
+      run: ls -R NLChat/app/build/outputs/bundle/release
 
     - name: Upload Signed APK
       uses: actions/upload-artifact@v3
       with:
         name: signed-apk
         path: NLChat/app/build/outputs/apk/release/app-release-unsigned-signed.apk
+
+    - name: Upload Signed AAB
+      uses: actions/upload-artifact@v3
+      with:
+        name: signed-aab
+        path: NLChat/app/build/outputs/bundle/release/app-release.aab
 
   release:
     runs-on: ubuntu-latest
