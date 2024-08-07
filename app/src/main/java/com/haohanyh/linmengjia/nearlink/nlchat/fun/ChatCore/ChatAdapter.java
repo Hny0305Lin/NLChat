@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.Emoji.EmojiTimerManager;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatService.MessageBurnNotificationService;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.string;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.SQLite.SQLiteDataBaseAPP;
@@ -216,6 +217,9 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             // 使用同一个Handler来处理UI更新和消息删除
             Handler messageHandler = new Handler();
             ReceivedMessageBurnHandler burnHandler = new ReceivedMessageBurnHandler(this, message);
+
+            // 提示用户收到密信
+            MessageBurnNotificationService.notifyUserToCheckApp(context, message.getMessage());
 
             // 设置消息2分钟后从数据源中删除并更新UI
             messageHandler.postDelayed(burnHandler, ChatUtilsForSettings.getBurntimer()); // 延迟时间为120000毫秒，即2分钟
