@@ -16,6 +16,7 @@ public class ChatUtilsForSettings {
     private static boolean burnmessage = false; // 控制是否启用阅后即焚聊天功能
     private static final boolean burnshowword = false; // 控制是否启用阅后即焚文字显示（后续转为用户使用，false为不需要，true为需要点击显示3秒文字）
     private static final boolean burnalertdialog = false; // 控制是否启用阅后即焚AliertDialog（开发者使用，false为长按消失消息，true为长按显示开发者信息）
+    private static final boolean burnmessagenotify = false; // 控制是否启用阅后即焚每条消息的通知
     private static final int burnwordshowtimer = 3000; // 控制阅后即焚阅读时间（推荐3秒钟）
     private static final int burntimer = 120000; // 控制阅后即焚的时间（2分钟,120000.如为开发者推荐全局2秒钟,2000）
     //这里设置的是跟C代码相关的，白名单获取聊天文本，当这些文本出现在串口通讯里面的时候，提取这String后者即可，期间过滤掉前者和大量串口log。
