@@ -1,4 +1,6 @@
-# Hi2821_NLChat
+# NLChat星闪聊天软件
+
+2024.8.9 已确定适配更多新款星闪产品，助力星闪相关项目落地参加活动，敬请期待1.4新版本，我们会在该版本上线适配完整的相关版本和相关代码。
 
 ![IMG.SHIELD.IO](https://img.shields.io/github/v/release/Hny0305Lin/NLChat?include_prereleases&display_name=release&style=for-the-badge&logo=Android&logoSize=amd&label=Hi2821_NLChat&labelColor=007FFC&color=4DDDFC&cacheSeconds=60) ![IMG.SHIELD.IO](https://img.shields.io/github/stars/Hny0305Lin/NLChat?style=for-the-badge&label=NLChat%20Star&labelColor=007FFC&color=4DDDFC&cacheSeconds=60)
 
@@ -27,6 +29,10 @@ NLChat星闪聊天软件，是我基于小熊派H2821开发板和官方代码做
 * 开发资料:[点我进入 目前仅限于官网查看部分资料](https://www.bearpi.cn/core_board/bearpi/pico/h2821/)
 * 有关资料:[gitee点我查看](https://gitee.com/bearpi/bearpi-h2821_pico)
 * ⚠️强烈建议中国大陆用户能使用GitHub就使用GitHub，Gitee仅仅是我们浩瀚银河中国大陆的仓库设置地，未来可能会缺少重要更新。
+
+### Hi3863 BearPi小熊派
+
+待补充，敬请期待。
 
 # 🔝Haohanyh Computer Software Products Open Source LICENSE
 
@@ -196,4 +202,6 @@ NLChat星闪聊天软件，是我基于小熊派H2821开发板和官方代码做
 
 - 1.4版本将会按上方内容实现更多功能。
 - 按计划，会在今年推出星闪最小化Pico开发板样品，并开源相关原理图、PCB图等内容。（如果可以的话）
-- 适配Hi2821和Hi3861等星闪多型号使用。
+- 适配Hi2821和Hi3863等星闪多型号使用。
+
+2024-08-09 已收到参加活动的润和WS63开发板套装，且在今天购买了小熊派Hi3863开发板，确定新版本适配这些套装开发板，让更多人参与星闪网络体验。
