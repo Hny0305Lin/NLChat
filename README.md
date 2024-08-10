@@ -44,7 +44,7 @@ NLChat星闪聊天软件，是我基于小熊派H2821开发板和官方代码做
 ### Copyright (c) @CompanyNameMagicTag 2023-2023. All rights reserved.
 
 * 使用开源协议：未知
-* 介绍：NLChat的成功，离不开小熊派开源社区的支持和公开的SLE_UART整套Demo代码支持。
+* 介绍：NLChat的成功，离不开小熊派开源社区的支持和公开的SLE_UART整套Demo代码支持。感谢背后推动星闪工作的你们，给星闪开发者们带来相关芯片和相关资料。
 * Description: SLE UART Sample Source.
 * 作者: @CompanyNameTag
 * 代码开源地址: [点我进入](https://gitee.com/bearpi/bearpi-h2821_pico)
@@ -52,14 +52,21 @@ NLChat星闪聊天软件，是我基于小熊派H2821开发板和官方代码做
 ### Copyright (c) Nanjing Xiaoxiongpai Intelligent Technology Co., Ltd.
 
 * 使用开源协议：未知
-* 介绍: 南京小熊派智能科技有限公司，致力于鸿蒙生态的硬件开发，提供硬件和软件的解决方案。
+* 介绍: 南京小熊派智能科技有限公司，致力于鸿蒙生态的硬件开发，提供硬件和软件的解决方案。感谢背后推动星闪工作的你们，给星闪开发者们带来Hi3863、Hi2821等相关芯片和相关资料。
+* 官网介绍：[点我进入](https://bearpi.cn/about/)
+* 代码开源地址: [点我进入](https://gitee.com/bearpi/bearpi-h2821_pico)
+
+### Copyright (c) HiSilicon (Shanghai) Technologies Co., Ltd. 2023-2023. All rights reserved.
+
+* 使用开源协议：Apache-2.0
+* 介绍: 上海海思技术有限公司，华为旗下半导体公司，提供海思芯片相关行业解决方案。感谢背后推动星闪工作的你们，给星闪开发者们带来Hi3863、Hi2821等相关芯片和相关资料。
 * 官网介绍：[点我进入](https://bearpi.cn/about/)
 * 代码开源地址: [点我进入](https://gitee.com/bearpi/bearpi-h2821_pico)
 
 ### Copyright (c) 2002-2024 南京沁恒微电子股份有限公司
 
 * 使用开源协议：未知
-* 使用如下源码：ch34x Library反编译相关代码
+* 使用如下源码：ch34x Library反编译相关代码。感谢沁恒提供的CH34X相关代码，让我们能做到Android连接CH34X USB芯片相关的开发板。
 * 代码开源地址(含demo)：[点我进入](https://www.wch.cn/downloads/CH341SER_ANDROID_ZIP.html)
 
 ### Copyright (c) Yutils
