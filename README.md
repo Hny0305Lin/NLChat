@@ -6,11 +6,11 @@
 
 ![Android自动化构建 Debug](https://img.shields.io/github/actions/workflow/status/Hny0305Lin/NLChat/android.yml?branch=master&style=for-the-badge&logo=android&logoSize=amd&label=Android%20CI&labelColor=00CEFC&color=00C08B&cacheSeconds=600) ![Android自动化构建 Release](https://img.shields.io/github/actions/workflow/status/Hny0305Lin/NLChat/androidsign.yml?branch=master&style=for-the-badge&logo=android&logoSize=amd&label=Android%20CI%20Release&labelColor=00CEFC&color=00C08B&cacheSeconds=600)
 
-![Static Badge](https://img.shields.io/badge/Bearpi%20Hi2821%20Pico%20NLChat-00C08B?style=for-the-badge&logo=C%2B%2B&labelColor=00CC66&link=https%3A%2F%2Fgithub.com%2FHny0305Lin%2FBearpi_Hi2821_Pico_NLChat)
-
 [![霓光计划-Harmony/NLChat星闪通讯软件](https://gitee.com/light-harmonyOS/NLChat/widgets/widget_card.svg?colors=393222,ebdfc1,fffae5,d8ca9f,393222,a28b40)](https://gitee.com/light-harmonyOS/NLChat)
 
-[点我前往硬件侧端](https://github.com/Hny0305Lin/Bearpi_Hi2821_Pico_NLChat) [点我前往烧写编译教程](https://github.com/Hny0305Lin/NLChat/blob/master/SLE_Device_Configure_Tutorial.md)
+[点我前往H2821硬件侧端](https://github.com/Hny0305Lin/Bearpi_Hi2821_Pico_NLChat) [点我前往H3863硬件侧端](https://github.com/Hny0305Lin/Bearpi_Hi3863_Pico)
+
+[点我前往烧写编译教程](https://github.com/Hny0305Lin/NLChat/blob/master/SLE_Device_Configure_Tutorial.md)
 
 [51CTO文章1](https://ost.51cto.com/posts/29266)  [51CTO文章2](https://ost.51cto.com/posts/29275)  [51CTO文章3](https://ost.51cto.com/posts/29294) [51CTO文章4](https://ost.51cto.com/posts/29341)
 
