@@ -22,8 +22,10 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.string;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.SQLite.SQLiteDataBaseAPP;
 
 import java.lang.ref.WeakReference;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     //Log需要的TAG
@@ -44,6 +46,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<ChatUtilsForMessage> chatUtilsForMessages;
     private Context context;
+
+    private Set<String> notifiedMessages = new HashSet<>();
 
     // 构造函数，初始化消息列表
     public ChatAdapter(Context context, List<ChatUtilsForMessage> chatUtilsForMessages) {
@@ -219,7 +223,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ReceivedMessageBurnHandler burnHandler = new ReceivedMessageBurnHandler(this, message);
 
             // 提示用户收到密信
-            MessageBurnNotificationService.notifyUserToCheckApp(context, message.getMessage());
+            if (!notifiedMessages.contains(message.getMessageId())) {
+                MessageBurnNotificationService.notifyUserToCheckApp(context, message.getMessage());
+                notifiedMessages.add(message.getMessageId());
+            }
 
             // 设置消息2分钟后从数据源中删除并更新UI
             messageHandler.postDelayed(burnHandler, ChatUtilsForSettings.getBurntimer()); // 延迟时间为120000毫秒，即2分钟

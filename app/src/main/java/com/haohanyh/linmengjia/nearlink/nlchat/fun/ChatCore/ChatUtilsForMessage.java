@@ -158,4 +158,8 @@ public class ChatUtilsForMessage {
     public boolean isMeBurn() {
         return isMeBurn;
     }
+
+    public String getMessageId() {
+        return chatMessageUUID.getUUID();
+    }
 }
