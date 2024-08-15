@@ -28,6 +28,7 @@ public class ChatUtilsForSettings {
     private static final String PREFIX_LOG_DISCONNECTED = "[Disconnected]";
     private static final String PREFIX_LOG_ACORE = "[ACore]";
     private static final String PREFIX_LOG_SLE_UART_SERVER = "[sle uart server]";
+    private static final String PREFIX_LOG_SLE_UART_SERVER_BEARPI3863 = "[sle uart server bearpi3863]";
     private static final String PREFIX_LOG_CONNECT_STATE_CHANGED = "[sle uart server] connect state changed";
     private static final String PREFIX_LOG_PAIR_COMPLETE = "[sle uart server] pair complete";
     private static final String PREFIX_LOG_NEARLINK_DEVICES_ADDR = "[sle uart server] pair complete addr:";
@@ -35,6 +36,7 @@ public class ChatUtilsForSettings {
     private static final String PREFIX_LOG_SLE_ANNOUNCE_ENABLE_CALLBACK = "[sle uart server] sle announce enable callback";
 
     private static final String PREFIX_LOG_SLE_UART_CLIENT = "[sle uart client]";
+    private static final String PREFIX_LOG_SLE_UART_CLIENT_BEARPI3863 = "[sle uart client bearpi3863]";
     private static final String PREFIX_LOG_CLIENT_CONNECT_STATE_CHANGED = "[sle uart client] conn state changed";
     private static final String PREFIX_LOG_CLIENT_STATE_CONNECTED = "[sle uart client] SLE_ACB_STATE_CONNECTED";
     private static final String PREFIX_LOG_CLIENT_LOW_RX = "[sle uart client] sle_low_latency_rx_enable";
@@ -115,6 +117,10 @@ public class ChatUtilsForSettings {
         return PREFIX_LOG_SLE_UART_SERVER;
     }
 
+    public static String getPrefixLogSleUartServerBearpi3863() {
+        return PREFIX_LOG_SLE_UART_SERVER_BEARPI3863;
+    }
+
     public static String getPrefixLogConnectStateChanged() {
         return PREFIX_LOG_CONNECT_STATE_CHANGED;
     }
@@ -141,6 +147,10 @@ public class ChatUtilsForSettings {
 
     public static String getPrefixLogSleUartClient() {
         return PREFIX_LOG_SLE_UART_CLIENT;
+    }
+
+    public static String getPrefixLogSleUartClientBearpi3863() {
+        return PREFIX_LOG_SLE_UART_CLIENT_BEARPI3863;
     }
 
     public static String getPrefixLogClientConnectStateChanged() {

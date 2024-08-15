@@ -960,7 +960,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
             //UART服务器日志
-            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSleUartServer())) {
+            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSleUartServer()) || completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSleUartServerBearpi3863())) {
                 Log.d(TAG, "UART服务器日志：" + completeFirstData);
                 // 处理UART服务器日志
 
@@ -1057,7 +1057,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
             //UART客户端日志
-            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSleUartClient())) {
+            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSleUartClient()) || completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSleUartClientBearpi3863())) {
                 Log.d(TAG, "客户端UART客户端日志：" + completeFirstData);
                 // 处理UART服务器日志
 
