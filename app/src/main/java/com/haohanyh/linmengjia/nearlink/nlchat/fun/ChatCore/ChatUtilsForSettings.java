@@ -49,6 +49,8 @@ public class ChatUtilsForSettings {
     private static final String PREFIX_LOG_CLIENT_SAMPLE_FIND_P_CBK = "[sle uart client] sle_uart_client_sample_find_property_cbk";
     private static final String PREFIX_LOG_CLIENT_SAMPLE_FIND_SD_CBK = "[sle uart client] sle_uart_client_sample_find_structure_cmp_cbk";
 
+    // todo Hi3863 Log还没适配全
+
     // 控制是否启用显示串口Log，打印在UI上（开发者使用）
     public static boolean isShowUartLog() { return showUartLog; }
 

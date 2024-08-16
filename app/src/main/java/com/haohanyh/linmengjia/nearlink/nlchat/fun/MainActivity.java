@@ -844,6 +844,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             String completeFirstData = string;
             String completeSecondData = "";
+            //todo 可以的话这里需要重构，大量的if对维护代码不利
             //去掉特定的前缀字符串，然后返回（聊天内容），只有当消息包含特定的前缀时才处理
             if (completeFirstData.contains(ChatUtilsForSettings.getPrefixServer()) || completeFirstData.contains(ChatUtilsForSettings.getPrefixClient())) {
                 if (completeFirstData.startsWith(ChatUtilsForSettings.getPrefixServer())) {
