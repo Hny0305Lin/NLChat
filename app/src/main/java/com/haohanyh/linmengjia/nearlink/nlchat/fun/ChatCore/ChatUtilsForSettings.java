@@ -23,7 +23,6 @@ public class ChatUtilsForSettings {
     private static final String PREFIX_SERVER = " Let's start chatting, This is the content of the server:";
     private static final String PREFIX_CLIENT = " Let's start chatting, This is the content of the client:";
     //这里设置的是跟C代码相关的，黑名单处理串口Log，当这些文本出现在串口通讯里面的时候，提取这String内容
-    private static final String PREFIX_LOG_NOT_CONNECTED_SERVER = "[sle uart server] sle client is not connected! ";
     private static final String PREFIX_LOG_CONNECTED = "[Connected]";
     private static final String PREFIX_LOG_DISCONNECTED = "[Disconnected]";
     private static final String PREFIX_LOG_ACORE = "[ACore]";
@@ -34,6 +33,7 @@ public class ChatUtilsForSettings {
     private static final String PREFIX_LOG_NEARLINK_DEVICES_ADDR = "[sle uart server] pair complete addr:";
     private static final String PREFIX_LOG_SSAPS_MTU_CHANGED = "[sle uart server] ssaps ssaps_mtu_changed_cbk";
     private static final String PREFIX_LOG_SLE_ANNOUNCE_ENABLE_CALLBACK = "[sle uart server] sle announce enable callback";
+    private static final String PREFIX_LOG_NOT_CONNECTED_SERVER = "[sle uart server] sle client is not connected! ";
 
     private static final String PREFIX_LOG_SLE_UART_CLIENT = "[sle uart client]";
     private static final String PREFIX_LOG_SLE_UART_CLIENT_BEARPI3863 = "[sle uart client bearpi3863]";
