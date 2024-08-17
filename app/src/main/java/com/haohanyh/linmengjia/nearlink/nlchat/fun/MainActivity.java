@@ -874,6 +874,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (completeFirstData.startsWith(ChatUtilsForSettings.getPrefixLogNotConnectedServer()))
                     if (ChatUtilsForSettings.isSetDebugLog())
                         SnackBarToastForDebug(context,"发送失败!\n" + ChatUtilsForSettings.getPrefixLogNotConnectedServer(),"推荐检查星闪网络",3,Snackbar.LENGTH_SHORT);
+            } else if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogNotConnectedServerBearpi3863())) {
+                Log.w(TAG, "串口Log内容：" + completeFirstData);
+                if (completeFirstData.startsWith(ChatUtilsForSettings.getPrefixLogNotConnectedServerBearpi3863()))
+                    if (ChatUtilsForSettings.isSetDebugLog())
+                        SnackBarToastForDebug(context,"发送失败!\n" + ChatUtilsForSettings.getPrefixLogNotConnectedServerBearpi3863(),"推荐检查星闪网络",3,Snackbar.LENGTH_SHORT);
             } else {
                 Log.d(TAG, "忽略的消息内容：" + completeFirstData);
                 // 处理忽略消息内容

@@ -29,25 +29,40 @@ public class ChatUtilsForSettings {
     private static final String PREFIX_LOG_SLE_UART_SERVER = "[sle uart server]";
     private static final String PREFIX_LOG_SLE_UART_SERVER_BEARPI3863 = "[sle uart server bearpi3863]";
     private static final String PREFIX_LOG_CONNECT_STATE_CHANGED = "[sle uart server] connect state changed";
+    private static final String PREFIX_LOG_CONNECT_STATE_CHANGED_BEARPI3863 = "[sle uart server bearpi3863] connect state changed";
     private static final String PREFIX_LOG_PAIR_COMPLETE = "[sle uart server] pair complete";
+    private static final String PREFIX_LOG_PAIR_COMPLETE_BEARPI3863 = "[sle uart server bearpi3863] pair complete";
     private static final String PREFIX_LOG_NEARLINK_DEVICES_ADDR = "[sle uart server] pair complete addr:";
+    private static final String PREFIX_LOG_NEARLINK_DEVICES_ADDR_BEARPI3863 = "[sle uart server bearpi3863] pair complete addr:";
     private static final String PREFIX_LOG_SSAPS_MTU_CHANGED = "[sle uart server] ssaps ssaps_mtu_changed_cbk";
+    private static final String PREFIX_LOG_SSAPS_MTU_CHANGED_BEARPI3863 = "[sle uart server bearpi3863] ssaps ssaps_mtu_changed_cbk";
     private static final String PREFIX_LOG_SLE_ANNOUNCE_ENABLE_CALLBACK = "[sle uart server] sle announce enable callback";
+    private static final String PREFIX_LOG_SLE_ANNOUNCE_ENABLE_CALLBACK_BEARPI3863 = "[sle uart server bearpi3863] sle announce enable callback";
     private static final String PREFIX_LOG_NOT_CONNECTED_SERVER = "[sle uart server] sle client is not connected! ";
+    private static final String PREFIX_LOG_NOT_CONNECTED_SERVER_BEARPI3863 = "[sle uart server bearpi3863] sle client is not connected! ";
 
     private static final String PREFIX_LOG_SLE_UART_CLIENT = "[sle uart client]";
     private static final String PREFIX_LOG_SLE_UART_CLIENT_BEARPI3863 = "[sle uart client bearpi3863]";
     private static final String PREFIX_LOG_CLIENT_CONNECT_STATE_CHANGED = "[sle uart client] conn state changed";
+    private static final String PREFIX_LOG_CLIENT_CONNECT_STATE_CHANGED_BEARPI3863 = "[sle uart client bearpi3863] conn state changed";
     private static final String PREFIX_LOG_CLIENT_STATE_CONNECTED = "[sle uart client] SLE_ACB_STATE_CONNECTED";
+    private static final String PREFIX_LOG_CLIENT_STATE_CONNECTED_BEARPI3863 = "[sle uart client bearpi3863] SLE_ACB_STATE_CONNECTED";
     private static final String PREFIX_LOG_CLIENT_LOW_RX = "[sle uart client] sle_low_latency_rx_enable";
+    private static final String PREFIX_LOG_CLIENT_LOW_RX_BEARPI3863 = "[sle uart client bearpi3863] sle_low_latency_rx_enable";
     private static final String PREFIX_LOG_CLIENT_PAIR_COMPLETE = "[sle uart client] pair complete";
+    private static final String PREFIX_LOG_CLIENT_PAIR_COMPLETE_BEARPI3863 = "[sle uart client bearpi3863] pair complete";
     private static final String PREFIX_LOG_CLIENT_NEARLINK_DEVICES_ADDR = "[sle uart client] pair complete conn_id:0, addr:";
+    private static final String PREFIX_LOG_CLIENT_NEARLINK_DEVICES_ADDR_BEARPI3863 = "[sle uart client bearpi3863] pair complete conn_id:0, addr:";
     private static final String PREFIX_LOG_CLIENT_SSAPC_EXCHANGE = "ssapc exchange info";
     private static final String PREFIX_LOG_CLIENT_SLE_ANNOUNCE_ENABLE_CALLBACK = "[sle uart client] exchange_info_cbk";
+    private static final String PREFIX_LOG_CLIENT_SLE_ANNOUNCE_ENABLE_CALLBACK_BEARPI3863 = "[sle uart client bearpi3863] exchange_info_cbk";
     private static final String PREFIX_LOG_CLIENT_SLE_DISCOVERY = "discovery character cbk";
     private static final String PREFIX_LOG_CLIENT_MTU = "[sle uart client] exchange mtu";
+    private static final String PREFIX_LOG_CLIENT_MTU_BEARPI3863 = "[sle uart client bearpi3863] exchange mtu";
     private static final String PREFIX_LOG_CLIENT_SAMPLE_FIND_P_CBK = "[sle uart client] sle_uart_client_sample_find_property_cbk";
+    private static final String PREFIX_LOG_CLIENT_SAMPLE_FIND_P_CBK_BEARPI3863 = "[sle uart client bearpi3863] sle_uart_client_sample_find_property_cbk";
     private static final String PREFIX_LOG_CLIENT_SAMPLE_FIND_SD_CBK = "[sle uart client] sle_uart_client_sample_find_structure_cmp_cbk";
+    private static final String PREFIX_LOG_CLIENT_SAMPLE_FIND_SD_CBK_BEARPI3863 = "[sle uart client bearpi3863] sle_uart_client_sample_find_structure_cmp_cbk";
 
     // todo Hi3863 Log还没适配全
 
@@ -127,24 +142,48 @@ public class ChatUtilsForSettings {
         return PREFIX_LOG_CONNECT_STATE_CHANGED;
     }
 
+    public static String getPrefixLogConnectStateChangedBearpi3863() {
+        return PREFIX_LOG_CONNECT_STATE_CHANGED_BEARPI3863;
+    }
+
     public static String getPrefixLogPairComplete() {
         return PREFIX_LOG_PAIR_COMPLETE;
+    }
+
+    public static String getPrefixLogPairCompleteBearpi3863() {
+        return PREFIX_LOG_PAIR_COMPLETE_BEARPI3863;
     }
 
     public static String getPrefixLogNotConnectedServer() {
         return PREFIX_LOG_NOT_CONNECTED_SERVER;
     }
 
+    public static String getPrefixLogNotConnectedServerBearpi3863() {
+        return PREFIX_LOG_NOT_CONNECTED_SERVER_BEARPI3863;
+    }
+
     public static String getPrefixLogNearlinkDevicesAddr() {
         return PREFIX_LOG_NEARLINK_DEVICES_ADDR;
+    }
+
+    public static String getPrefixLogNearlinkDevicesAddrBearpi3863() {
+        return PREFIX_LOG_NEARLINK_DEVICES_ADDR_BEARPI3863;
     }
 
     public static String getPrefixLogSsapsMtuChanged() {
         return PREFIX_LOG_SSAPS_MTU_CHANGED;
     }
 
+    public static String getPrefixLogSsapsMtuChangedBearpi3863() {
+        return PREFIX_LOG_SSAPS_MTU_CHANGED_BEARPI3863;
+    }
+
     public static String getPrefixLogSleAnnounceEnableCallback() {
         return PREFIX_LOG_SLE_ANNOUNCE_ENABLE_CALLBACK;
+    }
+
+    public static String getPrefixLogSleAnnounceEnableCallbackBearpi3863() {
+        return PREFIX_LOG_SLE_ANNOUNCE_ENABLE_CALLBACK_BEARPI3863;
     }
 
     public static String getPrefixLogSleUartClient() {
@@ -159,20 +198,40 @@ public class ChatUtilsForSettings {
         return PREFIX_LOG_CLIENT_CONNECT_STATE_CHANGED;
     }
 
+    public static String getPrefixLogClientConnectStateChangedBearpi3863() {
+        return PREFIX_LOG_CLIENT_CONNECT_STATE_CHANGED_BEARPI3863;
+    }
+
     public static String getPrefixLogClientStateConnected() {
         return PREFIX_LOG_CLIENT_STATE_CONNECTED;
+    }
+
+    public static String getPrefixLogClientStateConnectedBearpi3863() {
+        return PREFIX_LOG_CLIENT_STATE_CONNECTED_BEARPI3863;
     }
 
     public static String getPrefixLogClientLowRx() {
         return PREFIX_LOG_CLIENT_LOW_RX;
     }
 
+    public static String getPrefixLogClientLowRxBearpi3863() {
+        return PREFIX_LOG_CLIENT_LOW_RX_BEARPI3863;
+    }
+
     public static String getPrefixLogClientPairComplete() {
         return PREFIX_LOG_CLIENT_PAIR_COMPLETE;
     }
 
+    public static String getPrefixLogClientPairCompleteBearpi3863() {
+        return PREFIX_LOG_CLIENT_PAIR_COMPLETE_BEARPI3863;
+    }
+
     public static String getPrefixLogClientNearlinkDevicesAddr() {
         return PREFIX_LOG_CLIENT_NEARLINK_DEVICES_ADDR;
+    }
+
+    public static String getPrefixLogClientNearlinkDevicesAddrBearpi3863() {
+        return PREFIX_LOG_CLIENT_NEARLINK_DEVICES_ADDR_BEARPI3863;
     }
 
     public static String getPrefixLogClientSsapcExchange() {
@@ -183,6 +242,10 @@ public class ChatUtilsForSettings {
         return PREFIX_LOG_CLIENT_SLE_ANNOUNCE_ENABLE_CALLBACK;
     }
 
+    public static String getPrefixLogClientSleAnnounceEnableCallbackBearpi3863() {
+        return PREFIX_LOG_CLIENT_SLE_ANNOUNCE_ENABLE_CALLBACK_BEARPI3863;
+    }
+
     public static String getPrefixLogClientSleDiscovery() {
         return PREFIX_LOG_CLIENT_SLE_DISCOVERY;
     }
@@ -191,11 +254,23 @@ public class ChatUtilsForSettings {
         return PREFIX_LOG_CLIENT_MTU;
     }
 
+    public static String getPrefixLogClientMtuBearpi3863() {
+        return PREFIX_LOG_CLIENT_MTU_BEARPI3863;
+    }
+
     public static String getPrefixLogClientSampleFindPCbk() {
         return PREFIX_LOG_CLIENT_SAMPLE_FIND_P_CBK;
     }
 
+    public static String getPrefixLogClientSampleFindPCbkBearpi3863() {
+        return PREFIX_LOG_CLIENT_SAMPLE_FIND_P_CBK_BEARPI3863;
+    }
+
     public static String getPrefixLogClientSampleFindSdCbk() {
         return PREFIX_LOG_CLIENT_SAMPLE_FIND_SD_CBK;
+    }
+
+    public static String getPrefixLogClientSampleFindSdCbkBearpi3863() {
+        return PREFIX_LOG_CLIENT_SAMPLE_FIND_SD_CBK_BEARPI3863;
     }
 }

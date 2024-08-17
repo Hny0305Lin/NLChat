@@ -434,23 +434,47 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 ChatUtilsForSettings.getPrefixLogConnectStateChanged(),
                                 context.getString(string.prefixLogConnectStateChanged),
                                 "推荐检查", "取消显示", "复制进剪贴板");
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogConnectStateChangedBearpi3863())) {
+                        ChatUIAlertDialog.showSerialLog(context,
+                                ChatUtilsForSettings.getPrefixLogConnectStateChangedBearpi3863(),
+                                context.getString(string.prefixLogConnectStateChanged),
+                                "推荐检查", "取消显示", "复制进剪贴板");
                     } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogNearlinkDevicesAddr())) {
                         ChatUIAlertDialog.showSerialLog(context,
                                 ChatUtilsForSettings.getPrefixLogNearlinkDevicesAddr(),
                                 context.getString(string.prefixLogNearlinkDevicesAddr),
                                 "推荐开始聊天", "取消显示", "复制进剪贴板");
-                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogPairComplete())) {
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogNearlinkDevicesAddrBearpi3863())) {
+                        ChatUIAlertDialog.showSerialLog(context,
+                                ChatUtilsForSettings.getPrefixLogNearlinkDevicesAddrBearpi3863(),
+                                context.getString(string.prefixLogNearlinkDevicesAddr),
+                                "推荐开始聊天", "取消显示", "复制进剪贴板");
+                    }else if (result.startsWith(ChatUtilsForSettings.getPrefixLogPairComplete())) {
                         ChatUIAlertDialog.showSerialLog(context,
                                 ChatUtilsForSettings.getPrefixLogPairComplete(),
                                 context.getString(string.prefixLogPairComplete),
                                 "推荐开始聊天", "取消显示", "复制进剪贴板");
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogPairCompleteBearpi3863())) {
+                        ChatUIAlertDialog.showSerialLog(context,
+                                ChatUtilsForSettings.getPrefixLogPairCompleteBearpi3863(),
+                                context.getString(string.prefixLogPairComplete),
+                                "推荐开始聊天", "取消显示", "复制进剪贴板");
                     } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogSsapsMtuChanged())) {
                         //服务板MTU暂时不写
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogSsapsMtuChangedBearpi3863())) {
+                        //服务板MTU暂时不写
                     } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogSleAnnounceEnableCallback())) {
+                        //服务板CallBack暂时不写
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogSleAnnounceEnableCallbackBearpi3863())) {
                         //服务板CallBack暂时不写
                     } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogClientConnectStateChanged())) {
                         ChatUIAlertDialog.showSerialLog(context,
                                 ChatUtilsForSettings.getPrefixLogClientConnectStateChanged(),
+                                context.getString(string.prefixLogClientConnectStateChanged),
+                                "推荐检查", "取消显示", "复制进剪贴板");
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogClientConnectStateChangedBearpi3863())) {
+                        ChatUIAlertDialog.showSerialLog(context,
+                                ChatUtilsForSettings.getPrefixLogClientConnectStateChangedBearpi3863(),
                                 context.getString(string.prefixLogClientConnectStateChanged),
                                 "推荐检查", "取消显示", "复制进剪贴板");
                     } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogClientNearlinkDevicesAddr())) {
@@ -458,14 +482,28 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 ChatUtilsForSettings.getPrefixLogClientNearlinkDevicesAddr(),
                                 context.getString(string.prefixLogClientNearlinkDevicesAddr),
                                 "推荐开始聊天", "取消显示", "复制进剪贴板");
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogClientNearlinkDevicesAddrBearpi3863())) {
+                        ChatUIAlertDialog.showSerialLog(context,
+                                ChatUtilsForSettings.getPrefixLogClientNearlinkDevicesAddrBearpi3863(),
+                                context.getString(string.prefixLogClientNearlinkDevicesAddr),
+                                "推荐开始聊天", "取消显示", "复制进剪贴板");
                     } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogClientPairComplete())) {
                         ChatUIAlertDialog.showSerialLog(context,
                                 ChatUtilsForSettings.getPrefixLogClientPairComplete(),
                                 context.getString(string.prefixLogClientPairComplete),
                                 "推荐开始聊天", "取消显示", "复制进剪贴板");
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogClientPairCompleteBearpi3863())) {
+                        ChatUIAlertDialog.showSerialLog(context,
+                                ChatUtilsForSettings.getPrefixLogClientPairCompleteBearpi3863(),
+                                context.getString(string.prefixLogClientPairComplete),
+                                "推荐开始聊天", "取消显示", "复制进剪贴板");
                     } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogClientMtu())) {
                         //客户板MTU暂时不写
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogClientMtuBearpi3863())) {
+                        //客户板MTU暂时不写
                     } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogClientSleAnnounceEnableCallback())) {
+                        //客户板CallBack暂时不写
+                    } else if (result.startsWith(ChatUtilsForSettings.getPrefixLogClientSleAnnounceEnableCallbackBearpi3863())) {
                         //客户板CallBack暂时不写
                     }
 
