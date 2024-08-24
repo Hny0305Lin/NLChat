@@ -151,7 +151,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return chatUtilsForMessages.size();
     }
 
-    // todo 发送消息和接收消息每一方，如果消息有特殊情况比如enter，uuid会查询不到，目前这个bug打算后续修复。
+    // todo 发送消息和接收消息每一方，如果消息有特殊情况比如enter，uuid会查询不到，目前这个bug打算后续修复。todo 暂时不影响功能
 
     // 接收消息的ViewHolder
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
@@ -194,7 +194,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
 
-    // todo 小熊派群员:阅后即焚可以做个动画，提示密信，点开弹窗，关闭不见
+    // todo 小熊派群员:阅后即焚可以做个动画，提示密信，点开弹窗，关闭不见 todo 目前暂时无法实现
 
     // 接收消息的ViewHolder（阅后即焚）
     private class ReceivedMessageBurnHolder extends RecyclerView.ViewHolder {

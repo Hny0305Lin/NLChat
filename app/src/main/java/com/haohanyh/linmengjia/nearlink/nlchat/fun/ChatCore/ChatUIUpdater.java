@@ -120,14 +120,3 @@ public class ChatUIUpdater {
         });
     }
 }
-
-
-
-//TODO 第一版草稿
-//                NearLinkUserText.append(processedString);
-//                if (NearLinkUserText.length() > 2048) {
-//                    String str = NearLinkUserText.getText().toString().substring(NearLinkUserText.getText().length() - 1024, NearLinkUserText.getText().length());
-//                    NearLinkUserText.setText("");
-//                    NearLinkUserText.append(str);
-//                }
-//                MainAPP.Vibrate(context);
