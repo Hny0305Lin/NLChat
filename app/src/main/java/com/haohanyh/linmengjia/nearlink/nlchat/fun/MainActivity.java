@@ -122,9 +122,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int LONG_PRESS_TIME = 500; // 长按时间阈值，单位毫秒
     private MaterialButton ButtonForSendData;
 
-    /* TODO 1.4版本前，务必把这个TextView未参与初始化和聊天核心内容，进行修改，目前是可以正常使用了。 */
-    private TextView NearLinkUserText,NearLinkMeText;
-
     private int LogLevel = Log.WARN;
 
     private Resources resources;
@@ -205,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean isTablet = false;
     private int orientation = 1;
 
-    //APP是否为华为手机运行
+    // TODO APP是否为华为手机运行
 
 
     @SuppressLint({"ObsoleteSdkInt", "InlinedApi"})
