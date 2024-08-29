@@ -120,6 +120,10 @@ public class CH34xUARTDriver {
     /* 断开USB监听提取 */
     private Listener closeUsbListener;
 
+    /* CH34x Chips */
+    /* 来自: CH34XUARTDriver.jar:cn/wch/uartlib/chip/ChipType.class */
+    private final CH34xChips chips = new CH34xChips();
+
     /**
      * 构造方法
      *
@@ -131,9 +135,10 @@ public class CH34xUARTDriver {
         this.usbManager = usbManager;
         this.mContext = context;
         this.broadcastReceiverFilter = filter;
-        this.addSupportVendorProduct("1a86:7523");
-        this.addSupportVendorProduct("1a86:5523");
-        this.addSupportVendorProduct("1a86:5512");
+        this.addSupportVendorProduct(chips.getCH340());           //CH340     小熊派（在此项目
+        this.addSupportVendorProduct(chips.getCH340K());          //CH340     润和（在此项目
+        this.addSupportVendorProduct(chips.getCH341A_1());        //CH341     Serial mode
+        this.addSupportVendorProduct(chips.getCH341A());          //CH341     EPP/MEM/I2C mode
     }
 
     /**
@@ -152,7 +157,7 @@ public class CH34xUARTDriver {
         }
         for (UsbDevice usbDevice : deviceList.values()) {
             for (int i = 0; i < this.supportTypeSize; i++) {
-                if (String.format("%04x:%04x", usbDevice.getVendorId(), usbDevice.getProductId()).equals(this.supportVendorProduct.get(i))) {
+                if (String.format("%04x:%04x", usbDevice.getVendorId(), usbDevice.getProductId()).equals(this.supportVendorProduct.get(i))) {   //判断什么USB芯片设备
                     IntentFilter intentFilter = new IntentFilter(this.broadcastReceiverFilter);
                     intentFilter.addAction("android.hardware.usb.action.USB_DEVICE_DETACHED");
                     this.mContext.registerReceiver(this.ch34BroadcastReceiver, intentFilter);
@@ -567,6 +572,28 @@ public class CH34xUARTDriver {
      * 添加支持的供应商ID和产品ID
      *
      * @param vendorAndProduct 供应商ID和产品ID
+     *
+     *                         目前解决了润和WS63、小熊派Hi3863芯片
+     *                         如果设备无法完成初始化，目前最佳的解决办法，如果您的板子设备使用了CH340/CH341 USB芯片，请查询沁恒资料，获取板子相关VID PID或主动使用沁恒官方工具查询
+     *                         润和VID PID：1A86 7522（CH340K
+     *                         小熊派VID PID：1A86 7523(CH340
+     *
+     *                         1A86代指WCH沁恒USB产品
+     *                         PID请具体查询
+     *                         可参考资料：
+     *                         <p>https://devicehunt.com/all-usb-vendors</p>
+     *                         <p>https://devicehunt.com/view/type/usb/vendor/1A86/device/7522</p>
+     *                         <p>https://devicehunt.com/view/type/usb/vendor/1A86/device/7523</p>
+     *                         可使用沁恒工具配置软件查询单板：
+     *                         <p>https://www.wch.cn/downloads/CH34xSerCfg_ZIP.html</p>
+     *                         可在沁恒官方Jar库中，定位到CH34XUARTDriver.jar:cn/wch/uartlib/chip/ChipType.class，查询板子设备使用的USB芯片对应的十进制码，手动转换至十六进制码填写
+     *                         例如：
+     *                         this.addSupportVendorProduct("1a86:7522");
+     *                         对应CH34XUARTDriver.jar:cn/wch/uartlib/chip/ChipType.class里的：
+     *                         public enum ChipType {
+     *                              CH340K(6790, 29986, 1, "CH340K"),
+     *                         }
+     *                         如上6790对应VID，是1A86；29986对应PID，是7522
      */
     private void addSupportVendorProduct(String vendorAndProduct) {
         this.supportVendorProduct.add(vendorAndProduct);
