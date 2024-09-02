@@ -2,6 +2,9 @@
 
 2024.8.9 已确定适配更多新款星闪产品，助力星闪相关项目落地参加活动，敬请期待1.4新版本，我们会在该版本上线适配完整的相关版本和相关代码。
 
+Hi2821芯片核心版，合作成品，望大家支持[立创链接,目前暂未开放](https://oshwhub.com/a123745/nearlink_core/)
+[Github链接,目前暂未开放](https://github.com/Hny0305Lin/Hi2821_Dev_Board)
+
 ![IMG.SHIELD.IO](https://img.shields.io/github/v/release/Hny0305Lin/NLChat?include_prereleases&display_name=release&style=for-the-badge&logo=Android&logoSize=amd&label=Hi2821_NLChat&labelColor=007FFC&color=4DDDFC&cacheSeconds=60) ![IMG.SHIELD.IO](https://img.shields.io/github/stars/Hny0305Lin/NLChat?style=for-the-badge&label=NLChat%20Star&labelColor=007FFC&color=4DDDFC&cacheSeconds=60)
 
 ![Android自动化构建 Debug](https://img.shields.io/github/actions/workflow/status/Hny0305Lin/NLChat/android.yml?branch=master&style=for-the-badge&logo=android&logoSize=amd&label=Android%20CI&labelColor=00CEFC&color=00C08B&cacheSeconds=600) ![Android自动化构建 Release](https://img.shields.io/github/actions/workflow/status/Hny0305Lin/NLChat/androidsign.yml?branch=master&style=for-the-badge&logo=android&logoSize=amd&label=Android%20CI%20Release&labelColor=00CEFC&color=00C08B&cacheSeconds=600)
