@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean isTablet = false;
     private int orientation = 1;
 
-    // TODO APP是否为华为手机运行
+    // TODO APP是否为华为手机运行，确定为1.4特性功能
 
 
     @SuppressLint({"ObsoleteSdkInt", "InlinedApi"})
@@ -842,6 +842,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String completeFirstData = string;
             String completeSecondData = "";
             //todo 可以的话这里需要重构，大量的if对维护代码不利
+            //todo 1.4 需要清理代码冗余和解决难维护问题，到时会单开一个Class进行处理，会研究一种更好的Java底层解决办法处理串口内容
             //去掉特定的前缀字符串，然后返回（聊天内容），只有当消息包含特定的前缀时才处理
             if (completeFirstData.contains(ChatUtilsForSettings.getPrefixServer()) || completeFirstData.contains(ChatUtilsForSettings.getPrefixClient())) {
                 if (completeFirstData.startsWith(ChatUtilsForSettings.getPrefixServer())) {
@@ -876,6 +877,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (completeFirstData.startsWith(ChatUtilsForSettings.getPrefixLogNotConnectedServerBearpi3863()))
                     if (ChatUtilsForSettings.isSetDebugLog())
                         SnackBarToastForDebug(context,"发送失败!\n" + ChatUtilsForSettings.getPrefixLogNotConnectedServerBearpi3863(),"推荐检查星闪网络",3,Snackbar.LENGTH_SHORT);
+            } else if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogNotConnectedServerHihopews63())) {
+                Log.w(TAG, "串口Log内容：" + completeFirstData);
+                if (completeFirstData.startsWith(ChatUtilsForSettings.getPrefixLogNotConnectedServerHihopews63()))
+                    if (ChatUtilsForSettings.isSetDebugLog())
+                        SnackBarToastForDebug(context,"发送失败!\n" + ChatUtilsForSettings.getPrefixLogNotConnectedServerHihopews63(),"推荐检查星闪网络",3,Snackbar.LENGTH_SHORT);
             } else {
                 Log.d(TAG, "忽略的消息内容：" + completeFirstData);
                 // 处理忽略消息内容
@@ -963,7 +969,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
             //UART服务器日志
-            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSleUartServer()) || completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSleUartServerBearpi3863())) {
+            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSleUartServer()) ||
+                    completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSleUartServerBearpi3863()) ||
+                    completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSleUartServerHihopews63())) {
                 Log.d(TAG, "UART服务器日志：" + completeFirstData);
                 // 处理UART服务器日志
 
@@ -1060,7 +1068,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
             //UART客户端日志
-            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSleUartClient()) || completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSleUartClientBearpi3863())) {
+            if (completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSleUartClient()) ||
+                    completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSleUartClientBearpi3863()) ||
+                    completeFirstData.contains(ChatUtilsForSettings.getPrefixLogSleUartClientHihopews63())) {
                 Log.d(TAG, "客户端UART客户端日志：" + completeFirstData);
                 // 处理UART服务器日志
 
@@ -1116,6 +1126,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ButtonForSendData.setText(R.string.nearlinkChatEmoji);
 
         //todo 目前这里先这么做，后续表情包喂上来了添加
+        //todo 正在思考两种表情包方向：HTTP传输本地处理链接后载入显示、表情包自创UID发送对方后对方APP自动转化为表情包显示 1.4版本好好维护这个功能
+
         //新UI处理发送，目前这里先这么做
         if (!EditChatSendNewUI.getText().toString().isEmpty()) {
             SnackBarToastForDebug(context,"表情相关功能正在制作，敬请期待!","推荐长按返回模式",3,Snackbar.LENGTH_SHORT);

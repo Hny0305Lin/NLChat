@@ -102,4 +102,6 @@ public class MessageBurnNotificationService extends Service {
         serviceIntent.putExtra("message", message);
         context.startService(serviceIntent);
     }
+
+    // todo 1.4 需要修一修Android Service在Android 10+设备上正常使用，目前还是有一些情况的但却能正常运行。
 }

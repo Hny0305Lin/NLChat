@@ -152,4 +152,6 @@ public class SQLiteDataBaseAPP {
             }
         }
     }
+
+    // todo 1.4数据库重构一下，目前这样的多表肯定是行不通了，会存在一些交互上的问题
 }

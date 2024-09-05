@@ -55,6 +55,9 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.chatUtilsForMessages = chatUtilsForMessages;
     }
 
+    // todo 1.4写一套更好的UI，适应星闪短距特性，开发一些群游戏、群聊、文字呼救等特性功能，目前开发进程从9月结束推进到12月结束
+    // todo 1.4功能9月中旬会上线测试版
+
     // 根据消息的发送者类型返回不同的视图类型
     @Override
     public int getItemViewType(int position) {
@@ -152,6 +155,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     // todo 发送消息和接收消息每一方，如果消息有特殊情况比如enter，uuid会查询不到，目前这个bug打算后续修复。todo 暂时不影响功能
+    // todo 1.4尝试修复
 
     // 接收消息的ViewHolder
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
@@ -195,6 +199,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
     // todo 小熊派群员:阅后即焚可以做个动画，提示密信，点开弹窗，关闭不见 todo 目前暂时无法实现
+    // todo 1.4 尝试解决
 
     // 接收消息的ViewHolder（阅后即焚）
     private class ReceivedMessageBurnHolder extends RecyclerView.ViewHolder {

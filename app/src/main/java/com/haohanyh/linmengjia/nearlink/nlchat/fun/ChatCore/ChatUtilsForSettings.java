@@ -16,7 +16,7 @@ public class ChatUtilsForSettings {
     private static boolean burnmessage = false; // 控制是否启用阅后即焚聊天功能
     private static final boolean burnshowword = false; // 控制是否启用阅后即焚文字显示（后续转为用户使用，false为不需要，true为需要点击显示3秒文字）
     private static final boolean burnalertdialog = false; // 控制是否启用阅后即焚AliertDialog（开发者使用，false为长按消失消息，true为长按显示开发者信息）
-    private static final boolean burnmessagenotify = false; // 控制是否启用阅后即焚每条消息的通知
+    private static final boolean burnmessagenotify = false; // 控制是否启用阅后即焚每条消息的通知 todo 目前暂时先不用上，1.4版本会处理
     private static final int burnwordshowtimer = 3000; // 控制阅后即焚阅读时间（推荐3秒钟）
     private static final int burntimer = 120000; // 控制阅后即焚的时间（2分钟,120000.如为开发者推荐全局2秒钟,2000）
     //这里设置的是跟C代码相关的，白名单获取聊天文本，当这些文本出现在串口通讯里面的时候，提取这String后者即可，期间过滤掉前者和大量串口log。
@@ -28,45 +28,58 @@ public class ChatUtilsForSettings {
     private static final String PREFIX_LOG_ACORE = "[ACore]";
     private static final String PREFIX_LOG_SLE_UART_SERVER = "[sle uart server]";
     private static final String PREFIX_LOG_SLE_UART_SERVER_BEARPI3863 = "[sle uart server bearpi3863]";
+    private static final String PREFIX_LOG_SLE_UART_SERVER_HIHOPEWS63 = "[sle uart server hihopews63]";
     private static final String PREFIX_LOG_CONNECT_STATE_CHANGED = "[sle uart server] connect state changed";
     private static final String PREFIX_LOG_CONNECT_STATE_CHANGED_BEARPI3863 = "[sle uart server bearpi3863] connect state changed";
+    private static final String PREFIX_LOG_CONNECT_STATE_CHANGED_HIHOPEWS63 = "[sle uart server hihopews63] connect state changed";
     private static final String PREFIX_LOG_PAIR_COMPLETE = "[sle uart server] pair complete";
     private static final String PREFIX_LOG_PAIR_COMPLETE_BEARPI3863 = "[sle uart server bearpi3863] pair complete";
+    private static final String PREFIX_LOG_PAIR_COMPLETE_HIHOPEWS63 = "[sle uart server hihopews63] pair complete";
     private static final String PREFIX_LOG_NEARLINK_DEVICES_ADDR = "[sle uart server] pair complete addr:";
     private static final String PREFIX_LOG_NEARLINK_DEVICES_ADDR_BEARPI3863 = "[sle uart server bearpi3863] pair complete addr:";
+    private static final String PREFIX_LOG_NEARLINK_DEVICES_ADDR_HIHOPEWS63 = "[sle uart server hihopews63] pair complete addr:";
     private static final String PREFIX_LOG_SSAPS_MTU_CHANGED = "[sle uart server] ssaps ssaps_mtu_changed_cbk";
     private static final String PREFIX_LOG_SSAPS_MTU_CHANGED_BEARPI3863 = "[sle uart server bearpi3863] ssaps ssaps_mtu_changed_cbk";
+    private static final String PREFIX_LOG_SSAPS_MTU_CHANGED_HIHOPEWS63 = "[sle uart server hihopews63] ssaps ssaps_mtu_changed_cbk";
     private static final String PREFIX_LOG_SLE_ANNOUNCE_ENABLE_CALLBACK = "[sle uart server] sle announce enable callback";
     private static final String PREFIX_LOG_SLE_ANNOUNCE_ENABLE_CALLBACK_BEARPI3863 = "[sle uart server bearpi3863] sle announce enable callback";
+    private static final String PREFIX_LOG_SLE_ANNOUNCE_ENABLE_CALLBACK_HIHOPEWS63 = "[sle uart server hihopews63] sle announce enable callback";
     private static final String PREFIX_LOG_NOT_CONNECTED_SERVER = "[sle uart server] sle client is not connected! ";
     private static final String PREFIX_LOG_NOT_CONNECTED_SERVER_BEARPI3863 = "[sle uart server bearpi3863] sle client is not connected! ";
+    private static final String PREFIX_LOG_NOT_CONNECTED_SERVER_HIHOPEWS63 = "[sle uart server hihopews63] sle client is not connected! ";
 
     private static final String PREFIX_LOG_SLE_UART_CLIENT = "[sle uart client]";
     private static final String PREFIX_LOG_SLE_UART_CLIENT_BEARPI3863 = "[sle uart client bearpi3863]";
+    private static final String PREFIX_LOG_SLE_UART_CLIENT_HIHOPEWS63 = "[sle uart client hihopews63]";
     private static final String PREFIX_LOG_CLIENT_CONNECT_STATE_CHANGED = "[sle uart client] conn state changed";
     private static final String PREFIX_LOG_CLIENT_CONNECT_STATE_CHANGED_BEARPI3863 = "[sle uart client bearpi3863] conn state changed";
+    private static final String PREFIX_LOG_CLIENT_CONNECT_STATE_CHANGED_HIHOPEWS63 = "[sle uart client hihopews63] conn state changed";
     private static final String PREFIX_LOG_CLIENT_STATE_CONNECTED = "[sle uart client] SLE_ACB_STATE_CONNECTED";
     private static final String PREFIX_LOG_CLIENT_STATE_CONNECTED_BEARPI3863 = "[sle uart client bearpi3863] SLE_ACB_STATE_CONNECTED";
+    private static final String PREFIX_LOG_CLIENT_STATE_CONNECTED_HIHOPEWS63 = "[sle uart client hihopews63] SLE_ACB_STATE_CONNECTED";
     private static final String PREFIX_LOG_CLIENT_LOW_RX = "[sle uart client] sle_low_latency_rx_enable";
     private static final String PREFIX_LOG_CLIENT_LOW_RX_BEARPI3863 = "[sle uart client bearpi3863] sle_low_latency_rx_enable";
+    private static final String PREFIX_LOG_CLIENT_LOW_RX_HIHOPEWS63 = "[sle uart client hihopews63] sle_low_latency_rx_enable";
     private static final String PREFIX_LOG_CLIENT_PAIR_COMPLETE = "[sle uart client] pair complete";
     private static final String PREFIX_LOG_CLIENT_PAIR_COMPLETE_BEARPI3863 = "[sle uart client bearpi3863] pair complete";
+    private static final String PREFIX_LOG_CLIENT_PAIR_COMPLETE_HIHOPEWS63 = "[sle uart client hihopews63] pair complete";
     private static final String PREFIX_LOG_CLIENT_NEARLINK_DEVICES_ADDR = "[sle uart client] pair complete conn_id:0, addr:";
     private static final String PREFIX_LOG_CLIENT_NEARLINK_DEVICES_ADDR_BEARPI3863 = "[sle uart client bearpi3863] pair complete conn_id:0, addr:";
+    private static final String PREFIX_LOG_CLIENT_NEARLINK_DEVICES_ADDR_HIHOPEWS63 = "[sle uart client hihopews63] pair complete conn_id:0, addr:";
     private static final String PREFIX_LOG_CLIENT_SSAPC_EXCHANGE = "ssapc exchange info";
     private static final String PREFIX_LOG_CLIENT_SLE_ANNOUNCE_ENABLE_CALLBACK = "[sle uart client] exchange_info_cbk";
     private static final String PREFIX_LOG_CLIENT_SLE_ANNOUNCE_ENABLE_CALLBACK_BEARPI3863 = "[sle uart client bearpi3863] exchange_info_cbk";
+    private static final String PREFIX_LOG_CLIENT_SLE_ANNOUNCE_ENABLE_CALLBACK_HIHOPEWS63 = "[sle uart client hihopews63] exchange_info_cbk";
     private static final String PREFIX_LOG_CLIENT_SLE_DISCOVERY = "discovery character cbk";
     private static final String PREFIX_LOG_CLIENT_MTU = "[sle uart client] exchange mtu";
     private static final String PREFIX_LOG_CLIENT_MTU_BEARPI3863 = "[sle uart client bearpi3863] exchange mtu";
+    private static final String PREFIX_LOG_CLIENT_MTU_HIHOPEWS63 = "[sle uart client hihopews63] exchange mtu";
     private static final String PREFIX_LOG_CLIENT_SAMPLE_FIND_P_CBK = "[sle uart client] sle_uart_client_sample_find_property_cbk";
     private static final String PREFIX_LOG_CLIENT_SAMPLE_FIND_P_CBK_BEARPI3863 = "[sle uart client bearpi3863] sle_uart_client_sample_find_property_cbk";
+    private static final String PREFIX_LOG_CLIENT_SAMPLE_FIND_P_CBK_HIHOPEWS63 = "[sle uart client hihopews63] sle_uart_client_sample_find_property_cbk";
     private static final String PREFIX_LOG_CLIENT_SAMPLE_FIND_SD_CBK = "[sle uart client] sle_uart_client_sample_find_structure_cmp_cbk";
     private static final String PREFIX_LOG_CLIENT_SAMPLE_FIND_SD_CBK_BEARPI3863 = "[sle uart client bearpi3863] sle_uart_client_sample_find_structure_cmp_cbk";
-
-
-
-    // todo Hi3863 Log还没适配全（润和目前为还未成功）
+    private static final String PREFIX_LOG_CLIENT_SAMPLE_FIND_SD_CBK_HIHOPEWS63 = "[sle uart client hihopews63] sle_uart_client_sample_find_structure_cmp_cbk";
 
     // 控制是否启用显示串口Log，打印在UI上（开发者使用）
     public static boolean isShowUartLog() { return showUartLog; }
@@ -140,12 +153,20 @@ public class ChatUtilsForSettings {
         return PREFIX_LOG_SLE_UART_SERVER_BEARPI3863;
     }
 
+    public static String getPrefixLogSleUartServerHihopews63() {
+        return PREFIX_LOG_SLE_UART_SERVER_HIHOPEWS63;
+    }
+
     public static String getPrefixLogConnectStateChanged() {
         return PREFIX_LOG_CONNECT_STATE_CHANGED;
     }
 
     public static String getPrefixLogConnectStateChangedBearpi3863() {
         return PREFIX_LOG_CONNECT_STATE_CHANGED_BEARPI3863;
+    }
+
+    public static String getPrefixLogConnectStateChangedHihopews63() {
+        return PREFIX_LOG_CONNECT_STATE_CHANGED_HIHOPEWS63;
     }
 
     public static String getPrefixLogPairComplete() {
@@ -156,12 +177,20 @@ public class ChatUtilsForSettings {
         return PREFIX_LOG_PAIR_COMPLETE_BEARPI3863;
     }
 
+    public static String getPrefixLogPairCompleteHihopews63() {
+        return PREFIX_LOG_PAIR_COMPLETE_HIHOPEWS63;
+    }
+
     public static String getPrefixLogNotConnectedServer() {
         return PREFIX_LOG_NOT_CONNECTED_SERVER;
     }
 
     public static String getPrefixLogNotConnectedServerBearpi3863() {
         return PREFIX_LOG_NOT_CONNECTED_SERVER_BEARPI3863;
+    }
+
+    public static String getPrefixLogNotConnectedServerHihopews63() {
+        return PREFIX_LOG_NOT_CONNECTED_SERVER_HIHOPEWS63;
     }
 
     public static String getPrefixLogNearlinkDevicesAddr() {
@@ -172,12 +201,20 @@ public class ChatUtilsForSettings {
         return PREFIX_LOG_NEARLINK_DEVICES_ADDR_BEARPI3863;
     }
 
+    public static String getPrefixLogNearlinkDevicesAddrHihopews63() {
+        return PREFIX_LOG_NEARLINK_DEVICES_ADDR_HIHOPEWS63;
+    }
+
     public static String getPrefixLogSsapsMtuChanged() {
         return PREFIX_LOG_SSAPS_MTU_CHANGED;
     }
 
     public static String getPrefixLogSsapsMtuChangedBearpi3863() {
         return PREFIX_LOG_SSAPS_MTU_CHANGED_BEARPI3863;
+    }
+
+    public static String getPrefixLogSsapsMtuChangedHihopews63() {
+        return PREFIX_LOG_SSAPS_MTU_CHANGED_HIHOPEWS63;
     }
 
     public static String getPrefixLogSleAnnounceEnableCallback() {
@@ -188,12 +225,20 @@ public class ChatUtilsForSettings {
         return PREFIX_LOG_SLE_ANNOUNCE_ENABLE_CALLBACK_BEARPI3863;
     }
 
+    public static String getPrefixLogSleAnnounceEnableCallbackHihopews63() {
+        return PREFIX_LOG_SLE_ANNOUNCE_ENABLE_CALLBACK_HIHOPEWS63;
+    }
+
     public static String getPrefixLogSleUartClient() {
         return PREFIX_LOG_SLE_UART_CLIENT;
     }
 
     public static String getPrefixLogSleUartClientBearpi3863() {
         return PREFIX_LOG_SLE_UART_CLIENT_BEARPI3863;
+    }
+
+    public static String getPrefixLogSleUartClientHihopews63() {
+        return PREFIX_LOG_SLE_UART_CLIENT_HIHOPEWS63;
     }
 
     public static String getPrefixLogClientConnectStateChanged() {
@@ -204,12 +249,20 @@ public class ChatUtilsForSettings {
         return PREFIX_LOG_CLIENT_CONNECT_STATE_CHANGED_BEARPI3863;
     }
 
+    public static String getPrefixLogClientConnectStateChangedHihopews63() {
+        return PREFIX_LOG_CLIENT_CONNECT_STATE_CHANGED_HIHOPEWS63;
+    }
+
     public static String getPrefixLogClientStateConnected() {
         return PREFIX_LOG_CLIENT_STATE_CONNECTED;
     }
 
     public static String getPrefixLogClientStateConnectedBearpi3863() {
         return PREFIX_LOG_CLIENT_STATE_CONNECTED_BEARPI3863;
+    }
+
+    public static String getPrefixLogClientStateConnectedHihopews63() {
+        return PREFIX_LOG_CLIENT_STATE_CONNECTED_HIHOPEWS63;
     }
 
     public static String getPrefixLogClientLowRx() {
@@ -220,6 +273,10 @@ public class ChatUtilsForSettings {
         return PREFIX_LOG_CLIENT_LOW_RX_BEARPI3863;
     }
 
+    public static String getPrefixLogClientLowRxHihopews63() {
+        return PREFIX_LOG_CLIENT_LOW_RX_HIHOPEWS63;
+    }
+
     public static String getPrefixLogClientPairComplete() {
         return PREFIX_LOG_CLIENT_PAIR_COMPLETE;
     }
@@ -228,12 +285,20 @@ public class ChatUtilsForSettings {
         return PREFIX_LOG_CLIENT_PAIR_COMPLETE_BEARPI3863;
     }
 
+    public static String getPrefixLogClientPairCompleteHihopews63() {
+        return PREFIX_LOG_CLIENT_PAIR_COMPLETE_HIHOPEWS63;
+    }
+
     public static String getPrefixLogClientNearlinkDevicesAddr() {
         return PREFIX_LOG_CLIENT_NEARLINK_DEVICES_ADDR;
     }
 
     public static String getPrefixLogClientNearlinkDevicesAddrBearpi3863() {
         return PREFIX_LOG_CLIENT_NEARLINK_DEVICES_ADDR_BEARPI3863;
+    }
+
+    public static String getPrefixLogClientNearlinkDevicesAddrHihopews63() {
+        return PREFIX_LOG_CLIENT_NEARLINK_DEVICES_ADDR_HIHOPEWS63;
     }
 
     public static String getPrefixLogClientSsapcExchange() {
@@ -248,6 +313,10 @@ public class ChatUtilsForSettings {
         return PREFIX_LOG_CLIENT_SLE_ANNOUNCE_ENABLE_CALLBACK_BEARPI3863;
     }
 
+    public static String getPrefixLogClientSleAnnounceEnableCallbackHihopews63() {
+        return PREFIX_LOG_CLIENT_SLE_ANNOUNCE_ENABLE_CALLBACK_HIHOPEWS63;
+    }
+
     public static String getPrefixLogClientSleDiscovery() {
         return PREFIX_LOG_CLIENT_SLE_DISCOVERY;
     }
@@ -260,6 +329,10 @@ public class ChatUtilsForSettings {
         return PREFIX_LOG_CLIENT_MTU_BEARPI3863;
     }
 
+    public static String getPrefixLogClientMtuHihopews63() {
+        return PREFIX_LOG_CLIENT_MTU_HIHOPEWS63;
+    }
+
     public static String getPrefixLogClientSampleFindPCbk() {
         return PREFIX_LOG_CLIENT_SAMPLE_FIND_P_CBK;
     }
@@ -268,11 +341,19 @@ public class ChatUtilsForSettings {
         return PREFIX_LOG_CLIENT_SAMPLE_FIND_P_CBK_BEARPI3863;
     }
 
+    public static String getPrefixLogClientSampleFindPCbkHihopews63() {
+        return PREFIX_LOG_CLIENT_SAMPLE_FIND_P_CBK_HIHOPEWS63;
+    }
+
     public static String getPrefixLogClientSampleFindSdCbk() {
         return PREFIX_LOG_CLIENT_SAMPLE_FIND_SD_CBK;
     }
 
     public static String getPrefixLogClientSampleFindSdCbkBearpi3863() {
         return PREFIX_LOG_CLIENT_SAMPLE_FIND_SD_CBK_BEARPI3863;
+    }
+
+    public static String getPrefixLogClientSampleFindSdCbkHihopews63() {
+        return PREFIX_LOG_CLIENT_SAMPLE_FIND_SD_CBK_HIHOPEWS63;
     }
 }
