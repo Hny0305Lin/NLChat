@@ -8,6 +8,7 @@
 
 | 版本号/功能 | CH340驱动 | 聊天功能 | 中文聊天 | SQLite管理 | 串口处理 | 剪贴板 | 背景运行 | 阅后即焚 | Github CI | 聊天增强（不定期）|
 | --------- | --------- | -------- | -------- | -------- | -------- | -------- | -------- | ------- | :------: | -------- |
+| [1.3.399.2024.0905](https://github.com/Hny0305Lin/NLChat/tree/v1.3.352.2024.0805) ✅1.3最终版 | ✅CH340K问题解决 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [✅点我查看](https://github.com/Hny0305Lin/NLChat/actions/runs/10723716088/job/29737634296) |  |
 | [1.3.352.2024.0805](https://github.com/Hny0305Lin/NLChat/tree/v1.3.352.2024.0805) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅2.2版本 | [✅点我查看](https://github.com/Hny0305Lin/NLChat/actions/runs/10244425383/job/28337503682) |  |
 | [1.3.352.2024.0803](https://github.com/Hny0305Lin/NLChat/tree/v1.3.352.2024.0803) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅2.1版本 | [✅点我查看](https://github.com/Hny0305Lin/NLChat/actions/runs/10224347774/job/28291966859) |  |
 | [1.3.350.2024.0801](https://github.com/Hny0305Lin/NLChat/tree/v1.3.350.2024.0801) ✅1.3稳定版 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅2.0版本 | [✅点我查看](https://github.com/Hny0305Lin/NLChat/actions/runs/10190513443/job/28190321138) |  |
