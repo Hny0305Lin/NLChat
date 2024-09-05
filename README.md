@@ -2,7 +2,8 @@
 
 2024.8.9 已确定适配更多新款星闪产品，助力星闪相关项目落地参加活动，敬请期待1.4新版本，我们会在该版本上线适配完整的相关版本和相关代码。
 
-Hi2821芯片核心版，合作成品，望大家支持[立创链接,目前暂未开放](https://oshwhub.com/a123745/nearlink_core/)
+Hi2821芯片核心版，合作成品，望大家支持
+[立创链接,目前暂未开放](https://oshwhub.com/a123745/nearlink_core/)
 [Github链接,目前暂未开放](https://github.com/Hny0305Lin/Hi2821_Dev_Board)
 
 ![IMG.SHIELD.IO](https://img.shields.io/github/v/release/Hny0305Lin/NLChat?include_prereleases&display_name=release&style=for-the-badge&logo=Android&logoSize=amd&label=Hi2821_NLChat&labelColor=007FFC&color=4DDDFC&cacheSeconds=60) ![IMG.SHIELD.IO](https://img.shields.io/github/stars/Hny0305Lin/NLChat?style=for-the-badge&label=NLChat%20Star&labelColor=007FFC&color=4DDDFC&cacheSeconds=60)
@@ -21,7 +22,7 @@ Hi2821芯片核心版，合作成品，望大家支持[立创链接,目前暂未
 
 # 项目简介
 
-NLChat星闪聊天软件，是我基于小熊派H2821开发板和官方代码做的一款使用星闪网络的聊天软件。作为一款近场通讯软件，我们主打的核心就是：**让Android设备乃至其他，都能通过星闪网络互联。星闪，正是我们要凸显的一大特色**，它在低时延的近场通信场景下表现出色，使得我们可以做到文本聊天、收发及时。这款软件是在6月下旬启动开发调试，直到今天我们一直在做产品软件的完善和迭代更新，如今已经从最初的聊天，做到了聊天记录保存成SQL、聊天记录自动复制、滚动显示等聊天软件正常需求。
+NLChat星闪聊天软件，是我们基于小熊派、润和多家的星闪设备和官方代码做的一款使用星闪网络的聊天软件。作为一款近场通讯软件，我们主打的核心就是：**让Android设备乃至其他，都能通过星闪网络互联。星闪，正是我们要凸显的一大特色**，它在低时延的近场通信场景下表现出色，使得我们可以做到文本聊天、收发及时。这款软件是在6月下旬启动开发调试，直到今天我们一直在做产品软件的完善和迭代更新，如今已经从最初的聊天，做到了聊天记录保存成SQL、聊天记录自动复制、滚动显示等聊天软件正常需求。
 
 # 使用到的硬件 和 硬件重要资料
 
@@ -34,6 +35,10 @@ NLChat星闪聊天软件，是我基于小熊派H2821开发板和官方代码做
 * ⚠️强烈建议中国大陆用户能使用GitHub就使用GitHub，Gitee仅仅是我们浩瀚银河中国大陆的仓库设置地，未来可能会缺少重要更新。
 
 ### Hi3863 BearPi小熊派
+
+待补充，敬请期待。
+
+### WS63E套装 Hihope润和
 
 待补充，敬请期待。
 
@@ -50,21 +55,40 @@ NLChat星闪聊天软件，是我基于小熊派H2821开发板和官方代码做
 * 介绍：NLChat的成功，离不开小熊派开源社区的支持和公开的SLE_UART整套Demo代码支持。感谢背后推动星闪工作的你们，给星闪开发者们带来相关芯片和相关资料。
 * Description: SLE UART Sample Source.
 * 作者: @CompanyNameTag
-* 代码开源地址: [点我进入](https://gitee.com/bearpi/bearpi-h2821_pico)
+* 代码开源地址: [点我进入小熊派H2821](https://gitee.com/bearpi/bearpi-h2821_pico)
+* 代码开源地址: [点我进入小熊派H3863](https://gitee.com/bearpi/bearpi-pico_h3863)
+* 代码开源地址: [点我进入润和WS63](https://gitee.com/HiSpark/fbb_ws63/tree/master/src)
+
 
 ### Copyright (c) Nanjing Xiaoxiongpai Intelligent Technology Co., Ltd.
 
 * 使用开源协议：未知
 * 介绍: 南京小熊派智能科技有限公司，致力于鸿蒙生态的硬件开发，提供硬件和软件的解决方案。感谢背后推动星闪工作的你们，给星闪开发者们带来Hi3863、Hi2821等相关芯片和相关资料。
 * 官网介绍：[点我进入](https://bearpi.cn/about/)
-* 代码开源地址: [点我进入](https://gitee.com/bearpi/bearpi-h2821_pico)
+* 代码开源地址: [点我进入H2821](https://gitee.com/bearpi/bearpi-h2821_pico)
+* 代码开源地址: [点我进入H3863](https://gitee.com/bearpi/bearpi-pico_h3863)
+
+### Copyright (c) HiHope开源社区
+
+* 使用开源协议：MulanPSL-2.0（木兰宽松许可证第二版）
+* 介绍: HiHope开源社区，致力于开源软件和开源硬件的推广，为开发者提供丰富的开源资源和开发工具。感谢背后推动星闪工作的你们，给星闪开发者们带来Hi3863、Hi2821等相关芯片和相关资料。
+* 官网介绍：[点我进入](https://www.hihope.org/)
+* 芯片相关资料开源地址: [点我进入](https://gitee.com/hihope_iot/near-link)
+* 润和代码适配地址：[点我进入](https://github.com/Hny0305Lin/Hihope_WS63_NearLink_SDK)
+
+### Copyright (c) HiSpark
+
+* 使用开源协议：Apache-2.0
+* 介绍: 海思HiSpark能力开放平台是面向智能终端开发者的创新驱动与生态使能平台，围绕联接、感知、计算、表达四大芯片能力，以开放、创新为目标，为开发者提供培训赋能、技术交流和生态合作服务，降低开发门槛，助力开发者打造创新的智能终端，构建海思合作共赢的开发者生态。
+* 官网介绍：[点我进入](https://www.hisilicon.com/cn/products/developer-platform)
+* 代码仓介绍：fbb_ws63代码仓为支持ws63和ws63e解决方案SDK。技术论坛：https://developer.hisilicon.com/forum/0133146886267870001
+* 代码开源地址: [点我进入](https://gitee.com/HiSpark/fbb_ws63)
 
 ### Copyright (c) HiSilicon (Shanghai) Technologies Co., Ltd. 2023-2023. All rights reserved.
 
 * 使用开源协议：Apache-2.0
 * 介绍: 上海海思技术有限公司，华为旗下半导体公司，提供海思芯片相关行业解决方案。感谢背后推动星闪工作的你们，给星闪开发者们带来Hi3863、Hi2821等相关芯片和相关资料。
 * 官网介绍：[点我进入](https://bearpi.cn/about/)
-* 代码开源地址: [点我进入](https://gitee.com/bearpi/bearpi-pico_h3863)
 
 ### Copyright (c) 2002-2024 南京沁恒微电子股份有限公司
 
@@ -217,3 +241,5 @@ NLChat星闪聊天软件，是我基于小熊派H2821开发板和官方代码做
 2024-08-09 已收到参加活动的润和WS63开发板套装，且在今天购买了小熊派Hi3863开发板，确定新版本适配这些套装开发板，让更多人参与星闪网络体验。
 
 2024-08-13 适配小熊派Hi3863。
+
+2024-09-03 适配润和WS63。
