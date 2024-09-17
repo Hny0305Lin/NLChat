@@ -1,6 +1,8 @@
 /* 受Haohanyh Computer Software Products Open Source LICENSE保护 https://github.com/Hny0305Lin/LICENSE/blob/main/LICENSE */
 package com.haohanyh.linmengjia.nearlink.nlchat.fun.String;
 
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtilsForMessage;
+
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
@@ -65,5 +67,16 @@ public class StringUtils {
 //        keyword = new String(str, StandardCharsets.UTF_8);
 //        return keyword;
         return new String(str, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * 调整消息后String有\n强制换行符号，调整ViewHolder最后字符换行问题
+     */
+    public String msgSubEnter(ChatUtilsForMessage message) {
+        String msg = message.getMessage();
+        // 检查消息的最后一个字符是否为换行符，是则去除最后一个换行符
+        if (msg.endsWith("\n"))
+            msg = msg.substring(0, msg.length() - 1);
+        return msg;
     }
 }

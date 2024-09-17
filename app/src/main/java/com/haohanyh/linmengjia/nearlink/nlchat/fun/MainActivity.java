@@ -13,6 +13,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.hardware.usb.UsbManager;
 import android.net.Uri;
@@ -27,6 +28,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CompoundButton;
@@ -70,6 +72,7 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUIUpdater;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtilsForFiles;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtilsForMessage;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore.ChatUtilsForSettings;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCoreUSB.MainCH34xManage;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatService.MyForegroundService;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.Premission.NearLinkChatGetSomePermission;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.array;
@@ -78,7 +81,7 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.drawable;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.id;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.SQLite.SQLiteDataBaseAPP;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.String.StringUtils;
-import com.haohanyh.linmengjia.nearlink.nlchat.fun.WCHUart.WCHUartSettings;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.Uart.WCHUartSettings;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -122,8 +125,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int LONG_PRESS_TIME = 500; // 长按时间阈值，单位毫秒
     private MaterialButton ButtonForSendData;
 
+    //控制UI显示Log Level背景颜色
     private int LogLevel = Log.WARN;
 
+    //UI内设置串口
     private Resources resources;
     private String[] UartSettingsBaud,UartSettingsData,UartSettingsStop,UartSettingsParity,UartSettingsParityII;
     private WCHUartSettings wchUartSettings = new WCHUartSettings();
@@ -201,9 +206,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //APP是否为平板或其余设备
     private boolean isTablet = false;
     private int orientation = 1;
-
     // TODO APP是否为华为手机运行，确定为1.4特性功能
 
+    //USB CH34X 初始化及恢复重启
+    private final MainCH34xManage CH34xInit = new MainCH34xManage();
 
     @SuppressLint({"ObsoleteSdkInt", "InlinedApi"})
     @Override
@@ -331,6 +337,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (dbHelper != null) {
             chatMessageDatabaseManager.closeDatabase();
         }
+
+        // 关闭检测星闪
+        handler.removeCallbacks(statusForNearLinkChecker);
     }
 
     /**
@@ -374,9 +383,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             btnGO.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(color.nearlinkerror_deep)));
             ChatUIAnimationUtils.animateBackgroundColorChange(MainActivity.this, btnGO, color.nearlinkerror_deep, color.nearlinkerror_light);
         });
+        //启动MainCH34xInitStart方法，启动读线程
+        if (ChatUtilsForSettings.isAutoConnectCH34X()) {
+            CH34xInit.MainCH34xInitStart(MainActivity.this);
+            CH34xInit.MainCH34xBroadCast(MainActivity.this);}
+        NearLinkChatReadData();
         //软件控件开始做处理
         coord = findViewById(id.MainUI);
-
         btnGO = findViewById(id.btnGO);
         btnGO.setOnClickListener(this);
         btnGO.setEnabled(true);
@@ -429,6 +442,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         MobileUSBResult = findViewById(id.mobileUsbResult);
         UARTResult = findViewById(id.uartResult);
 
+        CNearLinkChatNewUI.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                CNearLinkChatNewUI.getWindowVisibleDisplayFrame(r);
+                int screenHeight = CNearLinkChatNewUI.getRootView().getHeight();
+                int keypadHeight = screenHeight - r.bottom;
+
+                if (keypadHeight > screenHeight * 0.15) { // 输入法打开了
+                    // 调整控件高度，缩短350dp
+                    int heightInDp = (int) (350 * getResources().getDisplayMetrics().density);
+                    recyclerView.getLayoutParams().height = screenHeight - keypadHeight - heightInDp;
+                } else {
+                    // 恢复控件高度为380dp
+                    int heightInDp = (int) (380 * getResources().getDisplayMetrics().density);
+                    recyclerView.getLayoutParams().height = heightInDp;
+                }
+                recyclerView.requestLayout();
+            }
+        });
+
+        //初始化内置检测输入法Enter发送
         TextView.OnEditorActionListener editorActionListenerForChatSend = new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
@@ -445,9 +480,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return false;
             }
         };
+
         EditChatSendNewUI = findViewById(id.editChatSendNewUI);
         EditChatSendNewUI.setOnEditorActionListener(editorActionListenerForChatSend);
 
+        //切换发送文字和发送表情包
         View.OnTouchListener touchListenerForSend = new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -475,8 +512,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return false;
             }
         };
+
         ButtonForSendData = findViewById(id.sendDataBtn);
         ButtonForSendData.setOnTouchListener(touchListenerForSend);
+
+        //星闪网络检测情况新写法
+        NearLinkInf();
 
         CheckBoxUartWarn = findViewById(id.cbUartWarn);
         NearLinkUartWarnToast = CheckBoxUartWarn.isChecked();
@@ -662,7 +703,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SettingsForNFC.setOnCheckedChangeListener(SettingsChangeListener);
 
         //初始化完成，软件第一次启动必须提示（这里写的第一次启动是软件启动的第一次，而不是使用频率的第一次
-        HhandlerI.sendEmptyMessage(31);
+        //HhandlerI.sendEmptyMessage(31);
 
         //如果SQLite有记录，可以显示在UI上
         if (ChatUtilsForSettings.isSqliteHistory()) {
@@ -807,18 +848,83 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private Handler handlerForNearLinkInf = new Handler();
+    private Runnable statusForNearLinkChecker = new Runnable() {
+        @Override
+        public void run() {
+            checkStatusForNearLinkInf();
+            handlerForNearLinkInf.postDelayed(this, 5000);
+        }
+    };
+    private void checkStatusForNearLinkInf() {
+        if (ChatUtilsForSettings.isAutoConnectMessageCode10()) {
+            HhandlerI.sendEmptyMessage(10);
+        }
+        if (ChatUtilsForSettings.isAutoConnectMessageCode11()) {
+            HhandlerI.sendEmptyMessage(11);
+        }
+        if (ChatUtilsForSettings.isAutoConnectMessageCode20()) {
+            HhandlerI.sendEmptyMessage(20);
+        }
+        if (ChatUtilsForSettings.isAutoConnectMessageCode21()) {
+            HhandlerI.sendEmptyMessage(21);
+        }
+        if (ChatUtilsForSettings.isAutoConnectMessageCode30()) {
+            HhandlerI.sendEmptyMessage(30);
+        }
+        if (ChatUtilsForSettings.isAutoConnectMessageCode31()) {
+            HhandlerI.sendEmptyMessage(31);
+        }
+        if (ChatUtilsForSettings.isAutoConnectMessageCode32()) {
+            HhandlerI.sendEmptyMessage(32);
+        }
+        if (ChatUtilsForSettings.isAutoConnectMessageCode33()) {
+            HhandlerI.sendEmptyMessage(33);
+        }
+        if (ChatUtilsForSettings.isAutoConnectMessageCode10() && ChatUtilsForSettings.isAutoConnectMessageCode20() && ChatUtilsForSettings.isAutoConnectMessageCode30()) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    btnGO.setEnabled(false);
+                    btnGO.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(color.nearlinkgreen_deep)));
+                    ChatUIAnimationUtils.animateBackgroundColorChange(MainActivity.this, btnGO, color.nearlinkgreen_deep, color.nearlinkgreen_light);
+                }
+            });
+        }
+        if (ChatUtilsForSettings.isAutoConnectMessageCode11() && ChatUtilsForSettings.isAutoConnectMessageCode20() &&
+                (ChatUtilsForSettings.isAutoConnectMessageCode32() || ChatUtilsForSettings.isAutoConnectMessageCode33())) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    btnGO.setEnabled(true);
+                    btnGO.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(color.nearlinkerror_deep)));
+                    ChatUIAnimationUtils.animateBackgroundColorChange(MainActivity.this, btnGO, color.nearlinkerror_deep, color.nearlinkerror_light);
+                }
+            });
+        }
+        if (ChatUtilsForSettings.isAutoConnectMessageCode11() && ChatUtilsForSettings.isAutoConnectMessageCode21() && ChatUtilsForSettings.isAutoConnectMessageCode33()) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    btnGO.setEnabled(false);
+                    btnGO.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(color.nearlinkerror_deep)));
+                    ChatUIAnimationUtils.animateBackgroundColorChange(MainActivity.this, btnGO, color.nearlinkerror_deep, color.nearlinkerror_light);
+                }
+            });
+        }
+    }
+    private void NearLinkInf() {
+        handler.post(statusForNearLinkChecker); // 开始定期执行任务
+    }
+
     private StringBuilder buffer = new StringBuilder();
     private void NearLinkChatReadData() {
-        //先播报星闪软件情况，已经UART接入星闪网络，再好好的处理字符
-        HhandlerI.sendEmptyMessage(10);
-
         //监听
         MainAPP.CH34X.setReadListener(bytes -> {
+            //Logcat
             Log.v(TAG, "setReadListener已进入");
             //字节转文本
-            //String string = StringUtils.needProcess().bytesToString(bytes);
             String string = new String(bytes, StandardCharsets.UTF_8);
-            //String string = StringUtils.needProcess().toString(bytes);
             Log.v(TAG, "长度：bytes.length="+ bytes.length + "\t内容：" + string);
             //进行文本处理
             String processedString = CH34xProcessingForReadData(string);
@@ -1093,7 +1199,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void NearLinkChatSendData(View view) {
-        //HhandlerI.sendEmptyMessage(10);
         ButtonForSendData.setText(R.string.nearlinkChatSend);
 
         byte[] to_send;
@@ -1122,7 +1227,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void NearLinkChatSendEmoji(View view) {
-        //HhandlerI.sendEmptyMessage(10);
         ButtonForSendData.setText(R.string.nearlinkChatEmoji);
 
         //todo 目前这里先这么做，后续表情包喂上来了添加
@@ -1179,7 +1283,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         MainAPP.Vibrate(this);
         if (view.getId() == id.btnGO) {
             MainAPP.Vibrate(this);
+            //TODO 如果自动启动失败需要完善手动启动，目前自动启动没问题先留着
             InitToOpen();
+            //CH34xInit.MainCH34xInitStart(context);
         } else if (view.getId() == id.menu_labels_left_btn_nearlink) {
             MainAPP.Vibrate(this);
             if (clickCountButton_btnNearLinkStatus % 2 == 0) {
@@ -1259,18 +1365,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     case "BaudRate":
                         wchUartSettings.setBaudRate(Integer.parseInt(UartSettingsBaud[index]));
                         SnackBarToastForDebug(context,"已设置波特率" + wchUartSettings.getBaudRate() + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
+                        //主函数已设置波特率后重启CH34X
+                        MainAPP.CH34X.closeDevice();
+                        CH34xInit.MainCH34xRestartInit(context);
+                        NearLinkChatReadData();
                         break;
                     case "DataBit":
                         wchUartSettings.setDataBit(Byte.parseByte(UartSettingsData[index]));
                         SnackBarToastForDebug(context,"已设置数据位" + wchUartSettings.getDataBit() + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
+                        //主函数已设置数据位后重启CH34X
+                        MainAPP.CH34X.closeDevice();
+                        CH34xInit.MainCH34xRestartInit(context);
+                        NearLinkChatReadData();
                         break;
                     case "StopBit":
                         wchUartSettings.setStopBit(Byte.parseByte(UartSettingsStop[index]));
                         SnackBarToastForDebug(context,"已设置停止位" + wchUartSettings.getStopBit() + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
+                        //主函数已设置停止位后重启CH34X
+                        MainAPP.CH34X.closeDevice();
+                        CH34xInit.MainCH34xRestartInit(context);
+                        NearLinkChatReadData();
                         break;
                     case "Parity":
                         wchUartSettings.setParity(Byte.parseByte(UartSettingsParityII[index]));
                         SnackBarToastForDebug(context,"已设置校验位" + wchUartSettings.getParity() + UartSettingsParity[index] + "!", "设置成功", 0, Snackbar.LENGTH_SHORT);
+                        //主函数已设置校验位后重启CH34X
+                        MainAPP.CH34X.closeDevice();
+                        CH34xInit.MainCH34xRestartInit(context);
+                        NearLinkChatReadData();
                         break;
                 }
             } else {

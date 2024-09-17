@@ -20,6 +20,7 @@ import com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatService.MessageBurnNotifi
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.R.string;
 import com.haohanyh.linmengjia.nearlink.nlchat.fun.SQLite.SQLiteDataBaseAPP;
+import com.haohanyh.linmengjia.nearlink.nlchat.fun.String.StringUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
@@ -171,7 +172,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         void bind(ChatUtilsForMessage message) {
-            messageText.setText(message.getMessage());
+            messageText.setText(StringUtils.needProcess().msgSubEnter(message));
             timestampText.setText(message.getTimestamp());
         }
     }
@@ -190,7 +191,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         void bind(ChatUtilsForMessage message) {
-            messageText.setText(message.getMessage());
+            messageText.setText(StringUtils.needProcess().msgSubEnter(message));
             timestampText.setText(message.getTimestamp());
         }
     }
@@ -216,7 +217,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         void bind(ChatUtilsForMessage message) {
-            messageText.setText(message.getMessage());
+            messageText.setText(StringUtils.needProcess().msgSubEnter(message));
             timestampText.setText(message.getTimestamp());
 
             // 使用EmojiTimerManager来管理和启动计时器
@@ -321,7 +322,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         void bind(ChatUtilsForMessage message) {
-            messageText.setText(message.getMessage());
+            messageText.setText(StringUtils.needProcess().msgSubEnter(message));
             timestampText.setText(message.getTimestamp());
 
             // 使用EmojiTimerManager来管理和启动计时器
@@ -578,7 +579,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         void bind(ChatUtilsForMessage message) {
-            messageText.setText(message.getMessage());
+            messageText.setText(StringUtils.needProcess().msgSubEnter(message));
             timestampText.setText(message.getTimestamp());
         }
 

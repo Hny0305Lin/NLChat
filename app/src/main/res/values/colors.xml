@@ -27,6 +27,9 @@
     <color name="nearlinkerror">#E60000</color>
     <color name="nearlinkerror_deep">#FFE60000</color>
     <color name="nearlinkerror_light">#7CE60000</color>
+    <color name="nearlinkwarn">#E4D33B</color>
+    <color name="nearlinkwarn_deep">#FFE4D33B</color>
+    <color name="nearlinkwarn_light">#7CE4D33B</color>
 
     <color name="snackbar_log_v">#330033</color>
     <color name="snackbar_log_d">#0099FF</color>

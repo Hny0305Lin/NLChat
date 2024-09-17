@@ -1,5 +1,5 @@
 /* 受Haohanyh Computer Software Products Open Source LICENSE保护 https://github.com/Hny0305Lin/LICENSE/blob/main/LICENSE */
-package com.haohanyh.linmengjia.nearlink.nlchat.fun.WCHUart;
+package com.haohanyh.linmengjia.nearlink.nlchat.fun.Uart;
 
 public class WCHUartSettings {
     //小熊派的星闪开发板，如果没有主动手动修改的话，默认都是115200波特率、8数据位、1停止位、0校验和0流控，故这里代码锁死，当然可以通过UI修改（但不推荐

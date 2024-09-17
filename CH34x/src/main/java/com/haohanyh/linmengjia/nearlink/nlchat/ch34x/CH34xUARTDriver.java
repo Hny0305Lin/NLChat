@@ -124,6 +124,9 @@ public class CH34xUARTDriver {
     /* 来自: CH34XUARTDriver.jar:cn/wch/uartlib/chip/ChipType.class */
     private final CH34xChips chips = new CH34xChips();
 
+    /* CH34x 驱动Log相关 */
+    private static final boolean ch34xDriverLogToast = false;
+
     /**
      * 构造方法
      *
@@ -152,7 +155,8 @@ public class CH34xUARTDriver {
         this.pendingIntent = PendingIntent.getBroadcast(this.mContext, 0, new Intent(this.broadcastReceiverFilter), 0);
         HashMap<String, UsbDevice> deviceList = this.usbManager.getDeviceList();
         if (deviceList.isEmpty()) {
-            Toast.makeText(this.mContext, "没有设备或设备不匹配! No Device Or Device Not Match!", Toast.LENGTH_LONG).show();
+            if (ch34xDriverLogToast)
+                Toast.makeText(this.mContext, "没有设备或设备不匹配! No Device Or Device Not Match!", Toast.LENGTH_LONG).show();
             return null;
         }
         for (UsbDevice usbDevice : deviceList.values()) {
@@ -194,7 +198,8 @@ public class CH34xUARTDriver {
         this.pendingIntent = PendingIntent.getBroadcast(this.mContext, 0, new Intent(this.broadcastReceiverFilter), PendingIntent.FLAG_IMMUTABLE);
         HashMap<String, UsbDevice> deviceList = this.usbManager.getDeviceList();
         if (deviceList.isEmpty()) {
-            Toast.makeText(this.mContext, "没有设备或设备不匹配! No Device Or Device Not Match!", Toast.LENGTH_LONG).show();
+            if (ch34xDriverLogToast)
+                Toast.makeText(this.mContext, "没有设备或设备不匹配! No Device Or Device Not Match!", Toast.LENGTH_LONG).show();
         }
         for (UsbDevice usbDevice : deviceList.values()) {
             for (int i = 0; i < this.supportTypeSize; i++) {
@@ -672,7 +677,8 @@ public class CH34xUARTDriver {
             z = true;
         }
         if (z) {
-            Toast.makeText(this.mContext, "设备已连接至 Android! Device Has Attached to Android! ", Toast.LENGTH_LONG).show();
+            if (ch34xDriverLogToast)
+                Toast.makeText(this.mContext, "设备已连接至 Android! Device Has Attached to Android! ", Toast.LENGTH_LONG).show();
             if (this.isNullUsb) {
                 return;
             }

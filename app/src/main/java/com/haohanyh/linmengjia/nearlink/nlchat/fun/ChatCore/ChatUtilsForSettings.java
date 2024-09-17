@@ -2,6 +2,18 @@
 package com.haohanyh.linmengjia.nearlink.nlchat.fun.ChatCore;
 
 public class ChatUtilsForSettings {
+    //这里设置的是启动相关
+    private static final boolean autoConnectCH34X = true; // 控制是否启动自动链接CH34X USB设备
+    private static final int autoConnectDelay = 3000; // 控制启动自动链接时的延迟时间
+    private static boolean autoConnectListener = false; // 控制自动链接后启动监听线程更新UI（保持false，代码内自动覆写）
+    private static boolean autoConnectMessageCode10; // 控制自动链接或正常链接后启动的 “成功通过UART接入星网” UI提示写入在UI上
+    private static boolean autoConnectMessageCode11; // 控制自动链接或正常链接后启动的 “未接入星网” UI提示写入在UI上
+    private static boolean autoConnectMessageCode20; // 控制自动链接或正常链接后启动的 “设备支持USBHost” UI提示写入在UI上
+    private static boolean autoConnectMessageCode21; // 控制自动链接或正常链接后启动的 “设备不支持USBHost” UI提示写入在UI上
+    private static boolean autoConnectMessageCode30; // 控制自动链接或正常链接后启动的 “设备已连接串口” UI提示写入在UI上
+    private static boolean autoConnectMessageCode31; // 控制自动链接或正常链接后启动的 “设备第一次启动” UI提示写入在UI上
+    private static boolean autoConnectMessageCode32; // 控制自动链接或正常链接后启动的 “设备已移除串口” UI提示写入在UI上
+    private static boolean autoConnectMessageCode33; // 控制自动链接或正常链接后启动的 “设备串口配置出问题” UI提示写入在UI上
     //这里设置的是UI相关，是否做到消息滚动展示在UI上，而不是全部展示，全部展示会占用大量UI资源
     private static boolean showUartLog = false; // 控制是否启用显示串口Log
     private static final boolean setDebugLog = true; // 控制是否启用显示串口Log，打印在UI上（开发者使用）
@@ -80,7 +92,31 @@ public class ChatUtilsForSettings {
     private static final String PREFIX_LOG_CLIENT_SAMPLE_FIND_SD_CBK = "[sle uart client] sle_uart_client_sample_find_structure_cmp_cbk";
     private static final String PREFIX_LOG_CLIENT_SAMPLE_FIND_SD_CBK_BEARPI3863 = "[sle uart client bearpi3863] sle_uart_client_sample_find_structure_cmp_cbk";
     private static final String PREFIX_LOG_CLIENT_SAMPLE_FIND_SD_CBK_HIHOPEWS63 = "[sle uart client hihopews63] sle_uart_client_sample_find_structure_cmp_cbk";
+    // 控制是否启用启动相关，自动启动连接
+    public static boolean isAutoConnectCH34X() { return autoConnectCH34X;}
 
+    public static int getAutoConnectDelay() { return autoConnectDelay; }
+
+    public static boolean isAutoConnectListener() { return autoConnectListener; }
+
+    public static void setAutoConnectListener(boolean autoConnectListener) { ChatUtilsForSettings.autoConnectListener = autoConnectListener; }
+
+    public static boolean isAutoConnectMessageCode10() { return autoConnectMessageCode10; }
+    public static void setAutoConnectMessageCode10(boolean autoConnectMessageCode10) { ChatUtilsForSettings.autoConnectMessageCode10 = autoConnectMessageCode10; }
+    public static boolean isAutoConnectMessageCode11() { return autoConnectMessageCode11; }
+    public static void setAutoConnectMessageCode11(boolean autoConnectMessageCode11) { ChatUtilsForSettings.autoConnectMessageCode11 = autoConnectMessageCode11;}
+    public static boolean isAutoConnectMessageCode20() { return autoConnectMessageCode20;}
+    public static void setAutoConnectMessageCode20(boolean autoConnectMessageCode20) { ChatUtilsForSettings.autoConnectMessageCode20 = autoConnectMessageCode20;}
+    public static boolean isAutoConnectMessageCode21() { return autoConnectMessageCode21; }
+    public static void setAutoConnectMessageCode21(boolean autoConnectMessageCode21) { ChatUtilsForSettings.autoConnectMessageCode21 = autoConnectMessageCode21; }
+    public static boolean isAutoConnectMessageCode30() { return autoConnectMessageCode30; }
+    public static void setAutoConnectMessageCode30(boolean autoConnectMessageCode30) { ChatUtilsForSettings.autoConnectMessageCode30 = autoConnectMessageCode30; }
+    public static boolean isAutoConnectMessageCode31() { return autoConnectMessageCode31; }
+    public static void setAutoConnectMessageCode31(boolean autoConnectMessageCode31) { ChatUtilsForSettings.autoConnectMessageCode31 = autoConnectMessageCode31; }
+    public static boolean isAutoConnectMessageCode32() { return autoConnectMessageCode32; }
+    public static void setAutoConnectMessageCode32(boolean autoConnectMessageCode32) { ChatUtilsForSettings.autoConnectMessageCode32 = autoConnectMessageCode32; }
+    public static boolean isAutoConnectMessageCode33() { return autoConnectMessageCode33; }
+    public static void setAutoConnectMessageCode33(boolean autoConnectMessageCode33) { ChatUtilsForSettings.autoConnectMessageCode33 = autoConnectMessageCode33; }
     // 控制是否启用显示串口Log，打印在UI上（开发者使用）
     public static boolean isShowUartLog() { return showUartLog; }
 
